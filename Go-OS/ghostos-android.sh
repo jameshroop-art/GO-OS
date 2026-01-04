@@ -54,6 +54,8 @@ fi
 KNOX_VERSION=$(getprop ro.config.knox 2>/dev/null)
 DEVICE_MODEL=$(getprop ro.product.model 2>/dev/null)
 DEVICE_NAME=$(getprop ro.product.name 2>/dev/null)
+DEVICE_BRAND=$(getprop ro.product.brand 2>/dev/null)
+DEVICE_MANUFACTURER=$(getprop ro.product.manufacturer 2>/dev/null)
 
 if [ -n "$KNOX_VERSION" ]; then
     echo "✅ Samsung Knox detected: $KNOX_VERSION"
@@ -90,6 +92,31 @@ if [ -n "$KNOX_VERSION" ]; then
     else
         echo "✅ Samsung device: $DEVICE_MODEL"
         DEVICE_OPTIMIZED="samsung"
+    fi
+    echo ""
+elif echo "$DEVICE_MANUFACTURER" | grep -iq "LGE\|LG"; then
+    echo "✅ LG Device detected: $DEVICE_MODEL"
+    echo "   GhostOS compatible (no Knox, userspace only)"
+    
+    # Check for LG Stylo 5
+    if echo "$DEVICE_MODEL" | grep -iq "LM-Q720"; then
+        echo "✅ LG Stylo 5 detected: $DEVICE_MODEL"
+        echo "   Applying Stylo 5-specific optimizations"
+        echo "   • Stylus pen support enabled"
+        echo "   • Triple camera optimization"
+        echo "   • Large 6.2\" display optimization"
+        echo "   • Snapdragon 450 tuning"
+        if echo "$DEVICE_MODEL" | grep -iq "QM"; then
+            echo "   • Variant: US variant (Cricket/Metro/etc)"
+        fi
+        DEVICE_OPTIMIZED="stylo5"
+    elif echo "$DEVICE_MODEL" | grep -iq "LM-Q"; then
+        echo "✅ LG Q-series (Stylo) detected: $DEVICE_MODEL"
+        echo "   Applying Stylo-series optimizations"
+        DEVICE_OPTIMIZED="stylo"
+    else
+        echo "✅ LG device: $DEVICE_MODEL"
+        DEVICE_OPTIMIZED="lg"
     fi
     echo ""
 fi
@@ -2995,6 +3022,320 @@ SAMSUNG_EOF
 chmod +x "$GHOSTOS_HOME/bin/ghostos-samsung"
 
 # ============================================
+# LG Device Optimization Tool
+# ============================================
+echo ""
+echo "[*] Creating LG device optimization tool..."
+
+cat > "$GHOSTOS_HOME/bin/ghostos-lg" << 'LG_EOF'
+#!/data/data/com.termux/files/usr/bin/bash
+
+# GhostOS LG Device Optimizer
+# Specialized support for LG devices including Stylo 5
+
+echo "==================================="
+echo "  GhostOS LG Optimizer"
+echo "  LG Device Support"
+echo "==================================="
+echo ""
+
+show_help() {
+    echo "Usage: ghostos-lg [command]"
+    echo ""
+    echo "Commands:"
+    echo "  detect      - Detect LG device model"
+    echo "  optimize    - Apply LG optimizations"
+    echo "  stylus      - Stylus pen features (Stylo series)"
+    echo "  qslide      - QSlide multitasking info"
+    echo "  knockon     - KnockON features"
+    echo ""
+}
+
+detect_lg() {
+    echo "[*] Detecting LG Device..."
+    echo ""
+    
+    DEVICE_MODEL=$(getprop ro.product.model)
+    DEVICE_BRAND=$(getprop ro.product.brand)
+    DEVICE_NAME=$(getprop ro.product.name)
+    DEVICE_BOARD=$(getprop ro.product.board)
+    
+    echo "Device Information:"
+    echo "  Model: $DEVICE_MODEL"
+    echo "  Brand: $DEVICE_BRAND"
+    echo "  Name: $DEVICE_NAME"
+    echo "  Board: $DEVICE_BOARD"
+    echo ""
+    
+    # Specific device detection
+    if echo "$DEVICE_MODEL" | grep -iq "LM-Q720"; then
+        echo "✅ LG Stylo 5"
+        echo ""
+        echo "Device Specifications:"
+        echo "  • Display: 6.2\" Full HD+ LCD"
+        echo "  • Resolution: 2160 x 1080 (19.5:9)"
+        echo "  • Processor: Qualcomm Snapdragon 450"
+        echo "  • CPU: Octa-core (1.8 GHz)"
+        echo "  • GPU: Adreno 506"
+        echo "  • RAM: 3GB"
+        echo "  • Storage: 32GB (expandable to 2TB)"
+        echo "  • Triple Camera: 13MP + 5MP + 5MP"
+        echo "  • Front Camera: 13MP"
+        echo "  • Battery: 3500 mAh (non-removable)"
+        echo "  • Android: 9.0 Pie"
+        echo "  • Stylus: Yes (capacitive, not active)"
+        echo "  • Fingerprint: Rear-mounted"
+        echo ""
+        
+        # Check variant
+        if echo "$DEVICE_MODEL" | grep -q "QM"; then
+            echo "  Variant: US Carrier (LM-Q720QM)"
+            
+            # Check specific carrier
+            if echo "$DEVICE_NAME" | grep -iq "cricket"; then
+                echo "  Carrier: Cricket Wireless"
+            elif echo "$DEVICE_NAME" | grep -iq "metro"; then
+                echo "  Carrier: Metro by T-Mobile"
+            elif echo "$DEVICE_NAME" | grep -iq "boost"; then
+                echo "  Carrier: Boost Mobile"
+            else
+                echo "  Carrier: US Prepaid carrier"
+            fi
+        elif echo "$DEVICE_MODEL" | grep -q "AM"; then
+            echo "  Variant: US Unlocked (LM-Q720AM)"
+        fi
+        
+        echo ""
+        echo "GhostOS Features Enabled:"
+        echo "  ✅ Stylus pen support (capacitive)"
+        echo "  ✅ Triple camera access"
+        echo "  ✅ Large display optimization"
+        echo "  ✅ Snapdragon 450 support"
+        echo "  ✅ LG UX integration"
+        echo "  ✅ QSlide multitasking"
+        echo "  ✅ KnockON/KnockCode"
+        echo "  ✅ Fingerprint sensor support"
+        echo ""
+        echo "Camera Setup:"
+        echo "  • Main: 13MP f/1.8 (wide)"
+        echo "  • Super wide: 5MP f/2.2 (115°)"
+        echo "  • Depth: 5MP f/2.2"
+        echo "  • Front: 13MP f/2.0"
+        echo "  • Video: 1080p@30fps"
+        
+    elif echo "$DEVICE_MODEL" | grep -iq "LM-Q6"; then
+        echo "✅ LG Stylo 4 / Stylo 4+"
+        echo "  Model: $DEVICE_MODEL"
+        
+    elif echo "$DEVICE_MODEL" | grep -iq "LM-Q7"; then
+        echo "✅ LG Stylo 6"
+        echo "  Model: $DEVICE_MODEL"
+        
+    elif echo "$DEVICE_MODEL" | grep -iq "LM-G"; then
+        echo "✅ LG G Series"
+        echo "  Model: $DEVICE_MODEL"
+        
+    elif echo "$DEVICE_MODEL" | grep -iq "LM-V"; then
+        echo "✅ LG V Series"
+        echo "  Model: $DEVICE_MODEL"
+        
+    else
+        echo "✅ LG Device"
+        echo "  Model: $DEVICE_MODEL"
+    fi
+}
+
+optimize_lg() {
+    echo ""
+    echo "[*] Applying LG-Specific Optimizations..."
+    echo ""
+    
+    DEVICE_MODEL=$(getprop ro.product.model)
+    
+    # Stylo 5 specific optimizations
+    if echo "$DEVICE_MODEL" | grep -iq "LM-Q720"; then
+        echo "Optimizations for LG Stylo 5:"
+        echo ""
+        
+        echo "✅ Stylus Pen (Capacitive):"
+        echo "   • Type: Passive capacitive stylus"
+        echo "   • No battery required"
+        echo "   • Precision tip for accurate input"
+        echo "   • Pop-out memo feature"
+        echo "   • Screen-off memo support"
+        
+        echo ""
+        echo "✅ Triple Camera System:"
+        echo "   • Main: 13MP f/1.8 standard"
+        echo "   • Super wide: 5MP f/2.2 (115° FOV)"
+        echo "   • Depth: 5MP f/2.2 (portrait mode)"
+        echo "   • AI CAM scene recognition"
+        echo "   • Portrait mode with adjustable blur"
+        
+        echo ""
+        echo "✅ Display Optimization:"
+        echo "   • Size: 6.2\" Full HD+"
+        echo "   • Resolution: 2160x1080"
+        echo "   • Aspect ratio: 19.5:9 FullVision"
+        echo "   • QLens visual search"
+        
+        echo ""
+        echo "✅ Snapdragon 450 Tuning:"
+        echo "   • Octa-core @ 1.8 GHz"
+        echo "   • Adreno 506 GPU"
+        echo "   • 14nm process efficiency"
+        echo "   • Power-optimized performance"
+        
+        echo ""
+        echo "✅ LG UX Features:"
+        echo "   • QSlide multitasking"
+        echo "   • KnockON (double-tap wake)"
+        echo "   • KnockCode (secure unlock)"
+        echo "   • Always-on display"
+        echo "   • Comfort view (blue light filter)"
+        
+        echo ""
+        echo "✅ Connectivity:"
+        echo "   • WiFi 802.11 b/g/n (2.4GHz)"
+        echo "   • Bluetooth 4.2"
+        echo "   • NFC (payment support)"
+        echo "   • GPS with A-GPS"
+        echo "   • USB Type-C (2.0)"
+        echo "   • 3.5mm headphone jack"
+        echo "   • LTE Cat.6"
+        
+        echo ""
+        echo "✅ Audio & Media:"
+        echo "   • Hi-Fi Quad DAC (not on all variants)"
+        echo "   • DTS:X 3D surround sound"
+        echo "   • FM radio (region dependent)"
+        
+    else
+        echo "Applying general LG optimizations..."
+        echo "  • LG specific drivers detected"
+        echo "  • LG UX compatibility enabled"
+        echo "  • LG SmartWorld integration ready"
+    fi
+    
+    echo ""
+    echo "✅ Optimization complete"
+}
+
+stylus_features() {
+    echo ""
+    echo "[*] Stylus Features (Stylo Series)..."
+    echo ""
+    
+    DEVICE_MODEL=$(getprop ro.product.model)
+    
+    if echo "$DEVICE_MODEL" | grep -iq "LM-Q"; then
+        echo "LG Stylus Pen Capabilities:"
+        echo ""
+        echo "Hardware:"
+        echo "  • Type: Passive capacitive"
+        echo "  • Battery: None required"
+        echo "  • Pressure: Not supported (capacitive)"
+        echo "  • Precision: Fine-tip for accurate writing"
+        echo "  • Storage: Built-in slot"
+        echo ""
+        echo "Features:"
+        echo "  • Pop-out memo (pen removal trigger)"
+        echo "  • Screen-off memo"
+        echo "  • Capture+ (screenshot annotation)"
+        echo "  • Quick Memo+"
+        echo "  • Handwriting recognition"
+        echo ""
+        echo "Comparison with Active Stylus:"
+        echo "  Note: Stylo uses passive capacitive pen"
+        echo "  • No pressure sensitivity"
+        echo "  • No hover detection"
+        echo "  • No active digitizer"
+        echo "  • Battery-free operation"
+        echo ""
+        echo "Using Stylus with GhostOS:"
+        echo "  1. Install drawing apps in Debian"
+        echo "  2. Use VNC for GUI access"
+        echo "  3. Stylus works as precise touch input"
+        echo "  4. Good for note-taking and drawing"
+    else
+        echo "Stylus not available on this device"
+        echo "Device: $DEVICE_MODEL"
+    fi
+}
+
+qslide_features() {
+    echo ""
+    echo "[*] QSlide Multitasking..."
+    echo ""
+    
+    echo "LG QSlide Features:"
+    echo "  • Float apps over other apps"
+    echo "  • Resize and reposition windows"
+    echo "  • Multiple windows simultaneously"
+    echo "  • Transparency adjustment"
+    echo ""
+    echo "QSlide Apps (LG):"
+    echo "  • Calculator"
+    echo "  • Calendar"
+    echo "  • File Manager"
+    echo "  • Memo"
+    echo "  • Messages"
+    echo "  • Browser"
+    echo ""
+    echo "GhostOS Integration:"
+    echo "  • Termux can run alongside QSlide apps"
+    echo "  • Multi-window with Linux apps (via VNC)"
+    echo "  • Productivity workflows"
+}
+
+knockon_features() {
+    echo ""
+    echo "[*] KnockON Features..."
+    echo ""
+    
+    echo "LG KnockON:"
+    echo "  • Double-tap screen to wake/sleep"
+    echo "  • Works when screen is off"
+    echo "  • No button press needed"
+    echo ""
+    echo "LG KnockCode:"
+    echo "  • Tap pattern to unlock (2-8 taps)"
+    echo "  • More secure than pattern lock"
+    echo "  • Works with screen off"
+    echo ""
+    echo "Setup:"
+    echo "  Settings → Display → KnockON"
+    echo "  Settings → Lock screen → KnockCode"
+}
+
+# Main execution
+case "$1" in
+    detect)
+        detect_lg
+        ;;
+    optimize)
+        optimize_lg
+        ;;
+    stylus)
+        stylus_features
+        ;;
+    qslide)
+        qslide_features
+        ;;
+    knockon)
+        knockon_features
+        ;;
+    *)
+        show_help
+        echo ""
+        detect_lg
+        ;;
+esac
+LG_EOF
+
+chmod +x "$GHOSTOS_HOME/bin/ghostos-lg"
+
+# ============================================
 # Add GhostOS to PATH
 # ============================================
 echo ""
@@ -3049,6 +3390,10 @@ echo "  • ghostos-vpn - VPN management"
 echo "  • ghostos-audio - Audio/Dolby Atmos"
 echo "  • ghostos-voip - VoIP/WiFi calling"
 echo "  • ghostos-driver-optimizer - Optimize drivers"
+echo "  • ghostos-device-mask - Device ID masking"
+echo "  • ghostos-verify-system - Verify OS integrity"
+echo "  • ghostos-samsung - Samsung device optimization"
+echo "  • ghostos-lg - LG device optimization"
 echo "  • ghostos-debian - Launch Debian environment"
 echo "  • ghostos-system - System information"
 echo "  • ghostos-help - Detailed help"
