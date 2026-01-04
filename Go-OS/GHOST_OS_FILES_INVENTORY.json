@@ -1,0 +1,250 @@
+{
+  "report_metadata": {
+    "title": "Ghost OS Files Inventory",
+    "repository": "jameshroop-art/Experimental-UI",
+    "branch": "copilot/find-ghost-os-files",
+    "generated_date": "2026-01-04",
+    "total_ghost_files": 16
+  },
+  "ghost_files": [
+    {
+      "id": 1,
+      "name": ".gitignore",
+      "path": "./.gitignore",
+      "type": "hidden_config",
+      "category": "version_control",
+      "purpose": "Specifies intentionally untracked files to ignore",
+      "visibility": "hidden",
+      "size_bytes": 737,
+      "is_placeholder": false
+    },
+    {
+      "id": 2,
+      "name": ".gitkeep",
+      "path": "./models/.gitkeep",
+      "type": "placeholder",
+      "category": "structural",
+      "purpose": "Preserves models directory for AI generation models",
+      "parent_directory": "models",
+      "visibility": "hidden",
+      "is_placeholder": true,
+      "related_docs": ["PLACEHOLDER_INSTRUCTIONS.txt"]
+    },
+    {
+      "id": 3,
+      "name": ".gitkeep",
+      "path": "./outputs/.gitkeep",
+      "type": "placeholder",
+      "category": "structural",
+      "purpose": "Preserves directory for generated images and videos",
+      "parent_directory": "outputs",
+      "visibility": "hidden",
+      "is_placeholder": true
+    },
+    {
+      "id": 4,
+      "name": ".gitkeep",
+      "path": "./extensions/.gitkeep",
+      "type": "placeholder",
+      "category": "structural",
+      "purpose": "Preserves extension system directory for plugins",
+      "parent_directory": "extensions",
+      "visibility": "hidden",
+      "is_placeholder": true,
+      "related_docs": ["EXTENSION_LAUNCHER.md"]
+    },
+    {
+      "id": 5,
+      "name": ".gitkeep",
+      "path": "./llm_settings/.gitkeep",
+      "type": "placeholder",
+      "category": "user_data",
+      "purpose": "Preserves directory for LLM configuration profiles",
+      "parent_directory": "llm_settings",
+      "visibility": "hidden",
+      "is_placeholder": true
+    },
+    {
+      "id": 6,
+      "name": ".gitkeep",
+      "path": "./mtg_decks/.gitkeep",
+      "type": "placeholder",
+      "category": "user_data",
+      "purpose": "Preserves directory for saved Magic: The Gathering decks",
+      "parent_directory": "mtg_decks",
+      "visibility": "hidden",
+      "is_placeholder": true,
+      "features": ["MTG Deck Builder"]
+    },
+    {
+      "id": 7,
+      "name": ".gitkeep",
+      "path": "./mtg_data/.gitkeep",
+      "type": "placeholder",
+      "category": "user_data",
+      "purpose": "Preserves directory for MTG card databases and rules",
+      "parent_directory": "mtg_data",
+      "visibility": "hidden",
+      "is_placeholder": true,
+      "features": ["MTG Deck Builder"]
+    },
+    {
+      "id": 8,
+      "name": ".gitkeep",
+      "path": "./dnd_characters/.gitkeep",
+      "type": "placeholder",
+      "category": "user_data",
+      "purpose": "Preserves directory for saved D&D 5e characters",
+      "parent_directory": "dnd_characters",
+      "visibility": "hidden",
+      "is_placeholder": true,
+      "features": ["D&D Character Creator"]
+    },
+    {
+      "id": 9,
+      "name": ".gitkeep",
+      "path": "./mtg_playspace/.gitkeep",
+      "type": "placeholder",
+      "category": "resource_cockatrice",
+      "purpose": "Root directory for playspace resources",
+      "parent_directory": "mtg_playspace",
+      "visibility": "hidden",
+      "is_placeholder": true,
+      "cockatrice_compatible": true
+    },
+    {
+      "id": 10,
+      "name": ".gitkeep",
+      "path": "./mtg_playspace/rules/.gitkeep",
+      "type": "placeholder",
+      "category": "resource_cockatrice",
+      "purpose": "Preserves directory for game rules files",
+      "parent_directory": "mtg_playspace/rules",
+      "visibility": "hidden",
+      "is_placeholder": true,
+      "accepted_formats": ["XML", "JSON", "TXT", "PDF", "DOC", "DOCX"],
+      "cockatrice_compatible": true
+    },
+    {
+      "id": 11,
+      "name": ".gitkeep",
+      "path": "./mtg_playspace/images/.gitkeep",
+      "type": "placeholder",
+      "category": "resource_cockatrice",
+      "purpose": "Preserves directory for card images",
+      "parent_directory": "mtg_playspace/images",
+      "visibility": "hidden",
+      "is_placeholder": true,
+      "accepted_formats": ["PNG", "JPG", "GIF", "BMP", "WEBP"],
+      "cockatrice_compatible": true
+    },
+    {
+      "id": 12,
+      "name": ".gitkeep",
+      "path": "./mtg_playspace/carddb/.gitkeep",
+      "type": "placeholder",
+      "category": "resource_cockatrice",
+      "purpose": "Preserves directory for Cockatrice-compatible card databases",
+      "parent_directory": "mtg_playspace/carddb",
+      "visibility": "hidden",
+      "is_placeholder": true,
+      "accepted_formats": ["cards.xml", "AllPrintings.json", "SQL"],
+      "cockatrice_compatible": true
+    },
+    {
+      "id": 13,
+      "name": ".gitkeep",
+      "path": "./mtg_playspace/sets/.gitkeep",
+      "type": "placeholder",
+      "category": "resource_cockatrice",
+      "purpose": "Preserves directory for set information",
+      "parent_directory": "mtg_playspace/sets",
+      "visibility": "hidden",
+      "is_placeholder": true,
+      "accepted_formats": ["XML", "JSON"],
+      "cockatrice_compatible": true
+    },
+    {
+      "id": 14,
+      "name": ".gitkeep",
+      "path": "./llm_data/prepends/.gitkeep",
+      "type": "placeholder",
+      "category": "llm_data",
+      "purpose": "Preserves directory for system prepend files",
+      "parent_directory": "llm_data/prepends",
+      "visibility": "hidden",
+      "is_placeholder": true,
+      "max_characters": 2000,
+      "features": ["Offline LLM Browser"]
+    },
+    {
+      "id": 15,
+      "name": ".gitkeep",
+      "path": "./llm_data/bios/.gitkeep",
+      "type": "placeholder",
+      "category": "llm_data",
+      "purpose": "Preserves directory for LLM behavior guidelines/bios",
+      "parent_directory": "llm_data/bios",
+      "visibility": "hidden",
+      "is_placeholder": true,
+      "max_characters": 2000,
+      "features": ["Offline LLM Browser"]
+    },
+    {
+      "id": 16,
+      "name": ".gitkeep",
+      "path": "./llm_data/dnd_characters/.gitkeep",
+      "type": "placeholder",
+      "category": "llm_data",
+      "purpose": "Preserves directory for D&D character LLM training data",
+      "parent_directory": "llm_data/dnd_characters",
+      "visibility": "hidden",
+      "is_placeholder": true,
+      "features": ["D&D Character Creator", "LLM Training"]
+    }
+  ],
+  "statistics": {
+    "by_category": {
+      "version_control": 1,
+      "structural": 3,
+      "user_data": 3,
+      "resource_cockatrice": 5,
+      "llm_data": 3
+    },
+    "by_type": {
+      "hidden_config": 1,
+      "placeholder": 15
+    },
+    "placeholder_directories": [
+      "models",
+      "outputs",
+      "extensions",
+      "llm_settings",
+      "mtg_decks",
+      "mtg_data",
+      "dnd_characters",
+      "mtg_playspace",
+      "mtg_playspace/rules",
+      "mtg_playspace/images",
+      "mtg_playspace/carddb",
+      "mtg_playspace/sets",
+      "llm_data/prepends",
+      "llm_data/bios",
+      "llm_data/dnd_characters"
+    ]
+  },
+  "architecture_notes": {
+    "privacy_focus": "Ghost files preserve directory structure without bundling copyrighted content",
+    "offline_capable": "Directories exist but remain empty until user populates them",
+    "copyright_safe": "Following Cockatrice's approach - no bundled proprietary data",
+    "symlink_system": "Models directory is designed for symlink to user's actual model location",
+    "extension_whitelist": "Whitelist system restricts access to models/ and extensions/ only"
+  },
+  "related_files": [
+    "PLACEHOLDER_INSTRUCTIONS.txt",
+    "EXTENSION_LAUNCHER.md",
+    "BESEECH-SETUP.md",
+    "README.md",
+    "IMPLEMENTATION_SUMMARY.md"
+  ]
+}
