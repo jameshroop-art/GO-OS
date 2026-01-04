@@ -79,6 +79,8 @@ Installs:
 
 ## 📚 Documentation
 
+**👉 [Complete Documentation Index](Go-OS/DOCUMENTATION_INDEX.md)** - Full documentation listing
+
 ### Desktop/Server
 - **[Build System README](Go-OS/GHOSTOS_BUILD_README.md)** - Complete build guide
 - **[Quick Reference](Go-OS/GHOSTOS_QUICK_REFERENCE.md)** - Fast command reference
@@ -91,6 +93,10 @@ Installs:
 - **[Quick Reference](Go-OS/ANDROID_QUICK_REFERENCE.md)** - Command cheat sheet
 - **[Technical Details](Go-OS/ANDROID_TECHNICAL_DETAILS.md)** - Architecture and compatibility
 - **[Install Script](Go-OS/ghostos-android.sh)** - Android installer
+
+### General
+- **[FAQ](Go-OS/FAQ.md)** - Frequently Asked Questions
+- **[Architecture](Go-OS/ARCHITECTURE.md)** - System architecture and diagrams
 
 ## 🎯 Features Comparison
 
