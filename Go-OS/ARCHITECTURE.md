@@ -30,14 +30,16 @@ Visual and technical overview of GhostOS architecture for both Desktop and Andro
                  ▼
 ┌─────────────────────────────────────────────────────────┐
 │  Create Root Filesystem (debootstrap)                   │
-│  - Base Debian Bookworm system                          │
+│  - Base Parrot OS 7 Security (lory) system             │
 │  - Core utilities and libraries                         │
 └────────────────┬────────────────────────────────────────┘
                  │
                  ▼
 ┌─────────────────────────────────────────────────────────┐
 │  Execute Installation Scripts (chroot)                  │
+│  - Configure Parrot OS 7 repositories                   │
 │  - Install version-specific packages                    │
+│  - Apply GhostOS GUI and customizations                 │
 │  - Configure system                                     │
 │  - Setup drivers and firmware                           │
 │  - Apply privacy/security settings                      │
@@ -74,6 +76,10 @@ Visual and technical overview of GhostOS architecture for both Desktop and Andro
 │  User Applications                                      │
 │  - Firefox, Steam, VS Code, LibreOffice, etc.         │
 ├────────────────────────────────────────────────────────┤
+│  GhostOS Custom GUI Layer                              │
+│  - Custom desktop environment and themes               │
+│  - GhostOS-specific tools and utilities                │
+├────────────────────────────────────────────────────────┤
 │  Desktop Environment                                    │
 │  - XFCE (default) or Wayland/Sway (v2.0)              │
 │  - Picom compositor (v1.1+)                            │
@@ -84,13 +90,14 @@ Visual and technical overview of GhostOS architecture for both Desktop and Andro
 │  System Services                                        │
 │  - systemd, NetworkManager, PulseAudio                 │
 │  - Security: UFW, AppArmor (v2.0), ClamAV (v1.1+)     │
+│  - Parrot Security Tools (penetration testing, etc.)   │
 ├────────────────────────────────────────────────────────┤
 │  Package Management                                     │
-│  - apt/dpkg (Debian package manager)                   │
+│  - apt/dpkg (Parrot/Debian package manager)            │
 │  - Flatpak (optional additional packages)              │
 ├────────────────────────────────────────────────────────┤
-│  Linux Kernel                                           │
-│  - Debian kernel with firmware                         │
+│  Parrot OS 7 Security Base                             │
+│  - Parrot kernel with security enhancements            │
 │  - Drivers: AMD, NVIDIA, Intel, USB4, Thunderbolt     │
 ├────────────────────────────────────────────────────────┤
 │  Hardware                                               │

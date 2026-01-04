@@ -5,17 +5,20 @@ Complete operating system distribution available for multiple platforms with adv
 ## 🚀 Platforms
 
 ### 🐧 Desktop/Server (Linux ISO)
-Full-featured Debian-based distribution with multiple versions:
-- **v1.0 - Stable Release**: Complete base system (~10GB)
+Full-featured **Parrot OS 7 Security**-based distribution with multiple versions:
+- **v1.0 - Stable Release**: Complete base system with Parrot Security tools (~10GB)
 - **v1.1 - Enhanced Edition**: Privacy-focused with Malwarebytes-style security (~11GB)
 - **v2.0 - Next Generation**: Wayland, AI assistant, cloud backup, plugin system (~12GB)
 
-**Features:**
+**Base Operating System:** Parrot OS 7 Security Edition (Debian-based security-focused distribution)
+
+**GhostOS Features:**
 - ✅ BIOS/UEFI boot support
 - ✅ AMD AM5/ASUS platform optimizations
 - ✅ Gaming and AI/ML tools
 - ✅ Enhanced privacy controls
-- ✅ Security tools and hardening
+- ✅ Security tools and hardening (Parrot + GhostOS)
+- ✅ Custom GhostOS GUI and desktop environment
 
 **Documentation:** See [`GHOSTOS_BUILD_README.md`](Go-OS/GHOSTOS_BUILD_README.md) and [`GHOSTOS_QUICK_REFERENCE.md`](Go-OS/GHOSTOS_QUICK_REFERENCE.md)
 
@@ -47,9 +50,11 @@ sudo ./ghostos-build.sh
 ```
 
 Builds bootable ISO with:
-- Complete Linux system
+- Parrot OS 7 Security Edition base
+- GhostOS custom GUI and desktop environment
+- Complete Linux system with security tools
 - Hardware drivers (AMD, NVIDIA, Intel)
-- Privacy and security tools
+- Privacy and security tools (Parrot + GhostOS)
 - Gaming support
 - Development tools
 
@@ -71,7 +76,7 @@ ghostos
 ```
 
 Installs:
-- Debian proot environment
+- Parrot Security OS proot environment
 - WiFi management tools (non-root)
 - Bluetooth management tools (non-root)
 - Driver optimization utilities
@@ -135,7 +140,8 @@ Installs:
 ## 🔧 Requirements
 
 ### Desktop/Server
-- **OS**: Debian-based Linux (for building)
+- **Build OS**: Debian-based Linux (for building the ISO)
+- **Base OS**: Parrot OS 7 Security Edition (automatically bootstrapped)
 - **RAM**: 8GB minimum, 16GB recommended
 - **Disk**: 50-100GB (depending on version)
 - **Root**: Required for building
@@ -227,9 +233,10 @@ Contributions welcome! Please:
 GhostOS build system and Android tools are provided as-is for educational and development purposes.
 
 Based on:
-- **Debian GNU/Linux** - Various licenses
-- **Termux** - GPLv3
-- **proot** - GPL
+- **Parrot OS 7 Security Edition** (Desktop) - GPLv3 and various licenses
+- **Debian GNU/Linux** - Various licenses (Parrot base)
+- **Termux** (Android) - GPLv3
+- **proot** (Android) - GPL
 - Numerous open-source packages with individual licenses
 
 Please respect all applicable licenses.
@@ -238,6 +245,7 @@ Please respect all applicable licenses.
 
 - **GitHub Repository**: https://github.com/jameshroop-art/GO-OS
 - **Issues/Support**: https://github.com/jameshroop-art/GO-OS/issues
+- **Parrot Security**: https://www.parrotsec.org
 - **Termux**: https://termux.com
 - **F-Droid**: https://f-droid.org
 - **Debian**: https://www.debian.org
@@ -277,17 +285,17 @@ See [ANDROID_INSTALLATION.md](Go-OS/ANDROID_INSTALLATION.md) troubleshooting sec
 ## 🎉 Version History
 
 ### Desktop
-- **v2.0** (2025): Wayland, AI assistant, ARM support, plugin system
-- **v1.1** (2025): Enhanced privacy, security tools, improved UI
-- **v1.0** (2025): Initial stable release, base system
+- **v2.0** (2025): Parrot OS 7 base, Wayland, AI assistant, ARM support, plugin system
+- **v1.1** (2025): Parrot OS 7 base, Enhanced privacy, security tools, improved UI
+- **v1.0** (2025): Initial stable release, Parrot OS 7 Security base with GhostOS GUI
 
 ### Android
 - **v1.0-android** (2026-01): Initial Android release
   - Android 9+ support
   - Non-root WiFi/Bluetooth
-  - Debian proot environment
+  - Parrot Security OS proot environment
   - Driver optimization tools
 
 ---
 
-**GhostOS** - Privacy-focused, feature-rich operating system for desktop and mobile platforms. Build it, customize it, own it. 👻
+**GhostOS** - Security-focused, feature-rich operating system built on Parrot OS 7 Security Edition with custom GhostOS GUI. For desktop and mobile platforms. Build it, customize it, own it. 👻🦜
