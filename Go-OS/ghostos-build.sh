@@ -4,6 +4,8 @@
 # ============================================
 # GhostOS Complete Build System
 # Versions: 1.0, 1.1, 2.0
+# Base: Parrot OS 7 Security Edition
+# GUI: GhostOS Custom Desktop Environment
 # With USB Bootloader Creation
 # ============================================
 
@@ -16,6 +18,7 @@ ISO_DIR="$BUILD_DIR/iso"
 
 echo "========================================"
 echo "  👻 GhostOS Build System"
+echo "  🦜 Parrot OS 7 Security Base"
 echo "  Multi-Version Builder"
 echo "========================================"
 echo ""
@@ -32,12 +35,17 @@ fi
 # ============================================
 echo "Select GhostOS version to build:"
 echo ""
+echo "  🦜 Base: Parrot OS 7 Security Edition"
+echo "  👻 GUI: GhostOS Custom Desktop"
+echo ""
 echo "  1) GhostOS v1.0 - Stable Release"
+echo "     • Parrot OS 7 Security base"
 echo "     • Complete base system"
 echo "     • All core features"
 echo "     • ~10GB ISO"
 echo ""
 echo "  2) GhostOS v1.1 - Enhanced Edition"
+echo "     • Parrot OS 7 Security base"
 echo "     • Improved UI (smooth animations)"
 echo "     • Enhanced privacy controls"
 echo "     • Malwarebytes Premium"
@@ -45,6 +53,7 @@ echo "     • System consolidation"
 echo "     • ~11GB ISO"
 echo ""
 echo "  3) GhostOS v2.0 - Next Generation"
+echo "     • Parrot OS 7 Security base"
 echo "     • Modern Wayland support"
 echo "     • AI assistant integration"
 echo "     • Advanced UI (blur effects, transitions)"
@@ -131,7 +140,20 @@ create_install_script_1.0() {
 set -e
 export DEBIAN_FRONTEND=noninteractive
 
-echo "Installing GhostOS v1.0..."
+echo "Installing GhostOS v1.0 on Parrot OS 7 Security base..."
+
+# ============================================
+# Configure Parrot OS 7 Security Repositories
+# ============================================
+echo ""
+echo "[*] Configuring Parrot OS 7 Security repositories..."
+
+cat > /etc/apt/sources.list << 'PARROT_EOF'
+# Parrot OS 7 (lory) - Security Edition Base
+deb https://deb.parrot.sh/parrot lory main contrib non-free non-free-firmware
+deb https://deb.parrot.sh/parrot lory-security main contrib non-free non-free-firmware
+deb https://deb.parrot.sh/parrot lory-backports main contrib non-free non-free-firmware
+PARROT_EOF
 
 # ============================================
 # System Base and Kernel
@@ -334,14 +356,8 @@ apt-get install -y \
     vulkan-tools \
     xserver-xorg-dev
 
-# Add non-free repositories for firmware
-cat > /etc/apt/sources.list.d/debian-non-free.list << 'EOF'
-deb http://deb.debian.org/debian bookworm main contrib non-free non-free-firmware
-deb http://deb.debian.org/debian bookworm-updates main contrib non-free non-free-firmware
-deb http://deb.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
-deb http://deb.debian.org/debian bookworm-backports main contrib non-free non-free-firmware
-EOF
-
+# Parrot OS already includes non-free repositories in sources.list
+# Update package cache for latest Parrot repository information
 apt-get update
 
 # Clone nvidia-driver-installer from trusted GitHub source
@@ -2014,13 +2030,8 @@ EOF
 # Add Kali GPG key
 wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add -
 
-# Add Parrot Security repositories
-cat > /etc/apt/sources.list.d/parrot.list << 'EOF'
-deb https://deb.parrot.sh/parrot/ parrot main contrib non-free
-EOF
-
-# Add Parrot GPG key
-wget -qO - https://deb.parrot.sh/parrot/misc/parrotsec.gpg | apt-key add -
+# Parrot Security tools are already available from the base Parrot OS 7 repositories
+# No need to add additional Parrot repositories
 
 apt-get update
 
@@ -5143,7 +5154,21 @@ export DEBIAN_FRONTEND=noninteractive
 echo "========================================"
 echo "  Installing GhostOS v1.1"
 echo "  Enhanced Edition"
+echo "  on Parrot OS 7 Security base"
 echo "========================================"
+
+# ============================================
+# Configure Parrot OS 7 Security Repositories
+# ============================================
+echo ""
+echo "[*] Configuring Parrot OS 7 Security repositories..."
+
+cat > /etc/apt/sources.list << 'PARROT_EOF'
+# Parrot OS 7 (lory) - Security Edition Base
+deb https://deb.parrot.sh/parrot lory main contrib non-free non-free-firmware
+deb https://deb.parrot.sh/parrot lory-security main contrib non-free non-free-firmware
+deb https://deb.parrot.sh/parrot lory-backports main contrib non-free non-free-firmware
+PARROT_EOF
 
 # ============================================
 # BASE SYSTEM (from v1.0)
@@ -5866,7 +5891,21 @@ export DEBIAN_FRONTEND=noninteractive
 echo "========================================"
 echo "  Installing GhostOS v2.0"
 echo "  Next Generation"
+echo "  on Parrot OS 7 Security base"
 echo "========================================"
+
+# ============================================
+# Configure Parrot OS 7 Security Repositories
+# ============================================
+echo ""
+echo "[*] Configuring Parrot OS 7 Security repositories..."
+
+cat > /etc/apt/sources.list << 'PARROT_EOF'
+# Parrot OS 7 (lory) - Security Edition Base
+deb https://deb.parrot.sh/parrot lory main contrib non-free non-free-firmware
+deb https://deb.parrot.sh/parrot lory-security main contrib non-free non-free-firmware
+deb https://deb.parrot.sh/parrot lory-backports main contrib non-free non-free-firmware
+PARROT_EOF
 
 # ============================================
 # BASE SYSTEM (from v1.0)
@@ -6903,9 +6942,10 @@ for VERSION in "${VERSIONS[@]}"; do
     
     # Bootstrap if needed
     if [ ! -d "$ROOTFS_DIR/usr" ]; then
-        echo "[*] Bootstrapping base system..."
-        debootstrap --arch=amd64 --include=wget,curl,ca-certificates \
-            bookworm "$ROOTFS_DIR" http://deb.debian.org/debian
+        echo "[*] Bootstrapping Parrot OS 7 Security base system..."
+        echo "    Using Parrot Security repositories for enhanced security features"
+        debootstrap --arch=amd64 --include=wget,curl,ca-certificates,gnupg \
+            lory "$ROOTFS_DIR" https://deb.parrot.sh/parrot
     fi
     
     # Create version-specific installation script

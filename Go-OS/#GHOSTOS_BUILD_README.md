@@ -1,19 +1,21 @@
 # GhostOS Build System
 
-A complete build system for creating GhostOS Linux distribution ISOs with multiple version support and bootable USB creation.
+A complete build system for creating GhostOS Linux distribution ISOs built on Parrot OS 7 Security Edition with custom GhostOS GUI and settings, featuring multiple version support and bootable USB creation.
 
 ## Overview
 
 The GhostOS Build System allows you to build custom Linux distributions with advanced features including:
 
-- **Version 1.0 (Stable Release)**: Complete base system with all core features (~10GB ISO)
+- **Version 1.0 (Stable Release)**: Parrot OS 7 Security base with GhostOS GUI and core features (~10GB ISO)
 - **Version 1.1 (Enhanced Edition)**: Improved UI with smooth animations, enhanced privacy controls, Malwarebytes-style security scanner, and system consolidation (~11GB ISO)
 - **Version 2.0 (Next Generation)**: Modern Wayland support, AI assistant integration, advanced UI with blur effects, encrypted cloud backup, plugin system, and ARM architecture support (~12GB ISO)
 
 ## Features
 
 ### All Versions Include:
-- Debian Bookworm base system
+- **Parrot OS 7 Security Edition base** (lory codename)
+- **GhostOS Custom GUI** and desktop environment
+- Parrot Security tools (penetration testing, forensics, etc.)
 - Complete offline installation capability
 - BIOS and UEFI boot support
 - Hybrid ISO (can be written to USB)
@@ -22,12 +24,14 @@ The GhostOS Build System allows you to build custom Linux distributions with adv
 ### Version-Specific Features:
 
 #### v1.0 - Stable Release
+- Parrot OS 7 Security base system
+- GhostOS custom GUI and settings
 - Complete base system
 - All core features
 - Kernel and drivers (AMD, NVIDIA)
 - Gaming support
 - AI/ML tools
-- Security tools
+- Security tools (Parrot + GhostOS)
 
 #### v1.1 - Enhanced Edition
 All v1.0 features plus:
@@ -54,7 +58,8 @@ All v1.1 features plus:
 ## Requirements
 
 ### System Requirements:
-- **Operating System**: Debian-based Linux (Debian, Ubuntu, etc.)
+- **Build Operating System**: Debian-based Linux (Debian, Ubuntu, etc.)
+- **Target Operating System**: Parrot OS 7 Security Edition (automatically bootstrapped)
 - **RAM**: 8GB minimum, 16GB recommended
 - **Disk Space**: 
   - 50GB for building v1.0
@@ -64,7 +69,7 @@ All v1.1 features plus:
 - **Privileges**: Must run as root (sudo)
 
 ### Software Dependencies (installed automatically):
-- debootstrap
+- debootstrap (for Parrot OS 7 bootstrap)
 - squashfs-tools
 - xorriso
 - grub-pc-bin
