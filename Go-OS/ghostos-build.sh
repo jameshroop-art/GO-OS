@@ -356,9 +356,8 @@ apt-get install -y \
     vulkan-tools \
     xserver-xorg-dev
 
-# Parrot OS already includes non-free repositories, no need to add separately
-# apt-get update called above already configured Parrot repos
-
+# Parrot OS already includes non-free repositories in sources.list
+# Update package cache for latest Parrot repository information
 apt-get update
 
 # Clone nvidia-driver-installer from trusted GitHub source
@@ -2031,13 +2030,8 @@ EOF
 # Add Kali GPG key
 wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add -
 
-# Add Parrot Security repositories
-cat > /etc/apt/sources.list.d/parrot.list << 'EOF'
-deb https://deb.parrot.sh/parrot/ parrot main contrib non-free
-EOF
-
-# Add Parrot GPG key
-wget -qO - https://deb.parrot.sh/parrot/misc/parrotsec.gpg | apt-key add -
+# Parrot Security tools are already available from the base Parrot OS 7 repositories
+# No need to add additional Parrot repositories
 
 apt-get update
 
