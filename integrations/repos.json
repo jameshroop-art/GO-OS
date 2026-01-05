@@ -1,0 +1,92 @@
+{
+  "integrations": [
+    {
+      "id": "dracula-theme",
+      "name": "Dracula Theme",
+      "category": "Themes",
+      "license": "MIT",
+      "url": "https://github.com/dracula/dracula-theme",
+      "description": "Dark theme for 250+ apps and websites",
+      "install_script": "install-dracula.sh",
+      "size_mb": 5,
+      "dependencies": []
+    },
+    {
+      "id": "ohmyzsh",
+      "name": "Oh My Zsh",
+      "category": "Shell",
+      "license": "MIT",
+      "url": "https://github.com/ohmyzsh/ohmyzsh",
+      "description": "Framework for managing Zsh configuration",
+      "install_script": "install-ohmyzsh.sh",
+      "size_mb": 15,
+      "dependencies": ["zsh"]
+    },
+    {
+      "id": "powerlevel10k",
+      "name": "Powerlevel10k",
+      "category": "Shell",
+      "license": "MIT",
+      "url": "https://github.com/romkatv/powerlevel10k",
+      "description": "Fast, flexible Zsh theme with instant prompt",
+      "install_script": "install-powerlevel10k.sh",
+      "size_mb": 3,
+      "dependencies": ["zsh", "ohmyzsh"]
+    },
+    {
+      "id": "nvchad",
+      "name": "NvChad",
+      "category": "Editor",
+      "license": "GPLv3",
+      "url": "https://github.com/NvChad/NvChad",
+      "description": "Blazing fast Neovim config",
+      "install_script": "install-nvchad.sh",
+      "size_mb": 50,
+      "dependencies": ["neovim"]
+    },
+    {
+      "id": "starship",
+      "name": "Starship",
+      "category": "Shell",
+      "license": "ISC",
+      "url": "https://github.com/starship/starship",
+      "description": "Minimal, fast, and customizable prompt",
+      "install_script": "install-starship.sh",
+      "size_mb": 8,
+      "dependencies": []
+    },
+    {
+      "id": "alacritty",
+      "name": "Alacritty",
+      "category": "Terminal",
+      "license": "Apache 2.0",
+      "url": "https://github.com/alacritty/alacritty",
+      "description": "GPU-accelerated terminal emulator",
+      "install_script": "install-alacritty.sh",
+      "size_mb": 12,
+      "dependencies": []
+    },
+    {
+      "id": "rofi",
+      "name": "Rofi",
+      "category": "Launcher",
+      "license": "MIT",
+      "url": "https://github.com/davatorium/rofi",
+      "description": "Window switcher and application launcher",
+      "install_script": "install-rofi.sh",
+      "size_mb": 2,
+      "dependencies": ["libxcb"]
+    },
+    {
+      "id": "tpm",
+      "name": "Tmux Plugin Manager",
+      "category": "Terminal",
+      "license": "MIT",
+      "url": "https://github.com/tmux-plugins/tpm",
+      "description": "Plugin manager for tmux",
+      "install_script": "install-tpm.sh",
+      "size_mb": 1,
+      "dependencies": ["tmux"]
+    }
+  ]
+}

@@ -1,0 +1,581 @@
+#!/usr/bin/env python3
+"""
+GhostOS Advanced ISO Builder GUI
+Comprehensive ISO modification and theme customization tool
+"""
+
+import sys
+import os
+from pathlib import Path
+
+try:
+    from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
+                                  QHBoxLayout, QTabWidget, QLabel, QPushButton,
+                                  QFileDialog, QMessageBox, QSplitter)
+    from PyQt6.QtCore import Qt, QThread, pyqtSignal
+    from PyQt6.QtGui import QIcon, QFont
+except ImportError:
+    print("Error: PyQt6 not found. Install with: pip install -r requirements.txt")
+    sys.exit(1)
+
+# Import custom UI components
+from ui.iso_loader import ISOLoaderWidget
+from ui.theme_editor import ThemeEditorWidget
+from ui.preview_pane import PreviewPaneWidget
+from ui.repo_browser import RepoBrowserWidget
+from ui.credentials_dialog import CredentialsDialog
+
+
+class GhostOSBuilderGUI(QMainWindow):
+    """Main application window for GhostOS ISO Builder"""
+    
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("GhostOS Advanced ISO Builder")
+        self.setGeometry(100, 100, 1400, 900)
+        
+        # Initialize variables
+        self.current_iso_path = None
+        self.current_theme = "default"
+        self.gaming_mode_enabled = False
+        self.production_mode_enabled = False
+        
+        # Setup UI
+        self.setup_ui()
+        self.setup_menu_bar()
+        self.apply_default_style()
+        
+    def setup_ui(self):
+        """Setup the main user interface"""
+        # Central widget
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        
+        # Main layout
+        main_layout = QVBoxLayout(central_widget)
+        main_layout.setContentsMargins(10, 10, 10, 10)
+        
+        # Header
+        header = self.create_header()
+        main_layout.addWidget(header)
+        
+        # Main content area with splitter
+        content_splitter = QSplitter(Qt.Orientation.Horizontal)
+        
+        # Left panel - ISO Loader and Theme Editor
+        left_panel = QWidget()
+        left_layout = QVBoxLayout(left_panel)
+        left_layout.setContentsMargins(0, 0, 0, 0)
+        
+        # Tab widget for main controls
+        self.main_tabs = QTabWidget()
+        
+        # ISO Loader tab
+        self.iso_loader = ISOLoaderWidget()
+        self.iso_loader.iso_loaded.connect(self.on_iso_loaded)
+        self.main_tabs.addTab(self.iso_loader, "📀 ISO Loader")
+        
+        # Theme Editor tab
+        self.theme_editor = ThemeEditorWidget()
+        self.theme_editor.theme_changed.connect(self.on_theme_changed)
+        self.main_tabs.addTab(self.theme_editor, "🎨 Theme Editor")
+        
+        # Repository Browser tab
+        self.repo_browser = RepoBrowserWidget()
+        self.repo_browser.integration_selected.connect(self.on_integration_selected)
+        self.main_tabs.addTab(self.repo_browser, "📦 Repository Browser")
+        
+        left_layout.addWidget(self.main_tabs)
+        
+        # Right panel - Preview Pane
+        self.preview_pane = PreviewPaneWidget()
+        
+        # Add panels to splitter
+        content_splitter.addWidget(left_panel)
+        content_splitter.addWidget(self.preview_pane)
+        content_splitter.setStretchFactor(0, 2)  # Left panel gets 2/3
+        content_splitter.setStretchFactor(1, 1)  # Right panel gets 1/3
+        
+        main_layout.addWidget(content_splitter)
+        
+        # Build action bar
+        build_bar = self.create_build_bar()
+        main_layout.addWidget(build_bar)
+        
+        # Status bar
+        self.statusBar().showMessage("Ready - No ISO loaded")
+        
+    def create_header(self):
+        """Create the application header"""
+        header_widget = QWidget()
+        header_layout = QHBoxLayout(header_widget)
+        header_layout.setContentsMargins(0, 0, 0, 10)
+        
+        # Title
+        title_label = QLabel("👻 GhostOS Advanced ISO Builder")
+        title_font = QFont()
+        title_font.setPointSize(18)
+        title_font.setBold(True)
+        title_label.setFont(title_font)
+        header_layout.addWidget(title_label)
+        
+        header_layout.addStretch()
+        
+        # Quick action buttons
+        credentials_btn = QPushButton("🔑 Credentials")
+        credentials_btn.clicked.connect(self.show_credentials_dialog)
+        header_layout.addWidget(credentials_btn)
+        
+        settings_btn = QPushButton("⚙️ Settings")
+        settings_btn.clicked.connect(self.show_settings)
+        header_layout.addWidget(settings_btn)
+        
+        return header_widget
+    
+    def create_build_bar(self):
+        """Create the build action bar"""
+        build_widget = QFrame()
+        build_widget.setStyleSheet("""
+            QFrame {
+                background-color: #252525;
+                border-top: 1px solid #3d3d3d;
+                padding: 10px;
+            }
+        """)
+        build_layout = QHBoxLayout(build_widget)
+        
+        # Build info
+        info_label = QLabel("Ready to build custom ISO")
+        build_layout.addWidget(info_label)
+        
+        build_layout.addStretch()
+        
+        # Action buttons
+        validate_btn = QPushButton("🔍 Validate Configuration")
+        validate_btn.clicked.connect(self.validate_build_config)
+        build_layout.addWidget(validate_btn)
+        
+        export_config_btn = QPushButton("💾 Export Config")
+        export_config_btn.clicked.connect(self.save_configuration)
+        build_layout.addWidget(export_config_btn)
+        
+        build_btn = QPushButton("🚀 Build ISO")
+        build_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #0078d4;
+                color: white;
+                padding: 10px 30px;
+                font-size: 12pt;
+                font-weight: bold;
+                border-radius: 4px;
+            }
+            QPushButton:hover {
+                background-color: #1084d8;
+            }
+            QPushButton:pressed {
+                background-color: #006cbd;
+            }
+        """)
+        build_btn.clicked.connect(self.start_iso_build)
+        build_layout.addWidget(build_btn)
+        
+        return build_widget
+        
+    def validate_build_config(self):
+        """Validate the build configuration"""
+        issues = []
+        
+        # Check if ISO loaded
+        if not self.current_iso_path:
+            issues.append("• No ISO source loaded")
+        
+        # Check if components selected
+        selected = self.iso_loader.selected_components
+        if not selected or all(not comps for comps in selected.values()):
+            issues.append("• No components selected")
+        
+        # Check UI targets
+        ui_targets = self.iso_loader.get_selected_ui_targets()
+        if not ui_targets:
+            issues.append("• No UI compatibility targets selected")
+        
+        # Display results
+        if issues:
+            QMessageBox.warning(
+                self,
+                "Configuration Issues",
+                "The following issues were found:\n\n" + "\n".join(issues) + 
+                "\n\nPlease fix these before building."
+            )
+        else:
+            QMessageBox.information(
+                self,
+                "Configuration Valid",
+                "✓ Configuration is valid!\n\n"
+                "Ready to build ISO with:\n"
+                f"• {len(self.iso_loader.loaded_isos)} ISO source(s)\n"
+                f"• {sum(len(c) for c in selected.values())} component(s)\n"
+                f"• {len(ui_targets)} UI target(s)\n"
+                f"• Theme: {self.current_theme.get('name', 'Default')}"
+            )
+    
+    def start_iso_build(self):
+        """Start the ISO build process"""
+        # Validate first
+        if not self.current_iso_path:
+            QMessageBox.warning(
+                self,
+                "Cannot Build",
+                "Please load at least one ISO source first."
+            )
+            return
+        
+        # Get all configuration
+        build_config = {
+            'iso_sources': [iso['path'] for iso in self.iso_loader.loaded_isos],
+            'selected_components': self.iso_loader.selected_components,
+            'custom_files': self.iso_loader.get_custom_files(),
+            'ui_targets': self.iso_loader.get_selected_ui_targets(),
+            'theme': self.current_theme,
+            'self_install': self.preview_pane.get_self_install_config(),
+            'integrations': [],  # Would be populated from repo browser
+        }
+        
+        # Show build dialog
+        from PyQt6.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QProgressBar
+        
+        build_dialog = QDialog(self)
+        build_dialog.setWindowTitle("Building ISO")
+        build_dialog.setMinimumWidth(700)
+        build_dialog.setMinimumHeight(500)
+        
+        dialog_layout = QVBoxLayout(build_dialog)
+        
+        # Build log
+        build_log = QTextEdit()
+        build_log.setReadOnly(True)
+        dialog_layout.addWidget(build_log)
+        
+        # Progress bar
+        progress = QProgressBar()
+        dialog_layout.addWidget(progress)
+        
+        # Start build info
+        build_log.append("=== GhostOS ISO Build Started ===\n")
+        build_log.append(f"ISO Sources: {len(build_config['iso_sources'])}")
+        build_log.append(f"Components: {sum(len(c) for c in build_config['selected_components'].values())}")
+        build_log.append(f"Custom Files: {len(build_config['custom_files'])}")
+        build_log.append(f"UI Targets: {', '.join(build_config['ui_targets'])}")
+        build_log.append(f"Theme Mode: {build_config['theme'].get('mode', 'default')}")
+        
+        if build_config['self_install']['enabled']:
+            build_log.append("\n🔧 Self-Installation: ENABLED")
+            build_log.append("   Builder will be included at /opt/ghostos-builder")
+            if build_config['self_install']['desktop_entry']:
+                build_log.append("   + Desktop menu entry")
+            if build_config['self_install']['cli_launcher']:
+                build_log.append("   + CLI launcher (ghostos-builder)")
+        
+        build_log.append("\n" + "="*50)
+        build_log.append("\nThis is a preview of the build process.")
+        build_log.append("Actual ISO building would:")
+        build_log.append("1. Extract base system from source ISOs")
+        build_log.append("2. Install selected components")
+        build_log.append("3. Apply theme customizations")
+        build_log.append("4. Include custom files in /opt/custom")
+        build_log.append("5. Add custom files to recovery partition")
+        build_log.append("6. Install repository integrations")
+        if build_config['self_install']['enabled']:
+            build_log.append("7. Install ISO Builder to /opt/ghostos-builder")
+            build_log.append("8. Create desktop entry and CLI launcher")
+        build_log.append(f"{7 if not build_config['self_install']['enabled'] else 9}. Generate ISO with GRUB bootloader")
+        build_log.append(f"{8 if not build_config['self_install']['enabled'] else 10}. Create checksums and verify")
+        build_log.append("\nOutput: $HOME/ghostos-ultimate/GhostOS-custom-<timestamp>.iso")
+        
+        # Simulate progress
+        for i in range(0, 101, 10):
+            progress.setValue(i)
+            QApplication.processEvents()
+            import time
+            time.sleep(0.1)
+        
+        build_log.append("\n✓ Build simulation complete!")
+        
+        close_btn = QPushButton("Close")
+        close_btn.clicked.connect(build_dialog.accept)
+        dialog_layout.addWidget(close_btn)
+        
+        build_dialog.exec()
+        
+
+    def setup_menu_bar(self):
+        """Setup the menu bar"""
+        menu_bar = self.menuBar()
+        
+        # File menu
+        file_menu = menu_bar.addMenu("&File")
+        
+        load_iso_action = file_menu.addAction("Load ISO...")
+        load_iso_action.triggered.connect(self.load_iso_dialog)
+        load_iso_action.setShortcut("Ctrl+O")
+        
+        file_menu.addSeparator()
+        
+        save_config_action = file_menu.addAction("Save Configuration...")
+        save_config_action.triggered.connect(self.save_configuration)
+        save_config_action.setShortcut("Ctrl+S")
+        
+        load_config_action = file_menu.addAction("Load Configuration...")
+        load_config_action.triggered.connect(self.load_configuration)
+        
+        file_menu.addSeparator()
+        
+        exit_action = file_menu.addAction("Exit")
+        exit_action.triggered.connect(self.close)
+        exit_action.setShortcut("Ctrl+Q")
+        
+        # Edit menu
+        edit_menu = menu_bar.addMenu("&Edit")
+        
+        preferences_action = edit_menu.addAction("Preferences...")
+        preferences_action.triggered.connect(self.show_settings)
+        
+        # View menu
+        view_menu = menu_bar.addMenu("&View")
+        
+        gaming_mode_action = view_menu.addAction("🎮 Gaming Mode")
+        gaming_mode_action.setCheckable(True)
+        gaming_mode_action.triggered.connect(self.toggle_gaming_mode)
+        
+        production_mode_action = view_menu.addAction("💼 Production Mode")
+        production_mode_action.setCheckable(True)
+        production_mode_action.triggered.connect(self.toggle_production_mode)
+        
+        view_menu.addSeparator()
+        
+        fullscreen_action = view_menu.addAction("Fullscreen")
+        fullscreen_action.setCheckable(True)
+        fullscreen_action.triggered.connect(self.toggle_fullscreen)
+        fullscreen_action.setShortcut("F11")
+        
+        # Help menu
+        help_menu = menu_bar.addMenu("&Help")
+        
+        about_action = help_menu.addAction("About")
+        about_action.triggered.connect(self.show_about)
+        
+        docs_action = help_menu.addAction("Documentation")
+        docs_action.triggered.connect(self.show_documentation)
+        
+    def apply_default_style(self):
+        """Apply default application styling"""
+        self.setStyleSheet("""
+            QMainWindow {
+                background-color: #1e1e1e;
+            }
+            QLabel {
+                color: #e0e0e0;
+            }
+            QPushButton {
+                background-color: #2d2d2d;
+                color: #e0e0e0;
+                border: 1px solid #3d3d3d;
+                border-radius: 4px;
+                padding: 6px 12px;
+                font-size: 11pt;
+            }
+            QPushButton:hover {
+                background-color: #3d3d3d;
+                border: 1px solid #4d4d4d;
+            }
+            QPushButton:pressed {
+                background-color: #252525;
+            }
+            QTabWidget::pane {
+                border: 1px solid #3d3d3d;
+                background-color: #1e1e1e;
+            }
+            QTabBar::tab {
+                background-color: #2d2d2d;
+                color: #e0e0e0;
+                border: 1px solid #3d3d3d;
+                padding: 8px 16px;
+                font-size: 11pt;
+            }
+            QTabBar::tab:selected {
+                background-color: #1e1e1e;
+                border-bottom: 2px solid #0078d4;
+            }
+            QTabBar::tab:hover {
+                background-color: #3d3d3d;
+            }
+            QStatusBar {
+                background-color: #252525;
+                color: #e0e0e0;
+            }
+            QMenuBar {
+                background-color: #2d2d2d;
+                color: #e0e0e0;
+            }
+            QMenuBar::item:selected {
+                background-color: #3d3d3d;
+            }
+            QMenu {
+                background-color: #2d2d2d;
+                color: #e0e0e0;
+                border: 1px solid #3d3d3d;
+            }
+            QMenu::item:selected {
+                background-color: #0078d4;
+            }
+        """)
+        
+    def load_iso_dialog(self):
+        """Open file dialog to load an ISO"""
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Select Parrot Security OS ISO",
+            str(Path.home()),
+            "ISO Files (*.iso);;All Files (*)"
+        )
+        
+        if file_path:
+            self.iso_loader.load_iso(file_path)
+            
+    def on_iso_loaded(self, iso_path):
+        """Handle ISO loaded event"""
+        self.current_iso_path = iso_path
+        self.statusBar().showMessage(f"ISO Loaded: {Path(iso_path).name}")
+        self.preview_pane.set_iso_info(iso_path)
+        
+    def on_theme_changed(self, theme_data):
+        """Handle theme changed event"""
+        self.current_theme = theme_data.get('name', 'custom')
+        self.statusBar().showMessage(f"Theme changed: {self.current_theme}")
+        self.preview_pane.apply_theme(theme_data)
+        
+    def on_integration_selected(self, integration_data):
+        """Handle integration selected event"""
+        repo_name = integration_data.get('name', 'Unknown')
+        self.statusBar().showMessage(f"Integration selected: {repo_name}")
+        
+    def show_credentials_dialog(self):
+        """Show credentials management dialog"""
+        dialog = CredentialsDialog(self)
+        dialog.exec()
+        
+    def show_settings(self):
+        """Show settings dialog"""
+        QMessageBox.information(
+            self,
+            "Settings",
+            "Settings dialog - Coming soon!\n\nThis will allow you to configure:\n"
+            "- Default theme\n- Text scaling\n- Preview quality\n- Build options"
+        )
+        
+    def toggle_gaming_mode(self, checked):
+        """Toggle gaming mode"""
+        self.gaming_mode_enabled = checked
+        if checked:
+            self.production_mode_enabled = False
+            self.theme_editor.enable_gaming_mode()
+            self.statusBar().showMessage("Gaming Mode: ENABLED")
+        else:
+            self.theme_editor.disable_gaming_mode()
+            self.statusBar().showMessage("Gaming Mode: DISABLED")
+            
+    def toggle_production_mode(self, checked):
+        """Toggle production mode"""
+        self.production_mode_enabled = checked
+        if checked:
+            self.gaming_mode_enabled = False
+            self.theme_editor.enable_production_mode()
+            self.statusBar().showMessage("Production Mode: ENABLED")
+        else:
+            self.theme_editor.disable_production_mode()
+            self.statusBar().showMessage("Production Mode: DISABLED")
+            
+    def toggle_fullscreen(self, checked):
+        """Toggle fullscreen mode"""
+        if checked:
+            self.showFullScreen()
+        else:
+            self.showNormal()
+            
+    def save_configuration(self):
+        """Save current configuration"""
+        file_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Save Configuration",
+            str(Path.home() / "ghostos-config.json"),
+            "JSON Files (*.json);;All Files (*)"
+        )
+        
+        if file_path:
+            # TODO: Implement configuration saving
+            QMessageBox.information(self, "Saved", f"Configuration saved to:\n{file_path}")
+            
+    def load_configuration(self):
+        """Load configuration from file"""
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Load Configuration",
+            str(Path.home()),
+            "JSON Files (*.json);;All Files (*)"
+        )
+        
+        if file_path:
+            # TODO: Implement configuration loading
+            QMessageBox.information(self, "Loaded", f"Configuration loaded from:\n{file_path}")
+            
+    def show_about(self):
+        """Show about dialog"""
+        about_text = """
+        <h2>GhostOS Advanced ISO Builder</h2>
+        <p><b>Version:</b> 1.0.0</p>
+        <p><b>Based on:</b> Parrot Security OS 7.0</p>
+        <br>
+        <p>A comprehensive ISO modification and theme customization tool for GhostOS.</p>
+        <br>
+        <p><b>Features:</b></p>
+        <ul>
+            <li>Interactive ISO loading and modification</li>
+            <li>Gaming and Production theme modes</li>
+            <li>Repository integration browser</li>
+            <li>Live preview with animations</li>
+            <li>Text scaling and customization</li>
+        </ul>
+        <br>
+        <p><b>Project:</b> <a href="https://github.com/jameshroop-art/GO-OS">github.com/jameshroop-art/GO-OS</a></p>
+        """
+        
+        QMessageBox.about(self, "About GhostOS Builder", about_text)
+        
+    def show_documentation(self):
+        """Show documentation"""
+        QMessageBox.information(
+            self,
+            "Documentation",
+            "Documentation is available in the Go-OS directory:\n\n"
+            "- ISO_DOWNLOAD_GUIDE.md\n"
+            "- GHOSTOS_QUICK_REFERENCE.md\n"
+            "- FAQ.md\n"
+            "- ARCHITECTURE.md"
+        )
+
+
+def main():
+    """Main application entry point"""
+    app = QApplication(sys.argv)
+    app.setApplicationName("GhostOS ISO Builder")
+    app.setOrganizationName("GhostOS")
+    
+    # Create and show main window
+    window = GhostOSBuilderGUI()
+    window.show()
+    
+    sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    main()

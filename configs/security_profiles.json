@@ -1,0 +1,123 @@
+{
+  "security_profiles": {
+    "strict": {
+      "name": "Strict Security",
+      "description": "Maximum security - All restrictions active",
+      "firewall": {
+        "enabled": true,
+        "default_policy": "deny",
+        "allowed_ports": []
+      },
+      "apparmor": {
+        "enabled": true,
+        "mode": "enforce"
+      },
+      "selinux": {
+        "enabled": false,
+        "mode": "enforcing"
+      },
+      "network": {
+        "allow_internet": false,
+        "allow_lan": false,
+        "allow_localhost": true
+      },
+      "filesystem": {
+        "read_only_system": true,
+        "allowed_write_paths": ["/tmp", "/home/user"]
+      }
+    },
+    "balanced": {
+      "name": "Balanced Security",
+      "description": "Recommended for most users",
+      "firewall": {
+        "enabled": true,
+        "default_policy": "deny",
+        "allowed_ports": [80, 443, 22]
+      },
+      "apparmor": {
+        "enabled": true,
+        "mode": "enforce"
+      },
+      "selinux": {
+        "enabled": false,
+        "mode": "permissive"
+      },
+      "network": {
+        "allow_internet": true,
+        "allow_lan": true,
+        "allow_localhost": true
+      },
+      "filesystem": {
+        "read_only_system": false,
+        "allowed_write_paths": ["/tmp", "/home/user", "/opt"]
+      }
+    },
+    "gaming": {
+      "name": "Gaming Mode",
+      "description": "Optimized for gaming with relaxed network restrictions",
+      "firewall": {
+        "enabled": true,
+        "default_policy": "allow",
+        "allowed_ports": "all"
+      },
+      "apparmor": {
+        "enabled": false,
+        "mode": "complain"
+      },
+      "selinux": {
+        "enabled": false,
+        "mode": "disabled"
+      },
+      "network": {
+        "allow_internet": true,
+        "allow_lan": true,
+        "allow_localhost": true,
+        "gaming_ports": {
+          "steam": [27000, 27015, 27030, 27036],
+          "minecraft": [25565],
+          "valorant": [5000, 5100],
+          "discord": [50000, 50010]
+        }
+      },
+      "filesystem": {
+        "read_only_system": false,
+        "allowed_write_paths": "all"
+      }
+    },
+    "productivity": {
+      "name": "Productivity Mode",
+      "description": "Balanced for work applications",
+      "firewall": {
+        "enabled": true,
+        "default_policy": "deny",
+        "allowed_ports": [80, 443, 22, 3389, 5900, 1194]
+      },
+      "apparmor": {
+        "enabled": true,
+        "mode": "enforce"
+      },
+      "selinux": {
+        "enabled": false,
+        "mode": "permissive"
+      },
+      "network": {
+        "allow_internet": true,
+        "allow_lan": true,
+        "allow_localhost": true,
+        "work_services": ["http", "https", "ssh", "rdp", "vnc", "vpn"]
+      },
+      "filesystem": {
+        "read_only_system": false,
+        "allowed_write_paths": ["/tmp", "/home/user", "/opt", "/var/www"]
+      }
+    }
+  },
+  "wine_security": {
+    "sandbox_enabled": true,
+    "prefix_isolation": true,
+    "default_network_policy": "lan_only",
+    "default_fs_policy": "prefix_only",
+    "mandatory_apparmor": false,
+    "recommended_profiles": ["balanced", "gaming"]
+  }
+}
