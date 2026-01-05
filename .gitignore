@@ -15,6 +15,18 @@ ghostos-ultimate/
 *.log
 build-*.log
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
 # macOS
 .DS_Store
 
