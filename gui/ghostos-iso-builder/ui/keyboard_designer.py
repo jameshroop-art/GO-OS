@@ -175,6 +175,16 @@ class KeyDesigner(QFrame):
     def get_key_data(self) -> dict:
         """Get current key data"""
         return self.key_data
+        
+    def refresh_properties(self, key_data: dict):
+        """Refresh property fields without recreating UI"""
+        self.key_data = key_data
+        self.label_input.setText(key_data.get('label', ''))
+        self.value_input.setText(key_data.get('value', ''))
+        self.width_input.setValue(int(key_data.get('width', 1.0)))
+        self.font_input.setValue(key_data.get('font_size', 11))
+        self.update_color_button(self.bg_color_btn, key_data.get('bg_color', '#2d2d2d'))
+        self.update_color_button(self.fg_color_btn, key_data.get('fg_color', '#e0e0e0'))
 
 
 class KeyboardLayoutDesigner(QDialog):
@@ -433,7 +443,17 @@ class KeyboardLayoutDesigner(QDialog):
                 key_data = row[key_idx]
                 # Update key designer with selected key data
                 self.key_designer.key_data = key_data
-                self.key_designer.setup_ui()
+                self.key_designer.refresh_properties(key_data)
+                
+    def refresh_properties(self, key_data: dict):
+        """Refresh property fields without recreating UI"""
+        self.key_data = key_data
+        self.label_input.setText(key_data.get('label', ''))
+        self.value_input.setText(key_data.get('value', ''))
+        self.width_input.setValue(int(key_data.get('width', 1.0)))
+        self.font_input.setValue(key_data.get('font_size', 11))
+        self.update_color_button(self.bg_color_btn, key_data.get('bg_color', '#2d2d2d'))
+        self.update_color_button(self.fg_color_btn, key_data.get('fg_color', '#e0e0e0'))
                 
     def on_key_properties_changed(self, key_data: dict):
         """Handle key property changes"""

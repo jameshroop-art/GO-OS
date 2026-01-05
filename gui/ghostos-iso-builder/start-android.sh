@@ -1,6 +1,16 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 # GhostOS Touchscreen Keyboard - Android Launcher
 # Optimized for Termux on Android
+# Fallback for different Termux installations
+
+# Try to detect bash location
+if [ -f "/data/data/com.termux/files/usr/bin/bash" ]; then
+    # Standard Termux location
+    BASH_PATH="/data/data/com.termux/files/usr/bin/bash"
+elif command -v bash &> /dev/null; then
+    # Use system bash
+    BASH_PATH=$(command -v bash)
+fi
 
 set -e
 
@@ -82,7 +92,7 @@ if [ -z "$DISPLAY" ]; then
     echo "  2. Start Termux:X11 app"
     echo "  3. export DISPLAY=:0"
     echo ""
-    read -p "Continue anyway? (y/n) " -n 1 -r
+    read -p "Continue anyway? (y/n) " -n 1 -r 2>/dev/null || REPLY="n"
     echo
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         exit 1
