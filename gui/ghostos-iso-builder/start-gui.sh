@@ -87,8 +87,10 @@ if [ -d "$INTEGRATIONS_DIR" ]; then
     
     # Count available integrations
     if [ -f "$INTEGRATIONS_DIR/repos.json" ]; then
-        REPO_COUNT=$(grep -o '"name":' "$INTEGRATIONS_DIR/repos.json" | wc -l)
-        echo -e "${GREEN}✓${NC} $REPO_COUNT integrations available"
+        REPO_COUNT=$(grep -o '"name":' "$INTEGRATIONS_DIR/repos.json" 2>/dev/null | wc -l) || REPO_COUNT=0
+        if [ "$REPO_COUNT" -gt 0 ]; then
+            echo -e "${GREEN}✓${NC} $REPO_COUNT integrations available"
+        fi
     fi
 else
     echo -e "${YELLOW}⚠${NC}  Integrations directory not found (optional)"

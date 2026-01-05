@@ -403,6 +403,12 @@ class KeyboardLayoutDesigner(QDialog):
             
         self.canvas_layout.addStretch()
         
+    def update_single_key(self, row_idx: int, key_idx: int, key_data: dict):
+        """Update a single key without recreating entire canvas"""
+        # For now, just re-render the canvas
+        # TODO: Implement efficient single-key update
+        self.render_canvas()
+        
     def add_row(self):
         """Add new row to layout"""
         new_row = [
@@ -434,7 +440,8 @@ class KeyboardLayoutDesigner(QDialog):
         if self.selected_key:
             row_idx, key_idx = self.selected_key
             self.current_layout['rows'][row_idx][key_idx] = key_data
-            self.render_canvas()
+            # Update just the affected key button instead of recreating entire canvas
+            self.update_single_key(row_idx, key_idx, key_data)
             
     def load_preset(self, preset_name: str):
         """Load preset layout"""

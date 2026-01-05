@@ -16,7 +16,7 @@ try:
     from PyQt6.QtCore import Qt, QPoint, QRect, QSize, pyqtSignal, QTimer
     from PyQt6.QtGui import QFont, QCursor, QPalette, QColor, QPainter, QMouseEvent
 except ImportError:
-    print("Error: PyQt6 not found")
+    print("Error: PyQt6 not found. Install with: pip3 install PyQt6")
     raise
 
 
@@ -257,9 +257,11 @@ class TouchscreenKeyboard(QWidget):
         row5.setSpacing(2)
         
         ctrl = KeyboardKey("Ctrl", "", 1.5)
+        ctrl.setEnabled(False)  # Disabled - modifier key support coming soon
         row5.addWidget(ctrl)
         
         alt = KeyboardKey("Alt", "", 1.5)
+        alt.setEnabled(False)  # Disabled - modifier key support coming soon
         row5.addWidget(alt)
         
         space = KeyboardKey("Space", " ", 7.0)
@@ -267,9 +269,11 @@ class TouchscreenKeyboard(QWidget):
         row5.addWidget(space)
         
         alt_r = KeyboardKey("Alt", "", 1.5)
+        alt_r.setEnabled(False)  # Disabled - modifier key support coming soon
         row5.addWidget(alt_r)
         
         ctrl_r = KeyboardKey("Ctrl", "", 1.5)
+        ctrl_r.setEnabled(False)  # Disabled - modifier key support coming soon
         row5.addWidget(ctrl_r)
         
         self.keyboard_layout.addLayout(row5)
@@ -363,6 +367,8 @@ class TouchscreenKeyboard(QWidget):
         
         # Clear
         clear = KeyboardKey("C", "", 1.5)
+        clear.clicked.connect(lambda: self.on_key_click("\x08" * 10))  # Send 10 backspaces
+        clear.setToolTip("Clear (10 backspaces)")
         grid.addWidget(clear, 1, 4)
         
         self.keyboard_layout.addLayout(grid)
@@ -482,13 +488,54 @@ class TouchscreenKeyboard(QWidget):
                 
     def save_layout(self):
         """Save current keyboard layout"""
-        # Placeholder for layout saving
-        print("Layout saving not yet implemented")
+        from PyQt6.QtWidgets import QFileDialog, QMessageBox
+        from pathlib import Path
+        import json
+        
+        config_dir = Path.home() / ".config" / "ghostos-builder" / "keyboard_layouts"
+        config_dir.mkdir(parents=True, exist_ok=True)
+        
+        file_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Save Keyboard Layout",
+            str(config_dir / "custom_layout.json"),
+            "JSON Files (*.json)"
+        )
+        
+        if file_path:
+            layout_data = {
+                'name': self.current_layout,
+                'version': '1.0',
+                'layout_type': self.current_layout
+            }
+            with open(file_path, 'w') as f:
+                json.dump(layout_data, f, indent=2)
+            QMessageBox.information(self, "Saved", f"Layout saved to:\n{file_path}")
         
     def load_layout(self):
         """Load keyboard layout"""
-        # Placeholder for layout loading
-        print("Layout loading not yet implemented")
+        from PyQt6.QtWidgets import QFileDialog, QMessageBox
+        from pathlib import Path
+        import json
+        
+        config_dir = Path.home() / ".config" / "ghostos-builder" / "keyboard_layouts"
+        
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Load Keyboard Layout",
+            str(config_dir),
+            "JSON Files (*.json)"
+        )
+        
+        if file_path:
+            try:
+                with open(file_path, 'r') as f:
+                    layout_data = json.load(f)
+                layout_type = layout_data.get('layout_type', 'qwerty')
+                self.change_layout(layout_type)
+                QMessageBox.information(self, "Loaded", f"Layout loaded from:\n{file_path}")
+            except Exception as e:
+                QMessageBox.warning(self, "Error", f"Failed to load layout:\n{e}")
         
     def customize_theme(self):
         """Open theme customization"""
