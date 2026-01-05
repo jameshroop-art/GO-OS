@@ -24,12 +24,21 @@ if ! command -v bc &> /dev/null; then
     echo -e "${YELLOW}Warning: 'bc' not found. Installing...${NC}"
     if command -v apt-get &> /dev/null; then
         sudo apt-get install -y bc
+    elif command -v dnf &> /dev/null; then
+        sudo dnf install -y bc
     elif command -v yum &> /dev/null; then
         sudo yum install -y bc
+    elif command -v pacman &> /dev/null; then
+        sudo pacman -S --noconfirm bc
+    elif command -v zypper &> /dev/null; then
+        sudo zypper install -y bc
     else
         echo -e "${RED}Error: Cannot install bc. Please install it manually.${NC}"
         echo "  Debian/Ubuntu: sudo apt-get install bc"
+        echo "  Fedora: sudo dnf install bc"
         echo "  RHEL/CentOS: sudo yum install bc"
+        echo "  Arch: sudo pacman -S bc"
+        echo "  openSUSE: sudo zypper install bc"
         exit 1
     fi
 fi
@@ -55,7 +64,21 @@ echo ""
 
 # Check 1: File Size
 echo "[1/3] Checking file size..."
-ISO_SIZE=$(stat -c%s "$ISO_PATH" 2>/dev/null || stat -f%z "$ISO_PATH" 2>/dev/null)
+
+# Try GNU stat first (Linux), then BSD stat (macOS), with error handling
+if ISO_SIZE=$(stat -c%s "$ISO_PATH" 2>/dev/null); then
+    # GNU stat (Linux)
+    :
+elif ISO_SIZE=$(stat -f%z "$ISO_PATH" 2>/dev/null); then
+    # BSD stat (macOS)
+    :
+else
+    echo -e "${RED}✗ FAIL: Cannot determine file size${NC}"
+    echo "  Your system's stat command is not supported"
+    echo "  Please check the file manually with: ls -lh $ISO_PATH"
+    exit 1
+fi
+
 ISO_SIZE_GB=$(echo "scale=2; $ISO_SIZE / 1024 / 1024 / 1024" | bc)
 
 if [ "$ISO_SIZE" -lt "$EXPECTED_SIZE_MIN" ]; then
