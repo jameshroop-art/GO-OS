@@ -24,6 +24,8 @@ from ui.theme_editor import ThemeEditorWidget
 from ui.preview_pane import PreviewPaneWidget
 from ui.repo_browser import RepoBrowserWidget
 from ui.credentials_dialog import CredentialsDialog
+from ui.touchscreen_keyboard import TouchscreenKeyboard
+from ui.keyboard_designer import KeyboardLayoutDesigner
 
 
 class GhostOSBuilderGUI(QMainWindow):
@@ -39,6 +41,9 @@ class GhostOSBuilderGUI(QMainWindow):
         self.current_theme = "default"
         self.gaming_mode_enabled = False
         self.production_mode_enabled = False
+        
+        # Initialize touchscreen keyboard
+        self.touchscreen_keyboard = None
         
         # Setup UI
         self.setup_ui()
@@ -129,6 +134,12 @@ class GhostOSBuilderGUI(QMainWindow):
         settings_btn = QPushButton("⚙️ Settings")
         settings_btn.clicked.connect(self.show_settings)
         header_layout.addWidget(settings_btn)
+        
+        # Touchscreen keyboard toggle
+        keyboard_btn = QPushButton("⌨ Keyboard")
+        keyboard_btn.setToolTip("Show/Hide Touchscreen Keyboard")
+        keyboard_btn.clicked.connect(self.toggle_touchscreen_keyboard)
+        header_layout.addWidget(keyboard_btn)
         
         return header_widget
     
@@ -275,6 +286,9 @@ class GhostOSBuilderGUI(QMainWindow):
                 build_log.append("   + Desktop menu entry")
             if build_config['self_install']['cli_launcher']:
                 build_log.append("   + CLI launcher (ghostos-builder)")
+            build_log.append("   + Touchscreen keyboard (ghostos-keyboard)")
+            build_log.append("   + Keyboard calibration tools")
+            build_log.append("   + Custom layout designer")
         
         build_log.append("\n" + "="*50)
         build_log.append("\nThis is a preview of the build process.")
@@ -287,9 +301,14 @@ class GhostOSBuilderGUI(QMainWindow):
         build_log.append("6. Install repository integrations")
         if build_config['self_install']['enabled']:
             build_log.append("7. Install ISO Builder to /opt/ghostos-builder")
-            build_log.append("8. Create desktop entry and CLI launcher")
-        build_log.append(f"{7 if not build_config['self_install']['enabled'] else 9}. Generate ISO with GRUB bootloader")
-        build_log.append(f"{8 if not build_config['self_install']['enabled'] else 10}. Create checksums and verify")
+            build_log.append("8. Install touchscreen keyboard with calibration")
+            build_log.append("9. Create desktop entries and CLI launchers")
+            build_log.append("10. Include keyboard layout designer")
+            build_log.append("11. Generate ISO with GRUB bootloader")
+            build_log.append("12. Create checksums and verify")
+        else:
+            build_log.append("7. Generate ISO with GRUB bootloader")
+            build_log.append("8. Create checksums and verify")
         build_log.append("\nOutput: $HOME/ghostos-ultimate/GhostOS-custom-<timestamp>.iso")
         
         # Simulate progress
@@ -366,6 +385,43 @@ class GhostOSBuilderGUI(QMainWindow):
         
         docs_action = help_menu.addAction("Documentation")
         docs_action.triggered.connect(self.show_documentation)
+        
+    def toggle_touchscreen_keyboard(self):
+        """Toggle touchscreen keyboard visibility"""
+        if self.touchscreen_keyboard is None:
+            # Create keyboard on first use
+            self.touchscreen_keyboard = TouchscreenKeyboard()
+            self.touchscreen_keyboard.key_pressed.connect(self.on_keyboard_key_pressed)
+            self.touchscreen_keyboard.keyboard_hidden.connect(self.on_keyboard_hidden)
+            
+        if self.touchscreen_keyboard.isVisible():
+            self.touchscreen_keyboard.hide_keyboard()
+        else:
+            self.touchscreen_keyboard.show_keyboard()
+            
+    def on_keyboard_key_pressed(self, key: str):
+        """Handle keyboard key press"""
+        # Send key to focused widget
+        focused_widget = QApplication.focusWidget()
+        if focused_widget and hasattr(focused_widget, 'insert'):
+            # For text input widgets
+            if key == '\b':  # Backspace
+                focused_widget.backspace()
+            elif key == '\n':  # Enter
+                focused_widget.insert('\n')
+            else:
+                focused_widget.insert(key)
+        elif focused_widget and hasattr(focused_widget, 'setText'):
+            # For line edit widgets
+            current_text = focused_widget.text()
+            if key == '\b':  # Backspace
+                focused_widget.setText(current_text[:-1])
+            else:
+                focused_widget.setText(current_text + key)
+                
+    def on_keyboard_hidden(self):
+        """Handle keyboard hidden event"""
+        self.statusBar().showMessage("Touchscreen keyboard hidden")
         
     def apply_default_style(self):
         """Apply default application styling"""

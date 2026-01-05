@@ -95,6 +95,51 @@ EOF
 echo "[*] Updating desktop database..."
 update-desktop-database "$DESKTOP_DIR" 2>/dev/null || true
 
+# Create standalone keyboard launcher
+echo "[*] Creating standalone keyboard launcher..."
+cat > "$BIN_DIR/ghostos-keyboard" << 'KEYBOARD_EOF'
+#!/usr/bin/env python3
+"""Standalone Touchscreen Keyboard Launcher"""
+import sys
+sys.path.insert(0, '/opt/ghostos-builder')
+
+from PyQt6.QtWidgets import QApplication
+from ui.touchscreen_keyboard import TouchscreenKeyboard
+
+def main():
+    app = QApplication(sys.argv)
+    app.setApplicationName("GhostOS Touchscreen Keyboard")
+    
+    keyboard = TouchscreenKeyboard()
+    keyboard.show_keyboard()
+    
+    sys.exit(app.exec())
+
+if __name__ == "__main__":
+    main()
+KEYBOARD_EOF
+
+chmod +x "$BIN_DIR/ghostos-keyboard"
+
+# Create keyboard desktop entry
+echo "[*] Creating keyboard desktop entry..."
+cat > "$DESKTOP_DIR/ghostos-keyboard.desktop" << EOF
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=GhostOS Touchscreen Keyboard
+GenericName=Virtual Keyboard
+Comment=Touchscreen keyboard with calibration support
+Exec=ghostos-keyboard
+Icon=input-keyboard
+Terminal=false
+Categories=Utility;Accessibility;
+Keywords=keyboard;touchscreen;virtual;osk;
+StartupNotify=true
+EOF
+
+update-desktop-database "$DESKTOP_DIR" 2>/dev/null || true
+
 # Create uninstaller
 echo "[*] Creating uninstaller..."
 cat > "$INSTALL_DIR/uninstall.sh" << 'UNINSTALL_EOF'
@@ -110,7 +155,9 @@ echo "Removing GhostOS ISO Builder..."
 
 rm -rf /opt/ghostos-builder
 rm -f /usr/local/bin/ghostos-builder
+rm -f /usr/local/bin/ghostos-keyboard
 rm -f /usr/share/applications/ghostos-builder.desktop
+rm -f /usr/share/applications/ghostos-keyboard.desktop
 rm -f /usr/share/icons/hicolor/256x256/apps/ghostos-builder.svg
 
 update-desktop-database /usr/share/applications 2>/dev/null || true
@@ -128,11 +175,20 @@ echo ""
 echo "GhostOS ISO Builder has been installed to:"
 echo "  • Application: $INSTALL_DIR"
 echo "  • Launcher: $BIN_DIR/ghostos-builder"
+echo "  • Keyboard: $BIN_DIR/ghostos-keyboard"
 echo "  • Desktop Entry: $DESKTOP_DIR/ghostos-builder.desktop"
+echo "  • Keyboard Entry: $DESKTOP_DIR/ghostos-keyboard.desktop"
 echo ""
 echo "You can now:"
-echo "  • Run from terminal: ghostos-builder"
-echo "  • Launch from application menu: GhostOS ISO Builder"
+echo "  • Run GUI: ghostos-builder"
+echo "  • Run keyboard standalone: ghostos-keyboard"
+echo "  • Launch from application menu"
+echo ""
+echo "Features:"
+echo "  ✓ Multi-ISO builder with all integrations"
+echo "  ✓ Touchscreen keyboard with calibration"
+echo "  ✓ Custom keyboard layout designer"
+echo "  ✓ Theme customization (Gaming/Production)"
 echo ""
 echo "To uninstall: sudo $INSTALL_DIR/uninstall.sh"
 echo ""
