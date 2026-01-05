@@ -22,6 +22,43 @@ Full-featured **Parrot OS 7 Security**-based distribution with multiple versions
 
 **Documentation:** See [`GHOSTOS_BUILD_README.md`](Go-OS/GHOSTOS_BUILD_README.md) and [`GHOSTOS_QUICK_REFERENCE.md`](Go-OS/GHOSTOS_QUICK_REFERENCE.md)
 
+## 📥 Getting the Parrot Security OS ISO
+
+**⚠️ IMPORTANT:** GhostOS requires the Parrot Security OS 7.0 ISO (~8GB) as a base system.
+
+**Due to GitHub's 2GB file size limit, you must download the ISO separately.**
+
+### Quick Download
+
+```bash
+cd ~/GO-OS
+wget https://deb.parrot.sh/parrot/iso/7.0/Parrot-security-7.0_amd64.iso
+```
+
+### Verify Your Download
+
+```bash
+# Check file size (~8GB expected)
+ls -lh Parrot-security-7.0_amd64.iso
+
+# Verify it's a valid ISO
+file Parrot-security-7.0_amd64.iso
+
+# Verify checksum
+sha256sum Parrot-security-7.0_amd64.iso
+# Compare with official checksum from parrotsec.org
+```
+
+### Automated Verification
+
+```bash
+cd Go-OS
+./verify-iso.sh ../Parrot-security-7.0_amd64.iso
+```
+
+**📖 For detailed download instructions, troubleshooting, and verification:**  
+**👉 See [Go-OS/ISO_DOWNLOAD_GUIDE.md](Go-OS/ISO_DOWNLOAD_GUIDE.md)**
+
 ### 📱 Android 9+ (NEW!)
 Lightweight Linux environment for Android with non-root WiFi/Bluetooth management:
 - **Minimum**: Android 9.0 (API 28+)

@@ -1,0 +1,27 @@
+# Large ISO files - users must download separately
+*.iso
+*.img
+
+# Temporary build directories
+iso-remaster/
+squashfs-root/
+custom-iso/
+chroot/
+ghostos-ultimate/
+
+# Build artifacts
+*.tmp
+*.bak
+*.log
+build-*.log
+
+# macOS
+.DS_Store
+
+# Linux
+*~
+
+# Sensitive files
+*.pem
+*.key
+id_rsa*
