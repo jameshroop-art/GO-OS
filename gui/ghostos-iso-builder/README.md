@@ -64,6 +64,22 @@ A comprehensive PyQt6-based GUI for building customized GhostOS ISOs with multi-
 
 ## Installation
 
+### Run Components As Needed (NEW!)
+
+```bash
+cd gui/ghostos-iso-builder
+
+# Interactive launcher menu
+./launch-menu.sh
+
+# Or run specific components:
+./start-keyboard-only.sh      # Just keyboard
+./start-gui.sh                 # Full GUI
+python3 port_manager.py        # Port management
+```
+
+**See [LAUNCHER_GUIDE.md](LAUNCHER_GUIDE.md) for details on running components independently.**
+
 ### Desktop/Linux Quick Start
 
 ```bash

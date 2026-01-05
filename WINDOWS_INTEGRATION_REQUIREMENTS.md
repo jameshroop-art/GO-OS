@@ -41,6 +41,30 @@ This document outlines requirements for integrating a Windows 10 compatibility l
    - Game Pass whitelisted at network layer
    - All other Windows traffic blackholed
 
+### Port Management Requirements
+
+**CRITICAL**: Windows must use different ports than Parrot OS to avoid crashes.
+
+1. **Port Detection**:
+   - Scan all ports used by Parrot OS 7 Security
+   - Identify services: SSH, HTTP, VNC, X11, databases, etc.
+   - Document occupied ports
+
+2. **Port Allocation**:
+   - Allocate free ports for Windows services
+   - Default Windows ports shifted if occupied
+   - RDP: 3390 instead of 3389 (if 3389 used by Parrot)
+   - VNC: 5910+ instead of 5900+ (if occupied)
+   - SPICE: 5920+ instead of 5900+ (if occupied)
+
+3. **Port Manager Tool**:
+   - Automatic port scanning
+   - Intelligent port allocation
+   - Configuration file generation
+   - Conflict detection and resolution
+
+**Tool**: `port_manager.py` - Scans Parrot OS ports and allocates free ports for Windows
+
 ## Technical Approach
 
 ### Constraints (CRITICAL)
