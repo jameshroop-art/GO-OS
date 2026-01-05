@@ -51,7 +51,26 @@ A comprehensive PyQt6-based GUI for building customized GhostOS ISOs with multi-
 - Encrypted credential saving
 - CLI authentication alternatives
 
+### ⌨️ Touchscreen Keyboard (NEW!)
+- **Resizable & Snappable**: Drag and snap to screen edges
+- **Touch Calibration**: 5-point calibration wizard for accuracy
+- **Custom Layouts**: Visual designer for creating keyboard layouts
+- **Multiple Layouts**: QWERTY, numeric keypad, and custom designs
+- **Integration-Ready**: Works with all text input fields
+- **Persistent Settings**: Calibration saved per installation
+
 ## Installation
+
+### Quick Start
+
+```bash
+cd gui/ghostos-iso-builder
+
+# Easy launcher with dependency checks
+./start-gui.sh
+```
+
+### Manual Installation
 
 ```bash
 cd gui/ghostos-iso-builder
@@ -112,6 +131,23 @@ python main.py
 2. Search for specific tools
 3. Preview changes before installation
 4. One-click install
+
+### Using the Touchscreen Keyboard
+
+1. Click **⌨ Keyboard** button in toolbar
+2. Keyboard appears (snaps to bottom by default)
+3. **Calibrate** (first time):
+   - Click **🎯** button on keyboard
+   - Tap 5 calibration targets
+   - System calculates offset automatically
+4. **Customize**:
+   - Click **⚙** for settings
+   - Choose different layouts (QWERTY, Numpad)
+   - Open Layout Designer for custom keyboards
+5. **Position**: Drag title bar to move, snaps to edges
+6. Type in any input field with the keyboard
+
+**See [KEYBOARD_GUIDE.md](KEYBOARD_GUIDE.md) for comprehensive keyboard documentation.**
 
 ## Architecture
 
