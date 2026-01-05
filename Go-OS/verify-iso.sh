@@ -1,6 +1,6 @@
 #!/bin/bash
 # GhostOS ISO Verification Script
-# Verifies Parrot Security OS ISO integrity before building
+# Verifies Parrot Security OS ISO integrity before using
 
 set -e
 
@@ -18,6 +18,21 @@ echo "=========================================="
 echo "  GhostOS ISO Verification Tool"
 echo "=========================================="
 echo ""
+
+# Check dependencies
+if ! command -v bc &> /dev/null; then
+    echo -e "${YELLOW}Warning: 'bc' not found. Installing...${NC}"
+    if command -v apt-get &> /dev/null; then
+        sudo apt-get install -y bc
+    elif command -v yum &> /dev/null; then
+        sudo yum install -y bc
+    else
+        echo -e "${RED}Error: Cannot install bc. Please install it manually.${NC}"
+        echo "  Debian/Ubuntu: sudo apt-get install bc"
+        echo "  RHEL/CentOS: sudo yum install bc"
+        exit 1
+    fi
+fi
 
 # Check if ISO path provided
 if [ -z "$ISO_PATH" ]; then
@@ -75,14 +90,20 @@ fi
 # Check 3: SHA256 Checksum
 echo "[3/3] Calculating SHA256 checksum..."
 echo "  (This may take a minute for an 8GB file...)"
+echo ""
 
 ACTUAL_SHA256=$(sha256sum "$ISO_PATH" | awk '{print $1}')
 
-echo "  SHA256: $ACTUAL_SHA256"
+echo "  Calculated SHA256: $ACTUAL_SHA256"
 echo ""
-echo -e "${YELLOW}⚠ Please verify this checksum manually${NC}"
-echo "  Compare with official checksum at:"
+echo -e "${YELLOW}⚠ IMPORTANT: Manual checksum verification required${NC}"
+echo ""
+echo "  Visit the official Parrot download page to get the expected checksum:"
 echo "  https://www.parrotsec.org/download/"
+echo ""
+echo "  Compare the checksum above with the official one."
+echo "  If they match, your ISO is authentic and uncorrupted."
+echo "  If they DON'T match, DELETE the file and re-download from official sources."
 echo ""
 
 # Summary
