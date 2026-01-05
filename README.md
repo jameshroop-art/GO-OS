@@ -4,7 +4,7 @@ Complete operating system distribution available for multiple platforms with adv
 
 ## 🚀 Platforms
 
-### 🐧 Desktop/Server (Linux ISO)
+### 🐧 Desktop/Server (Linux ISO) THIS REPO DOES NOT CONTAIN THE ISO YOU CAN GET IT HERE: https://start.parrotsec.org
 Full-featured **Parrot OS 7 Security**-based distribution with multiple versions:
 - **v1.0 - Stable Release**: Complete base system with Parrot Security tools (~10GB)
 - **v1.1 - Enhanced Edition**: Privacy-focused with Malwarebytes-style security (~11GB)
