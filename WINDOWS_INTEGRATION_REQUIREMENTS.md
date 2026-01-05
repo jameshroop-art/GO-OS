@@ -41,94 +41,259 @@ This document outlines requirements for integrating a Windows 10 compatibility l
    - Game Pass whitelisted at network layer
    - All other Windows traffic blackholed
 
-## Technical Approach Options
+## Technical Approach
 
-### Option 1: Wine + Network Isolation
+### Constraints (CRITICAL)
+
+**User Requirements**:
+- ❌ **NO Wine/Proton** - Wine compatibility layer not allowed
+- ❌ **NO Virtual Machine** - No QEMU/KVM, VirtualBox, etc.
+- ✅ **Extract Windows 10 ISO** - Use latest Windows 10 build source
+- ✅ **Complete Network Isolation** - Zero internet except Game Pass
+- ✅ **Parrot OS 7 remains backend** - Base system unchanged
+
+### Problem: Windows Without Wine or VM
+
+**Challenge**: Running Windows applications without Wine or virtualization is technically very difficult on Linux.
+
+### Proposed Alternative Solutions
+
+#### Option 1: Dual-Boot with Network Control (RECOMMENDED)
 
 ```
-Parrot OS 7 (Host)
-├── Wine Prefix (Isolated)
-│   ├── Windows 10 Environment
-│   ├── iptables rules (block all by default)
-│   ├── Game Pass exception rules
-│   └── No other network access
+Physical System:
+├── GRUB Bootloader
+├── Parrot OS 7 (Default boot)
+│   ├── Full security features
+│   ├── Linux applications
+│   └── Controls Windows network access
+└── Windows 10 (Separate partition)
+    ├── Extracted from ISO
+    ├── Network controlled by Parrot
+    ├── Firewall rules from Parrot
+    └── Boot via GRUB menu
+```
+
+**How Network Isolation Works**:
+- Parrot OS controls the network hardware/firmware
+- Windows boots with network pre-configured
+- Network firewall rules set at hardware/BIOS level
+- Only Game Pass domains whitelisted at router/firewall level
+- Windows sees network but can only reach whitelisted IPs
+
+**Pros**:
+- ✅ True Windows 10 (not VM, not Wine)
+- ✅ Full performance (native hardware)
+- ✅ Can extract and pre-configure Windows ISO
+- ✅ Network can be controlled from Parrot
+- ✅ Complete isolation via dual-boot
+
+**Cons**:
+- ⚠️ Requires reboot to switch OS
+- ⚠️ More complex to enforce network rules
+- ⚠️ Windows could potentially override settings
+
+#### Option 2: Windows 10 on Bare Metal with Custom Bootloader
+
+```
+Custom Boot System:
+├── Custom bootloader (GRUB + scripts)
+├── Parrot OS 7 partition
+├── Windows 10 partition (extracted ISO)
+└── Network Filtering Service
+    ├── Runs before OS boot
+    ├── Configures hardware firewall
+    ├── Whitelists Game Pass only
+    └── Blocks everything else
 ```
 
 **Pros**:
-- Better performance (no VM overhead)
-- Native Linux kernel
-- Easier integration with host
+- ✅ No VM overhead
+- ✅ No Wine compatibility issues
+- ✅ Can control network at boot level
 
 **Cons**:
-- Limited Windows compatibility
-- Some apps may not work
-- Harder to enforce total isolation
+- ⚠️ Very complex to implement
+- ⚠️ Difficult to maintain isolation
+- ⚠️ Windows updates could break it
 
-### Option 2: QEMU/KVM VM + Network Filtering
+#### Option 3: Container-Based Windows (Limited)
+
+**Note**: This is technically challenging and has severe limitations.
+
+Using technologies like:
+- LXC/LXD containers (doesn't support Windows)
+- Docker with Windows Server Core (limited app support)
+
+**Limitations**:
+- ❌ Very limited Windows app compatibility
+- ❌ No GUI support
+- ❌ No gaming support
+- ❌ Most Windows apps won't work
+
+**This option is NOT recommended**.
+
+#### Option 4: ReactOS (Open Source Windows Alternative)
 
 ```
 Parrot OS 7 (Host)
-├── QEMU VM (Windows 10)
-│   ├── Isolated virtual network
-│   ├── NAT with firewall rules
-│   ├── Game Pass traffic allowed
-│   └── All other traffic blocked
+├── ReactOS (open-source Windows reimplementation)
+│   ├── Windows API compatibility
+│   ├── Can run some Windows apps
+│   ├── Network can be isolated
+│   └── No Microsoft telemetry (not real Windows)
 ```
 
 **Pros**:
-- Complete isolation
-- Full Windows compatibility
-- Easy to manage network rules
-- Can snapshot/restore
+- ✅ Open source, no licensing issues
+- ✅ Can be tightly integrated with Linux
+- ✅ Easy network isolation
 
 **Cons**:
-- Higher resource usage
-- Requires VT-x/AMD-V
-- Slightly lower performance
+- ❌ **NOT real Windows 10**
+- ❌ Limited app compatibility
+- ❌ Many modern apps won't work
+- ❌ Xbox Game Pass likely won't work
 
-### Option 3: Hybrid (Recommended)
+### RECOMMENDED SOLUTION: Dual-Boot with Network Firewall
 
-```
-Parrot OS 7 (Host)
-├── Wine (for lightweight apps)
-│   └── No network access
-├── VM (for complex apps/games)
-│   ├── Network isolation by default
-│   └── Game Pass whitelist only
+Given the constraints (no Wine, no VM), the most practical approach is:
+
+**Dual-Boot Setup**:
+1. Parrot OS 7 on main partition
+2. Windows 10 on separate partition (extracted from ISO)
+3. Shared data partition (for file transfer)
+4. Network firewall configured from Parrot OS
+5. GRUB boot menu to select OS
+
+**Network Isolation Strategy**:
+```bash
+# From Parrot OS, configure router/firewall rules
+# These rules persist even when Windows boots
+
+# Option A: Configure home router
+# - Set MAC-address-based firewall rules
+# - Windows MAC only allowed to Game Pass IPs
+
+# Option B: Use hardware firewall appliance
+# - Configure before Windows boots
+# - Whitelist Game Pass domains only
+
+# Option C: BIOS-level network control
+# - Some systems support network filtering in UEFI
+# - Configure allowed domains in BIOS
 ```
 
 ## Network Isolation Implementation
 
-### Firewall Rules (iptables/nftables)
+### VM Network Configuration (QEMU/KVM)
+
+**Virtual Network Setup**:
+```xml
+<!-- libvirt network definition -->
+<network>
+  <name>ghostos-windows-isolated</name>
+  <forward mode='nat'/>
+  <bridge name='virbr-win' stp='on' delay='0'/>
+  <ip address='192.168.100.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.100.2' end='192.168.100.254'/>
+    </dhcp>
+  </ip>
+</network>
+```
+
+### Host Firewall Rules (iptables/nftables)
 
 ```bash
-# Block all Windows VM traffic by default
-iptables -A OUTPUT -s <VM_IP> -j DROP
+#!/bin/bash
+# Network isolation for Windows 10 VM
+# Default: Block ALL traffic from Windows VM
 
-# Allow Game Pass specific domains
-iptables -A OUTPUT -s <VM_IP> -d xboxlive.com -j ACCEPT
-iptables -A OUTPUT -s <VM_IP> -d gamepass.com -j ACCEPT
-iptables -A OUTPUT -s <VM_IP> -d xbox.com -j ACCEPT
+VM_NETWORK="192.168.100.0/24"
+VM_IP="192.168.100.2"
+
+# Block all traffic by default
+iptables -A FORWARD -s $VM_NETWORK -j DROP
+
+# Allow Xbox Game Pass domains
+# These IPs/domains need to be resolved and whitelisted
+GAME_PASS_DOMAINS=(
+    "xboxlive.com"
+    "xbox.com"
+    "gamepass.com"
+    "xboxservices.com"
+    "msftncsi.com"  # Network connectivity check
+)
+
+# Convert domains to IPs and whitelist
+for domain in "${GAME_PASS_DOMAINS[@]}"; do
+    # Allow DNS resolution first
+    iptables -A FORWARD -s $VM_IP -p udp --dport 53 -d 8.8.8.8 -j ACCEPT
+    iptables -A FORWARD -s $VM_IP -p tcp --dport 53 -d 8.8.8.8 -j ACCEPT
+    
+    # Allow specific domain traffic
+    # Note: This requires DNS-based filtering or IP resolution
+done
 
 # Block Microsoft telemetry explicitly
-iptables -A OUTPUT -s <VM_IP> -d telemetry.microsoft.com -j DROP
-iptables -A OUTPUT -s <VM_IP> -d watson.microsoft.com -j DROP
+TELEMETRY_DOMAINS=(
+    "telemetry.microsoft.com"
+    "watson.microsoft.com"
+    "vortex.data.microsoft.com"
+    "settings-win.data.microsoft.com"
+)
+
+for domain in "${TELEMETRY_DOMAINS[@]}"; do
+    iptables -A FORWARD -s $VM_IP -d $(host $domain | awk '/has address/ {print $4}') -j DROP 2>/dev/null
+done
+
+# Log blocked attempts
+iptables -A FORWARD -s $VM_NETWORK -j LOG --log-prefix "WIN-BLOCKED: "
 ```
 
-### DNS Filtering
+### DNS Filtering (Critical for VM)
 
-```
-# Only resolve Game Pass domains
-# Block all other Microsoft domains
-# Use local DNS server with whitelist
+```bash
+# Install and configure dnsmasq for VM
+cat > /etc/dnsmasq.d/windows-vm.conf << EOF
+# Only allow Game Pass domains
+address=/xboxlive.com/
+address=/xbox.com/
+address=/gamepass.com/
+address=/xboxservices.com/
+
+# Block everything else by default
+address=/#/0.0.0.0
+
+# Block Microsoft telemetry
+address=/telemetry.microsoft.com/0.0.0.0
+address=/watson.microsoft.com/0.0.0.0
+address=/vortex.data.microsoft.com/0.0.0.0
+EOF
+
+# Use dnsmasq as DNS server for VM
+# Set in VM network config
 ```
 
-### Application-Level Filtering
+### VM-Level Firewall (Windows Firewall)
 
-```
-# Use firejail or similar to sandbox Wine
-# Restrict network access per application
-# Game Pass only gets network permission
+Inside the Windows 10 VM, also configure Windows Firewall:
+
+```powershell
+# Block all outbound by default
+New-NetFirewallRule -DisplayName "Block All Outbound" `
+    -Direction Outbound -Action Block
+
+# Allow only Xbox/Game Pass
+New-NetFirewallRule -DisplayName "Allow Xbox Game Pass" `
+    -Direction Outbound -Action Allow `
+    -RemoteAddress xboxlive.com,xbox.com,gamepass.com
+
+# Block Windows Update explicitly
+New-NetFirewallRule -DisplayName "Block Windows Update" `
+    -Direction Outbound -Action Block `
+    -RemoteAddress windowsupdate.microsoft.com,update.microsoft.com
 ```
 
 ## Integration with ISO Builder
@@ -136,34 +301,140 @@ iptables -A OUTPUT -s <VM_IP> -d watson.microsoft.com -j DROP
 ### GUI Integration Options
 
 1. **VM Configuration Tab**
-   - Configure Windows 10 VM
+   - Configure Windows 10 VM (QEMU/KVM)
    - Set resource limits (CPU, RAM, disk)
    - Configure network isolation rules
    - Add Game Pass whitelist
+   - GPU passthrough options
+   - USB device passthrough
 
-2. **Wine Configuration**
-   - Select Wine version
-   - Configure Wine prefix
-   - Set up DXVK/VKD3D for gaming
-   - Apply network restrictions
+2. **Windows 10 VM Settings**
+   - VM disk image location
+   - ISO installation source
+   - VirtIO driver installation
+   - Network adapter configuration
+   - Display settings (Spice/VNC)
 
 3. **Game Pass Setup**
-   - Install Xbox app
+   - Install Xbox app in VM
    - Configure authentication
    - Enable network access for Game Pass only
    - Test connectivity
+   - Download game testing
 
 ### ISO Build Process
 
-When building ISO with Windows integration:
+**Windows 10 ISO Extraction and Integration**:
 
-1. Include Wine/QEMU packages
-2. Pre-configure network isolation
-3. Install Xbox Game Pass app
-4. Set up firewall rules
-5. Create launchers for Windows apps
-6. Include GPU drivers for gaming
-7. Pre-install DXVK/VKD3D
+1. **Obtain Windows 10 ISO (Latest Build)**
+   ```bash
+   # User provides or script downloads Windows 10 ISO
+   # Latest build from Microsoft (e.g., 22H2)
+   WIN10_ISO="Win10_22H2_English_x64.iso"
+   ```
+
+2. **Extract Windows 10 ISO**
+   ```bash
+   # Mount Windows ISO
+   mkdir -p /tmp/win10-mount
+   mount -o loop $WIN10_ISO /tmp/win10-mount
+   
+   # Extract install.wim (main Windows image)
+   mkdir -p /tmp/win10-extracted
+   cp -r /tmp/win10-mount/* /tmp/win10-extracted/
+   
+   # Get install.wim
+   INSTALL_WIM="/tmp/win10-extracted/sources/install.wim"
+   ```
+
+3. **Create Optimized Windows VM Image**
+   ```bash
+   # Create QEMU disk image
+   qemu-img create -f qcow2 windows10.qcow2 80G
+   
+   # Install Windows from extracted ISO
+   virt-install \
+     --name ghostos-windows10 \
+     --memory 8192 \
+     --vcpus 4 \
+     --disk path=windows10.qcow2,format=qcow2 \
+     --cdrom $WIN10_ISO \
+     --os-variant win10 \
+     --network network=isolated,model=virtio \
+     --graphics spice \
+     --autostart
+   ```
+
+4. **Optimize Windows Installation**
+   ```bash
+   # Inside Windows VM (automated with scripts):
+   # - Disable telemetry
+   # - Disable unnecessary services
+   # - Install VirtIO drivers
+   # - Install Xbox Game Pass
+   # - Configure network to be blocked
+   # - Install required runtimes (DirectX, .NET, etc.)
+   # - Optimize for performance
+   # - Create snapshot of clean state
+   ```
+
+5. **Include in GhostOS ISO**
+   ```bash
+   # Compress Windows VM image
+   qemu-img convert -O qcow2 -c windows10.qcow2 windows10-compressed.qcow2
+   
+   # Include in GhostOS ISO build
+   mkdir -p iso-build/opt/ghostos/windows/
+   cp windows10-compressed.qcow2 iso-build/opt/ghostos/windows/
+   cp vm-launcher.sh iso-build/usr/local/bin/
+   
+   # Add to ISO
+   mkisofs -o GhostOS-with-Windows.iso iso-build/
+   ```
+
+6. **Pre-configure Network Isolation**
+   - Include firewall rules in ISO
+   - Configure dnsmasq for DNS filtering
+   - Create VM network definition
+   - Install monitoring scripts
+
+7. **Pre-install Required Packages**
+   ```bash
+   # Include in GhostOS ISO:
+   apt-get install qemu-system-x86 libvirt-daemon-system \
+                   libvirt-clients bridge-utils virtinst \
+                   dnsmasq iptables-persistent
+   
+   # Install VirtIO drivers ISO
+   wget https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso
+   ```
+
+8. **Create Launcher Scripts**
+   - Desktop shortcut for Windows VM
+   - Command-line launcher
+   - Network isolation enforcer
+   - Xbox Game Pass launcher
+
+9. **Include Documentation**
+   - How to start Windows VM
+   - Network isolation explanation
+   - Game Pass setup guide
+   - Troubleshooting tips
+
+10. **Final ISO Composition**
+    ```
+    GhostOS ISO:
+    ├── Parrot OS 7 base system
+    ├── /opt/ghostos/windows/
+    │   ├── windows10.qcow2 (pre-installed Windows)
+    │   ├── vm-config.xml (libvirt definition)
+    │   └── network-rules.sh (firewall config)
+    ├── /usr/local/bin/
+    │   ├── start-windows-vm
+    │   ├── stop-windows-vm
+    │   └── gamepass-launcher
+    └── Desktop entries for easy access
+    ```
 
 ## Configuration Files
 
@@ -220,49 +491,65 @@ network_isolation:
 ### Settings Panel: Windows Integration
 
 ```
-[Windows 10 Compatibility Layer]
+[Windows 10 Virtual Machine]
 
-○ Disabled
-● Enabled (Wine)
-○ Enabled (Virtual Machine)
+Status: ○ Not Installed  ● Installed  ○ Running
 
-[ ] Enable Windows Update
-[✓] Network Isolation (Recommended)
+VM Configuration:
+RAM: [8 GB] ━━━━━━●━━━━ (slider: 4-16 GB)
+CPU Cores: [4] ━━━●━━━━ (slider: 2-8 cores)
+Disk Space: [80 GB] (input)
+
+Display:
+○ VNC (Remote access)
+● Spice (Better performance)
+○ GPU Passthrough (Requires compatible GPU)
+
+Network Isolation:
+[✓] Enable network isolation (REQUIRED)
+[ ] Allow Windows Update (Not recommended)
 
 Game Pass Network Access:
 [✓] Allow Xbox Game Pass internet access
-[ ] Allow other Microsoft services
+    Whitelisted domains:
+    • xboxlive.com
+    • xbox.com  
+    • gamepass.com
+    
+[✓] Block all other Microsoft services
+[✓] Block Windows telemetry
 
-Resource Allocation:
-RAM: [8 GB] (slider)
-CPU Cores: [4] (slider)
-Disk Space: [60 GB] (input)
-
-[Configure Advanced] [Test Connection]
+[Create VM] [Start VM] [Configure Advanced]
 ```
 
 ### Launcher Integration
 
 ```
 Applications Menu:
-├── Parrot Applications (Linux)
-├── Windows Applications (Wine)
-│   ├── MS Office
-│   ├── Adobe Apps
-│   └── Windows Games (offline)
-└── Xbox Game Pass
-    ├── (Game Pass icon)
-    └── Opens with internet access
+├── Parrot Applications (Linux native)
+├── Windows 10 VM
+│   ├── [▶] Start Windows 10 VM
+│   ├── [⏸] Pause VM
+│   ├── [⏹] Stop VM
+│   └── [⚙] VM Settings
+├── Windows Applications (in VM)
+│   ├── MS Office (via VM)
+│   ├── Adobe Apps (via VM)
+│   └── Windows Games (offline in VM)
+└── Xbox Game Pass (in VM, with internet)
+    ├── Launch Game Pass
+    └── (Opens VM with network access)
 ```
 
 ## Security Considerations
 
 ### Isolation Layers
 
-1. **Network Layer**: Firewall rules block all by default
-2. **Filesystem Layer**: Separate Wine prefix or VM disk
-3. **Process Layer**: Sandboxing via firejail/bubblewrap
-4. **User Layer**: Separate user for Windows apps (optional)
+1. **Network Layer**: VM isolated network with strict firewall
+2. **VM Isolation**: Complete hardware virtualization boundary
+3. **Filesystem Layer**: Separate VM disk image (qcow2)
+4. **Process Layer**: VM runs in isolated process space
+5. **Memory Layer**: VM has dedicated memory allocation
 
 ### Monitoring
 
@@ -286,27 +573,32 @@ Applications Menu:
 
 ## Implementation Priority
 
-### Phase 1: Basic Wine Integration (Current)
-- [ ] Add Wine to ISO build
-- [ ] Configure Wine prefix
-- [ ] Add basic Windows app support
-- [ ] No network isolation yet
+### Phase 1: QEMU/KVM Setup
+- [ ] Add QEMU/KVM to ISO build
+- [ ] Include libvirt packages
+- [ ] Include VirtIO drivers
+- [ ] Create VM definition templates
+- [ ] Test VM creation and boot
 
 ### Phase 2: Network Isolation
 - [ ] Implement firewall rules
+- [ ] Configure dnsmasq DNS filtering  
 - [ ] Block all Windows network by default
 - [ ] Test isolation effectiveness
 
 ### Phase 3: Game Pass Integration
-- [ ] Install Xbox app
+- [ ] Create Windows 10 VM
+- [ ] Install Windows in VM
+- [ ] Install Xbox app in VM
 - [ ] Configure Game Pass whitelist
 - [ ] Test Game Pass connectivity
 - [ ] Verify other services blocked
 
 ### Phase 4: GUI Integration
-- [ ] Add Windows settings panel to ISO Builder
+- [ ] Add Windows VM settings panel to ISO Builder
 - [ ] VM configuration options
 - [ ] Network rules management
+- [ ] VM launcher scripts
 - [ ] Testing and validation tools
 
 ## Testing Requirements
@@ -315,31 +607,47 @@ Applications Menu:
 
 1. **Verify Default Block**:
    ```bash
-   # From Windows layer, should fail:
+   # Inside Windows 10 VM, should fail:
    ping google.com
    curl microsoft.com
+   Test-NetConnection -ComputerName google.com
    ```
 
 2. **Verify Game Pass Access**:
    ```bash
-   # From Xbox app, should succeed:
-   curl xboxlive.com
+   # From Xbox app in VM, should succeed:
+   Test-NetConnection -ComputerName xboxlive.com -Port 443
+   nslookup gamepass.com
    ```
 
 3. **Verify Telemetry Block**:
    ```bash
    # Should be blocked:
-   curl telemetry.microsoft.com
+   Test-NetConnection -ComputerName telemetry.microsoft.com
+   ping vortex.data.microsoft.com
+   ```
+
+4. **Monitor VM Network**:
+   ```bash
+   # On Parrot host, monitor VM traffic:
+   tcpdump -i virbr-win -n
+   # Should only see Game Pass traffic
    ```
 
 ### Functional Tests
 
+- [ ] VM creates successfully
+- [ ] Windows 10 installs properly
+- [ ] VM boots and runs
 - [ ] Windows apps launch successfully
 - [ ] Games run with good performance
 - [ ] Game Pass authentication works
 - [ ] Game downloads succeed
 - [ ] Other network access fails
-- [ ] Parrot OS unaffected
+- [ ] Parrot OS unaffected by VM
+- [ ] VM can be paused/resumed
+- [ ] VM snapshots work
+- [ ] GPU passthrough (if enabled)
 
 ## Documentation Needs
 
