@@ -1,0 +1,40 @@
+{
+  "whitelist_rules": {
+    "permanent": [],
+    "temporary": [],
+    "application_specific": {}
+  },
+  "rule_types": {
+    "application": {
+      "description": "Allow specific application to bypass restrictions",
+      "properties": ["app_name", "permissions", "duration"]
+    },
+    "network_port": {
+      "description": "Allow access to specific network port",
+      "properties": ["port", "protocol", "direction", "duration"]
+    },
+    "firewall": {
+      "description": "Custom firewall rule",
+      "properties": ["rule", "chain", "duration"]
+    },
+    "file_access": {
+      "description": "Allow file system access",
+      "properties": ["path", "permissions", "duration"]
+    },
+    "system_service": {
+      "description": "Allow system service",
+      "properties": ["service_name", "action", "duration"]
+    }
+  },
+  "duration_options": {
+    "session": "Until current session ends",
+    "temporary": "Specified time period (minutes/hours)",
+    "permanent": "No expiration"
+  },
+  "security_notes": {
+    "temporary_rules": "Temporary rules automatically revert to secure defaults after expiration",
+    "gaming_mode": "Gaming mode temporarily relaxes firewall rules for multiplayer gaming",
+    "productivity_mode": "Productivity mode allows common work ports while maintaining security",
+    "integrity": "System integrity is always maintained regardless of whitelist rules"
+  }
+}
