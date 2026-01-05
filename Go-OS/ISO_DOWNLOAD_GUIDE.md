@@ -1,10 +1,16 @@
 # Parrot Security OS 7.0 ISO Download Guide
 
-## ⚠️ Important: Large File Warning
+## ⚠️ Important Note
 
 The Parrot Security OS 7.0 ISO is **approximately 8GB** and **cannot be stored on GitHub** due to file size limits (2GB maximum per file with Git LFS).
 
-**You MUST download the ISO separately before building GhostOS.**
+**Note:** The GhostOS build script uses `debootstrap` to download and create Parrot OS directly from official repositories. **You do NOT need to download the ISO to build GhostOS.**
+
+**However, you may want to download the ISO if you:**
+- Want to test Parrot Security OS before building GhostOS
+- Need to install Parrot OS manually on a system
+- Want a reference copy of the official Parrot Security distribution
+- Need to create Parrot OS bootable media separately
 
 ---
 
@@ -102,18 +108,36 @@ This will automatically:
 
 ---
 
-## 🚀 After Download & Verification
+## 🚀 Using the ISO
 
-Once your ISO is downloaded and verified:
+Once your ISO is downloaded and verified, you can:
+
+### Option 1: Test Parrot Security OS in a Virtual Machine
+
+```bash
+# Using QEMU
+qemu-system-x86_64 -enable-kvm -m 4096 -cdrom Parrot-security-7.0_amd64.iso
+
+# Using VirtualBox
+# Create new VM and attach the ISO as optical drive
+```
+
+### Option 2: Create Bootable USB for Parrot OS
+
+```bash
+# Write ISO to USB drive (replace sdX with your USB device)
+sudo dd if=Parrot-security-7.0_amd64.iso of=/dev/sdX bs=4M status=progress
+sync
+```
+
+### Option 3: Continue with GhostOS Build
+
+The GhostOS build script doesn't require the ISO - it uses `debootstrap` to download Parrot OS:
 
 ```bash
 cd Go-OS
-
-# Run the GhostOS build script
-sudo ./ghostos-build.sh ../Parrot-security-7.0_amd64.iso
-
-# Or if ISO is in the same directory
-sudo ./ghostos-build.sh Parrot-security-7.0_amd64.iso
+sudo ./ghostos-build.sh
+# The script will download Parrot OS automatically from repositories
 ```
 
 ---
@@ -157,15 +181,21 @@ wget https://deb.parrot.sh/parrot/iso/7.0/Parrot-security-7.0_amd64.iso
 
 The ISO is not in the expected location. Either:
 
-**Option A:** Move it to the GO-OS root directory:
+**Option A:** Move it to the GO-OS root directory for testing/manual use:
 ```bash
 cp /path/to/Parrot-security-7.0_amd64.iso ~/GO-OS/
 ```
 
-**Option B:** Provide the full path to the build script:
+**Option B:** Use the ISO for testing or manual installation:
 ```bash
-sudo ./ghostos-build.sh /path/to/Parrot-security-7.0_amd64.iso
+# Test in VM
+qemu-system-x86_64 -enable-kvm -m 4096 -cdrom /path/to/Parrot-security-7.0_amd64.iso
+
+# Or create bootable USB
+sudo dd if=/path/to/Parrot-security-7.0_amd64.iso of=/dev/sdX bs=4M status=progress
 ```
+
+**Note:** The GhostOS build script downloads Parrot OS automatically via `debootstrap` and does not require the ISO file.
 
 ### ISO Won't Mount or Extract
 

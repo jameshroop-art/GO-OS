@@ -22,11 +22,16 @@ Full-featured **Parrot OS 7 Security**-based distribution with multiple versions
 
 **Documentation:** See [`GHOSTOS_BUILD_README.md`](Go-OS/GHOSTOS_BUILD_README.md) and [`GHOSTOS_QUICK_REFERENCE.md`](Go-OS/GHOSTOS_QUICK_REFERENCE.md)
 
-## 📥 Getting the Parrot Security OS ISO
+## 📥 Getting the Parrot Security OS ISO (Optional)
 
-**⚠️ IMPORTANT:** GhostOS requires the Parrot Security OS 7.0 ISO (~8GB) as a base system.
+**Note:** The GhostOS build script uses `debootstrap` to download Parrot OS automatically from official repositories. **You do NOT need to download the ISO to build GhostOS.**
 
-**Due to GitHub's 2GB file size limit, you must download the ISO separately.**
+**However, you may want to download the Parrot Security OS 7.0 ISO (~8GB) if you:**
+- Want to test Parrot Security OS before building GhostOS
+- Need to manually install Parrot OS on a system
+- Want a reference copy of the official Parrot distribution
+
+**Due to GitHub's 2GB file size limit, the ISO cannot be stored in this repository.**
 
 ### Quick Download
 
