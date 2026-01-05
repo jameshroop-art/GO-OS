@@ -502,5 +502,10 @@ class TouchscreenKeyboard(QWidget):
         
     def open_layout_designer(self):
         """Open keyboard layout designer"""
-        # Placeholder for layout designer
-        print("Layout designer not yet implemented")
+        from ui.keyboard_designer import KeyboardLayoutDesigner
+        designer = KeyboardLayoutDesigner(self)
+        if designer.exec():
+            # Apply the custom layout
+            layout_data = designer.get_layout()
+            # TODO: Implement custom layout rendering
+            print(f"Custom layout created: {layout_data.get('name', 'Unnamed')}")

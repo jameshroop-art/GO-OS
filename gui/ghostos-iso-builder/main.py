@@ -286,6 +286,9 @@ class GhostOSBuilderGUI(QMainWindow):
                 build_log.append("   + Desktop menu entry")
             if build_config['self_install']['cli_launcher']:
                 build_log.append("   + CLI launcher (ghostos-builder)")
+            build_log.append("   + Touchscreen keyboard (ghostos-keyboard)")
+            build_log.append("   + Keyboard calibration tools")
+            build_log.append("   + Custom layout designer")
         
         build_log.append("\n" + "="*50)
         build_log.append("\nThis is a preview of the build process.")
@@ -298,9 +301,14 @@ class GhostOSBuilderGUI(QMainWindow):
         build_log.append("6. Install repository integrations")
         if build_config['self_install']['enabled']:
             build_log.append("7. Install ISO Builder to /opt/ghostos-builder")
-            build_log.append("8. Create desktop entry and CLI launcher")
-        build_log.append(f"{7 if not build_config['self_install']['enabled'] else 9}. Generate ISO with GRUB bootloader")
-        build_log.append(f"{8 if not build_config['self_install']['enabled'] else 10}. Create checksums and verify")
+            build_log.append("8. Install touchscreen keyboard with calibration")
+            build_log.append("9. Create desktop entries and CLI launchers")
+            build_log.append("10. Include keyboard layout designer")
+            build_log.append("11. Generate ISO with GRUB bootloader")
+            build_log.append("12. Create checksums and verify")
+        else:
+            build_log.append("7. Generate ISO with GRUB bootloader")
+            build_log.append("8. Create checksums and verify")
         build_log.append("\nOutput: $HOME/ghostos-ultimate/GhostOS-custom-<timestamp>.iso")
         
         # Simulate progress
