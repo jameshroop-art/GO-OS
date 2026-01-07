@@ -27,7 +27,7 @@ except ImportError:
     print("Error: tkinter not found. Install with: sudo apt-get install python3-tk")
     sys.exit(1)
 
-class Heck-CheckOSInstallerGUI:
+class HeckCheckOSInstallerGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Heck-CheckOS Security Edition - Installer & USB Creator")
@@ -760,7 +760,7 @@ def main():
         pass
     
     # Create app
-    app = Heck-CheckOSInstallerGUI(root)
+    app = HeckCheckOSInstallerGUI(root)
     
     # Run
     root.mainloop()

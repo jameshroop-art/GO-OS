@@ -25,10 +25,12 @@ ICON_DIR="/usr/share/icons/hicolor/256x256/apps"
 echo "[*] Installing Heck-CheckOS ISO Builder to $INSTALL_DIR..."
 
 # Verify we're in the correct directory
+# Accept both old and new directory names during transition
+CURRENT_DIR=$(basename "$(dirname "$(pwd)")")/$(basename "$(pwd)")
 if [ ! -f "main.py" ] || [ ! -f "iso_builder_backend.py" ] || [ ! -d "ui" ]; then
-    echo "❌ Error: This script must be run from the gui/heckcheckos-iso-builder directory"
+    echo "❌ Error: This script must be run from the gui/ghostos-iso-builder or gui/heckcheckos-iso-builder directory"
     echo "   Current directory: $(pwd)"
-    echo "   Please cd to the correct directory and try again"
+    echo "   Missing required files (main.py, iso_builder_backend.py, ui/)"
     exit 1
 fi
 
