@@ -2,7 +2,7 @@
 
 import logging
 from abc import ABC, abstractmethod
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 logger = logging.getLogger('DeviceHandler')
 
@@ -43,7 +43,7 @@ class DeviceHandler(ABC):
         pass
     
     @abstractmethod
-    def enumerate_devices(self) -> list:
+    def enumerate_devices(self) -> List[Dict[str, Any]]:
         """
         Enumerate devices of this type
         

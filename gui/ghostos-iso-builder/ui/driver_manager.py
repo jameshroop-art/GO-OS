@@ -47,6 +47,11 @@ class DriverCheckThread(QThread):
         """Check driver compatibility"""
         self.progress_update.emit(20, "Checking driver compatibility...")
         
+        # Validate driver path to prevent command injection
+        if not self._validate_path(self.driver_path):
+            self.operation_complete.emit(False, "Invalid driver path", {})
+            return
+        
         # Run driver check command
         result = subprocess.run(
             ['python3', '/opt/ghostos/windows_driver_emulator/emulator.py', 
@@ -74,6 +79,11 @@ class DriverCheckThread(QThread):
         """Load a driver"""
         self.progress_update.emit(30, "Loading driver...")
         
+        # Validate driver path to prevent command injection
+        if not self._validate_path(self.driver_path):
+            self.operation_complete.emit(False, "Invalid driver path", {})
+            return
+        
         result = subprocess.run(
             ['sudo', 'python3', '/opt/ghostos/windows_driver_emulator/emulator.py',
              'load', self.driver_path],
@@ -92,6 +102,11 @@ class DriverCheckThread(QThread):
         """Unload a driver"""
         self.progress_update.emit(30, "Unloading driver...")
         
+        # Validate driver name to prevent command injection
+        if not self._validate_driver_name(self.driver_name):
+            self.operation_complete.emit(False, "Invalid driver name", {})
+            return
+        
         result = subprocess.run(
             ['sudo', 'python3', '/opt/ghostos/windows_driver_emulator/emulator.py',
              'unload', self.driver_name],
@@ -105,6 +120,40 @@ class DriverCheckThread(QThread):
             "Driver unloaded successfully" if result.returncode == 0 else result.stderr,
             {}
         )
+    
+    def _validate_path(self, path):
+        """Validate file path to prevent command injection"""
+        if not path:
+            return False
+        
+        # Check for shell metacharacters
+        dangerous_chars = ['&', '|', ';', '$', '`', '\n', '\r', '>', '<', '(', ')', '{', '}']
+        if any(char in path for char in dangerous_chars):
+            return False
+        
+        # Ensure path exists and is a regular file
+        import os
+        if not os.path.isfile(path):
+            return False
+        
+        return True
+    
+    def _validate_driver_name(self, name):
+        """Validate driver name to prevent command injection"""
+        if not name:
+            return False
+        
+        # Check for shell metacharacters
+        dangerous_chars = ['&', '|', ';', '$', '`', '\n', '\r', '>', '<', '(', ')', '{', '}', '/', '\\']
+        if any(char in name for char in dangerous_chars):
+            return False
+        
+        # Only allow alphanumeric, dots, dashes, underscores
+        import re
+        if not re.match(r'^[a-zA-Z0-9._-]+$', name):
+            return False
+        
+        return True
     
     def _list_drivers(self):
         """List loaded drivers"""

@@ -78,7 +78,11 @@ class DriverEmulator:
     
     def _init_handlers(self):
         """Initialize device handlers"""
-        from device_handlers import usb_handler, hid_handler, storage_handler
+        # Try relative import first (for package), fall back to absolute (for script)
+        try:
+            from .device_handlers import usb_handler, hid_handler, storage_handler
+        except ImportError:
+            from device_handlers import usb_handler, hid_handler, storage_handler
         
         self.device_handlers = {
             'usb': usb_handler.USBHandler(),
