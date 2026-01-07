@@ -7,8 +7,8 @@ Supports Windows, Linux, and macOS host systems
 LICENSE: MIT (see LICENSE file in repository root)
 
 LEGAL NOTICE:
-This is part of GhostOS, a derivative work based on Parrot OS.
-NOT an official Parrot OS release. NOT endorsed by Parrot Security.
+This is part of GhostOS, a derivative work based on Debian 12 (Bookworm).
+NOT an official Debian release. NOT endorsed by the Debian Project.
 See LEGAL_COMPLIANCE.md for full legal information.
 """
 
