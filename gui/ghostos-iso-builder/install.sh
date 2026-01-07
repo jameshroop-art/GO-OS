@@ -24,6 +24,14 @@ ICON_DIR="/usr/share/icons/hicolor/256x256/apps"
 
 echo "[*] Installing GhostOS ISO Builder to $INSTALL_DIR..."
 
+# Verify we're in the correct directory
+if [ ! -f "main.py" ] || [ ! -f "iso_builder_backend.py" ] || [ ! -d "ui" ]; then
+    echo "❌ Error: This script must be run from the gui/ghostos-iso-builder directory"
+    echo "   Current directory: $(pwd)"
+    echo "   Please cd to the correct directory and try again"
+    exit 1
+fi
+
 # Create directories
 mkdir -p "$INSTALL_DIR"
 mkdir -p "$BIN_DIR"
@@ -33,6 +41,14 @@ mkdir -p "$ICON_DIR"
 # Copy application files
 echo "[*] Copying application files..."
 cp -r . "$INSTALL_DIR/"
+
+# Verify critical files were copied
+if [ ! -f "$INSTALL_DIR/main.py" ]; then
+    echo "❌ Error: Failed to copy main.py to $INSTALL_DIR"
+    echo "   Installation incomplete. Please check permissions and disk space."
+    exit 1
+fi
+
 chmod +x "$INSTALL_DIR/main.py"
 
 # Install Python dependencies
