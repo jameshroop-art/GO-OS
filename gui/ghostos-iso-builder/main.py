@@ -599,7 +599,7 @@ class GhostOSBuilderGUI(QMainWindow):
         about_text = """
         <h2>GhostOS Advanced ISO Builder</h2>
         <p><b>Version:</b> 1.0.0</p>
-        <p><b>Based on:</b> Debian 12 7.0</p>
+        <p><b>Based on:</b> Debian 12 (Bookworm)</p>
         <br>
         <p>A comprehensive ISO modification and theme customization tool for GhostOS.</p>
         <br>
