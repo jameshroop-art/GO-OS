@@ -1,0 +1,78 @@
+MIT License
+
+Copyright (c) 2026 GhostOS (working title) Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+================================================================================
+IMPORTANT NOTICES
+================================================================================
+
+This license applies ONLY to the build scripts, configuration files, and 
+documentation created specifically for the GhostOS (working title) project.
+
+This project incorporates and builds upon numerous open-source components,
+each with their own licenses:
+
+1. Debian GNU/Linux 12 (Bookworm)
+   - Copyright (c) Software in the Public Interest, Inc. and others
+   - Licensed under various open-source licenses (GPL, LGPL, BSD, etc.)
+   - Website: https://www.debian.org
+   - This project is a custom variant based on Debian 12
+
+2. Termux (Android component)
+   - Licensed under GPLv3
+   - Copyright (c) Termux contributors
+   - Website: https://termux.com
+
+3. proot (Android component)
+   - Licensed under GPL
+   - Website: https://proot-me.github.io
+
+4. All other packages, tools, and libraries retain their original licenses
+
+================================================================================
+TRADEMARK NOTICE
+================================================================================
+
+"GhostOS" is a working title for this project and does not imply any trademark
+rights. This project is NOT affiliated with, endorsed by, or associated with:
+- Ghost Foundation or Ghost® (the publishing platform)
+- Any other "Ghost" branded software
+
+================================================================================
+LEGAL COMPLIANCE
+================================================================================
+
+For complete legal information, trademark notices, and compliance requirements,
+see LEGAL_COMPLIANCE.md in this repository.
+
+When redistributing this software, you must:
+- Comply with all upstream licenses (GPL, LGPL, BSD, etc.)
+- Maintain all copyright and attribution notices
+- Not use trademarks without permission
+- Clearly indicate derivative nature
+- Not imply false endorsements
+
+================================================================================
+WARRANTY DISCLAIMER
+================================================================================
+
+This software is provided "AS IS" without warranty of any kind. See the
+MIT License text above for complete warranty disclaimer.

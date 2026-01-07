@@ -18,6 +18,22 @@
 # - Does NOT void warranty
 # - Safe for Samsung devices with Knox
 # ============================================
+#
+# LICENSE: MIT (for this installation script)
+# See LICENSE file in repository root
+#
+# LEGAL NOTICE:
+# This script installs a proot environment based on Parrot Security OS.
+# - NOT an official Parrot OS release
+# - NOT endorsed by Parrot Security
+# - Parrot OS™ is a trademark of Parrot Security
+# - This is an independent community project
+# - Uses Termux (GPLv3) and proot (GPL)
+# - See LEGAL_COMPLIANCE.md for full legal information
+#
+# All packages from Parrot OS, Debian, Termux, and other sources
+# retain their original licenses.
+# ============================================
 
 set -e
 

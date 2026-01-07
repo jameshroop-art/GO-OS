@@ -8,6 +8,21 @@
 # GUI: GhostOS Custom Desktop Environment
 # With USB Bootloader Creation
 # ============================================
+# 
+# LICENSE: MIT (for this build script)
+# See LICENSE file in repository root
+#
+# LEGAL NOTICE:
+# This script builds a derivative work based on Parrot OS 7 Security Edition.
+# - NOT an official Parrot OS release
+# - NOT endorsed by Parrot Security
+# - Parrot OS™ is a trademark of Parrot Security
+# - This is an independent community project
+# - See LEGAL_COMPLIANCE.md for full legal information
+#
+# All packages and software from Parrot OS and Debian retain their 
+# original licenses (GPL, LGPL, BSD, MIT, etc.)
+# ============================================
 
 set -e
 
