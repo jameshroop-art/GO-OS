@@ -2,14 +2,14 @@
 
 ## Overview
 
-This document outlines requirements for integrating a Windows 10 compatibility layer into GhostOS while maintaining Parrot OS 7 Security as the base system.
+This document outlines requirements for integrating a Windows 10 compatibility layer into GhostOS while maintaining Debian 12 as the base system.
 
 ## Core Requirements
 
 ### Base System
-- **Backend**: Parrot OS 7 Security Edition (unchanged)
-- **UI/Desktop**: Parrot OS 7 desktop environment
-- **Security**: Maintain all Parrot security features
+- **Backend**: Debian 12 Edition (unchanged)
+- **UI/Desktop**: Debian 12 desktop environment
+- **Security**: Maintain all Debian security features
 - **Isolation**: Windows layer must be completely isolated
 
 ### Windows 10 Layer
@@ -43,17 +43,17 @@ This document outlines requirements for integrating a Windows 10 compatibility l
 
 ### Port Management Requirements
 
-**CRITICAL**: Windows must use different ports than Parrot OS to avoid crashes.
+**CRITICAL**: Windows must use different ports than Debian 12 to avoid crashes.
 
 1. **Port Detection**:
-   - Scan all ports used by Parrot OS 7 Security
+   - Scan all ports used by Debian 12
    - Identify services: SSH, HTTP, VNC, X11, databases, etc.
    - Document occupied ports
 
 2. **Port Allocation**:
    - Allocate free ports for Windows services
    - Default Windows ports shifted if occupied
-   - RDP: 3390 instead of 3389 (if 3389 used by Parrot)
+   - RDP: 3390 instead of 3389 (if 3389 used by Debian)
    - VNC: 5910+ instead of 5900+ (if occupied)
    - SPICE: 5920+ instead of 5900+ (if occupied)
 
@@ -63,7 +63,7 @@ This document outlines requirements for integrating a Windows 10 compatibility l
    - Configuration file generation
    - Conflict detection and resolution
 
-**Tool**: `port_manager.py` - Scans Parrot OS ports and allocates free ports for Windows
+**Tool**: `port_manager.py` - Scans Debian 12 ports and allocates free ports for Windows
 
 ## Technical Approach
 
@@ -74,7 +74,7 @@ This document outlines requirements for integrating a Windows 10 compatibility l
 - ❌ **NO Virtual Machine** - No QEMU/KVM, VirtualBox, etc.
 - ✅ **Extract Windows 10 ISO** - Use latest Windows 10 build source
 - ✅ **Complete Network Isolation** - Zero internet except Game Pass
-- ✅ **Parrot OS 7 remains backend** - Base system unchanged
+- ✅ **Debian 12 remains backend** - Base system unchanged
 
 ### Problem: Windows Without Wine or VM
 
@@ -87,19 +87,19 @@ This document outlines requirements for integrating a Windows 10 compatibility l
 ```
 Physical System:
 ├── GRUB Bootloader
-├── Parrot OS 7 (Default boot)
+├── Debian 12 (Default boot)
 │   ├── Full security features
 │   ├── Linux applications
 │   └── Controls Windows network access
 └── Windows 10 (Separate partition)
     ├── Extracted from ISO
-    ├── Network controlled by Parrot
-    ├── Firewall rules from Parrot
+    ├── Network controlled by Debian
+    ├── Firewall rules from Debian
     └── Boot via GRUB menu
 ```
 
 **How Network Isolation Works**:
-- Parrot OS controls the network hardware/firmware
+- Debian 12 controls the network hardware/firmware
 - Windows boots with network pre-configured
 - Network firewall rules set at hardware/BIOS level
 - Only Game Pass domains whitelisted at router/firewall level
@@ -109,7 +109,7 @@ Physical System:
 - ✅ True Windows 10 (not VM, not Wine)
 - ✅ Full performance (native hardware)
 - ✅ Can extract and pre-configure Windows ISO
-- ✅ Network can be controlled from Parrot
+- ✅ Network can be controlled from Debian
 - ✅ Complete isolation via dual-boot
 
 **Cons**:
@@ -122,7 +122,7 @@ Physical System:
 ```
 Custom Boot System:
 ├── Custom bootloader (GRUB + scripts)
-├── Parrot OS 7 partition
+├── Debian 12 partition
 ├── Windows 10 partition (extracted ISO)
 └── Network Filtering Service
     ├── Runs before OS boot
@@ -160,7 +160,7 @@ Using technologies like:
 #### Option 4: ReactOS (Open Source Windows Alternative)
 
 ```
-Parrot OS 7 (Host)
+Debian 12 (Host)
 ├── ReactOS (open-source Windows reimplementation)
 │   ├── Windows API compatibility
 │   ├── Can run some Windows apps
@@ -184,15 +184,15 @@ Parrot OS 7 (Host)
 Given the constraints (no Wine, no VM), the most practical approach is:
 
 **Dual-Boot Setup**:
-1. Parrot OS 7 on main partition
+1. Debian 12 on main partition
 2. Windows 10 on separate partition (extracted from ISO)
 3. Shared data partition (for file transfer)
-4. Network firewall configured from Parrot OS
+4. Network firewall configured from Debian 12
 5. GRUB boot menu to select OS
 
 **Network Isolation Strategy**:
 ```bash
-# From Parrot OS, configure router/firewall rules
+# From Debian 12, configure router/firewall rules
 # These rules persist even when Windows boots
 
 # Option A: Configure home router
@@ -448,7 +448,7 @@ New-NetFirewallRule -DisplayName "Block Windows Update" `
 10. **Final ISO Composition**
     ```
     GhostOS ISO:
-    ├── Parrot OS 7 base system
+    ├── Debian 12 base system
     ├── /opt/ghostos/windows/
     │   ├── windows10.qcow2 (pre-installed Windows)
     │   ├── vm-config.xml (libvirt definition)
@@ -550,7 +550,7 @@ Game Pass Network Access:
 
 ```
 Applications Menu:
-├── Parrot Applications (Linux native)
+├── Debian Applications (Linux native)
 ├── Windows 10 VM
 │   ├── [▶] Start Windows 10 VM
 │   ├── [⏸] Pause VM
@@ -653,7 +653,7 @@ Applications Menu:
 
 4. **Monitor VM Network**:
    ```bash
-   # On Parrot host, monitor VM traffic:
+   # On Debian host, monitor VM traffic:
    tcpdump -i virbr-win -n
    # Should only see Game Pass traffic
    ```
@@ -668,7 +668,7 @@ Applications Menu:
 - [ ] Game Pass authentication works
 - [ ] Game downloads succeed
 - [ ] Other network access fails
-- [ ] Parrot OS unaffected by VM
+- [ ] Debian 12 unaffected by VM
 - [ ] VM can be paused/resumed
 - [ ] VM snapshots work
 - [ ] GPU passthrough (if enabled)

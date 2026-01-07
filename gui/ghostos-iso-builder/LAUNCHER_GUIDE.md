@@ -67,7 +67,7 @@ Launch complete system with all components.
 ### 4. Port Manager
 **Script**: `port_manager.py`
 
-Scan Parrot OS ports and allocate free ports for Windows VM.
+Scan Debian 12 ports and allocate free ports for Windows VM.
 
 ```bash
 python3 port_manager.py
@@ -97,12 +97,12 @@ Features:
 
 ### Why Port Management?
 
-When running Windows integration alongside Parrot OS, both systems need network ports. If both try to use the same port (e.g., port 3389 for RDP), crashes will occur.
+When running Windows integration alongside Debian 12, both systems need network ports. If both try to use the same port (e.g., port 3389 for RDP), crashes will occur.
 
 ### How It Works
 
 The Port Manager:
-1. **Scans Parrot OS**: Detects all ports currently in use
+1. **Scans Debian 12**: Detects all ports currently in use
 2. **Checks Services**: Identifies SSH, HTTP, VNC, databases, etc.
 3. **Allocates Free Ports**: Finds available ports for Windows
 4. **Generates Config**: Creates configuration files
@@ -122,10 +122,10 @@ python3 port_manager.py --scan-only
 
 ### Port Allocation Examples
 
-Parrot OS using port 5900 (VNC):
+Debian 12 using port 5900 (VNC):
 - Windows VNC shifted to 5910 ✓
 
-Parrot OS using port 3389 (RDP):
+Debian 12 using port 3389 (RDP):
 - Windows RDP shifted to 3390 ✓
 
 All changes are automatic and saved to:
@@ -150,7 +150,7 @@ All changes are automatic and saved to:
     "http": 8090,
     "https": 8453
   },
-  "parrot_ports": {
+  "debian_ports": {
     "ssh": [22],
     "vnc": [5900, 5901]
   }
@@ -182,7 +182,7 @@ python3 port_manager.py
 
 Output:
 ```
-Parrot OS is using 45 ports
+Debian 12 is using 45 ports
 Used port ranges: 22 - 8080
 
 Allocating ports for Windows VM:
@@ -323,7 +323,7 @@ When Windows integration is set up:
 2. **Use Allocated Ports**:
    - Read from `~/.config/ghostos-builder/windows_vm_ports.conf`
    - Use allocated ports in Windows VM configuration
-   - No conflicts with Parrot OS
+   - No conflicts with Debian 12
 
 3. **Example QEMU Command**:
    ```bash
