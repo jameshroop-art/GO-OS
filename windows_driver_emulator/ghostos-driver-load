@@ -1,0 +1,29 @@
+#!/bin/bash
+# GhostOS Windows Driver Emulator - Load Driver
+# Usage: ghostos-driver-load <driver_path>
+
+if [ "$EUID" -ne 0 ]; then
+    echo "Error: Must run as root"
+    echo "Usage: sudo ghostos-driver-load <driver_path>"
+    exit 1
+fi
+
+if [ $# -lt 1 ]; then
+    echo "Usage: ghostos-driver-load <driver_path>"
+    echo ""
+    echo "Load a Windows driver into the emulator"
+    echo ""
+    echo "Example:"
+    echo "  sudo ghostos-driver-load /path/to/driver.sys"
+    exit 1
+fi
+
+DRIVER_PATH="$1"
+
+if [ ! -f "$DRIVER_PATH" ]; then
+    echo "Error: Driver file not found: $DRIVER_PATH"
+    exit 1
+fi
+
+# Use Python emulator to load the driver
+python3 /opt/ghostos/windows_driver_emulator/emulator.py load "$DRIVER_PATH"

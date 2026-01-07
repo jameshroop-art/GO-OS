@@ -1,0 +1,23 @@
+#!/bin/bash
+# GhostOS Windows Driver Emulator - Unload Driver
+# Usage: ghostos-driver-unload <driver_name>
+
+if [ "$EUID" -ne 0 ]; then
+    echo "Error: Must run as root"
+    echo "Usage: sudo ghostos-driver-unload <driver_name>"
+    exit 1
+fi
+
+if [ $# -lt 1 ]; then
+    echo "Usage: ghostos-driver-unload <driver_name>"
+    echo ""
+    echo "Unload a Windows driver from the emulator"
+    echo ""
+    echo "Example:"
+    echo "  sudo ghostos-driver-unload driver.sys"
+    exit 1
+fi
+
+DRIVER_NAME="$1"
+
+python3 /opt/ghostos/windows_driver_emulator/emulator.py unload "$DRIVER_NAME"

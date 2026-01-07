@@ -1,0 +1,22 @@
+#!/bin/bash
+# GhostOS Windows Driver Emulator - Check Driver Compatibility
+# Usage: ghostos-driver-check <driver_path>
+
+if [ $# -lt 1 ]; then
+    echo "Usage: ghostos-driver-check <driver_path>"
+    echo ""
+    echo "Check if a Windows driver is compatible with the emulator"
+    echo ""
+    echo "Example:"
+    echo "  ghostos-driver-check /path/to/driver.sys"
+    exit 1
+fi
+
+DRIVER_PATH="$1"
+
+if [ ! -f "$DRIVER_PATH" ]; then
+    echo "Error: Driver file not found: $DRIVER_PATH"
+    exit 1
+fi
+
+python3 /opt/ghostos/windows_driver_emulator/emulator.py check "$DRIVER_PATH"
