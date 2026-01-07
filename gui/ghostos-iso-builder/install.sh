@@ -63,18 +63,11 @@ echo "[*] Creating launcher script..."
 cat > "$BIN_DIR/ghostos-builder" << 'EOF'
 #!/bin/bash
 # GhostOS ISO Builder Launcher
+# Runs as normal user - will prompt for privileges when building ISOs
 
-# Check if running with required privileges
-if [ "$EUID" -ne 0 ]; then
-    # Try to elevate with pkexec (GUI) or sudo (terminal)
-    if command -v pkexec &> /dev/null; then
-        pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY /opt/ghostos-builder/main.py "$@"
-    else
-        sudo /opt/ghostos-builder/main.py "$@"
-    fi
-else
-    /opt/ghostos-builder/main.py "$@"
-fi
+# Simply launch the application as the current user
+# The application will request elevation only when needed for ISO building
+exec /opt/ghostos-builder/main.py "$@"
 EOF
 
 chmod +x "$BIN_DIR/ghostos-builder"
@@ -87,7 +80,7 @@ Version=1.0
 Type=Application
 Name=GhostOS ISO Builder
 GenericName=ISO Builder and Customizer
-Comment=Build custom GhostOS ISOs with multi-source support and theme customization
+Comment=Build custom GhostOS ISOs - GUI runs as user, prompts for privileges when building
 Exec=ghostos-builder
 Icon=ghostos-builder
 Terminal=false

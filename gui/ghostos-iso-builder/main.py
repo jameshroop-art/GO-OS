@@ -285,12 +285,21 @@ class GhostOSBuilderGUI(QMainWindow):
         # Check if running as root (Unix/Linux only - ISO building is Linux-specific)
         try:
             if os.geteuid() != 0:
-                QMessageBox.warning(
+                reply = QMessageBox.warning(
                     self,
-                    "Root Required",
-                    "ISO building requires root privileges.\n\n"
-                    "Please run the builder with sudo:\n"
-                    "sudo python3 main.py"
+                    "Root Privileges Required",
+                    "ISO building requires root privileges for operations like:\n"
+                    "• Creating chroot environments\n"
+                    "• Mounting ISO files\n"
+                    "• Modifying system files\n\n"
+                    "To build ISOs, please run with elevated privileges:\n\n"
+                    "From terminal:\n"
+                    "  sudo python3 main.py\n\n"
+                    "Or use the system launcher:\n"
+                    "  pkexec /opt/ghostos-builder/main.py\n\n"
+                    "Note: The GUI itself runs normally as a regular user.\n"
+                    "Only ISO building requires elevation.",
+                    QMessageBox.StandardButton.Ok
                 )
                 return
         except AttributeError:
