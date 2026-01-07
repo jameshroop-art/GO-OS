@@ -4,32 +4,32 @@ Complete operating system distribution available for multiple platforms with adv
 
 ## 🚀 Platforms
 
-### 🐧 Desktop/Server (Linux ISO) THIS REPO DOES NOT CONTAIN THE ISO YOU CAN GET IT HERE: https://start.parrotsec.org
-Full-featured **Parrot OS 7 Security**-based distribution with multiple versions:
-- **v1.0 - Stable Release**: Complete base system with Parrot Security tools (~10GB)
-- **v1.1 - Enhanced Edition**: Privacy-focused with Malwarebytes-style security (~11GB)
+### 🐧 Desktop/Server (Linux ISO) THIS REPO DOES NOT CONTAIN THE ISO YOU CAN GET IT HERE: https://www.debian.org
+Full-featured **Debian 12 (Bookworm)**-based distribution with multiple versions:
+- **v1.0 - Stable Release**: Complete base system with security tools (~10GB)
+- **v1.1 - Enhanced Edition**: Privacy-focused with enhanced security (~11GB)
 - **v2.0 - Next Generation**: Wayland, AI assistant, cloud backup, plugin system (~12GB)
 
-**Base Operating System:** Parrot OS 7 Security Edition (Debian-based security-focused distribution)
+**Base Operating System:** Debian 12 (Bookworm) - Stable Linux distribution
 
 **GhostOS Features:**
 - ✅ BIOS/UEFI boot support
 - ✅ AMD AM5/ASUS platform optimizations
 - ✅ Gaming and AI/ML tools
 - ✅ Enhanced privacy controls
-- ✅ Security tools and hardening (Parrot + GhostOS)
+- ✅ Security tools and hardening (Kali + GhostOS)
 - ✅ Custom GhostOS GUI and desktop environment
 
 **Documentation:** See [`GHOSTOS_BUILD_README.md`](Go-OS/GHOSTOS_BUILD_README.md) and [`GHOSTOS_QUICK_REFERENCE.md`](Go-OS/GHOSTOS_QUICK_REFERENCE.md)
 
-## 📥 Getting the Parrot Security OS ISO (Optional)
+## 📥 Getting the Debian 12 ISO (Optional)
 
-**Note:** The GhostOS build script uses `debootstrap` to download Parrot OS automatically from official repositories. **You do NOT need to download the ISO to build GhostOS.**
+**Note:** The GhostOS build script uses `debootstrap` to download Debian 12 automatically from official repositories. **You do NOT need to download the ISO to build GhostOS.**
 
-**However, you may want to download the Parrot Security OS 7.0 ISO (~8GB) if you:**
-- Want to test Parrot Security OS before building GhostOS
-- Need to manually install Parrot OS on a system
-- Want a reference copy of the official Parrot distribution
+**However, you may want to download the Debian 12 ISO (~600MB for netinst, ~4GB for full DVD) if you:**
+- Want to test Debian 12 before building GhostOS
+- Need to manually install Debian 12 on a system
+- Want a reference copy of the official Debian distribution
 
 **Due to GitHub's 2GB file size limit, the ISO cannot be stored in this repository.**
 
@@ -37,28 +37,28 @@ Full-featured **Parrot OS 7 Security**-based distribution with multiple versions
 
 ```bash
 cd ~/GO-OS
-wget https://deb.parrot.sh/parrot/iso/7.0/Parrot-security-7.0_amd64.iso
+wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.8.0-amd64-netinst.iso
 ```
 
 ### Verify Your Download
 
 ```bash
-# Check file size (~8GB expected)
-ls -lh Parrot-security-7.0_amd64.iso
+# Check file size (~600MB for netinst expected)
+ls -lh debian-12.8.0-amd64-netinst.iso
 
 # Verify it's a valid ISO
-file Parrot-security-7.0_amd64.iso
+file debian-12.8.0-amd64-netinst.iso
 
 # Verify checksum
-sha256sum Parrot-security-7.0_amd64.iso
-# Compare with official checksum from parrotsec.org
+sha256sum debian-12.8.0-amd64-netinst.iso
+# Compare with official checksum from debian.org
 ```
 
 ### Automated Verification
 
 ```bash
 cd Go-OS
-./verify-iso.sh ../Parrot-security-7.0_amd64.iso
+./verify-iso.sh ../debian-12.8.0-amd64-netinst.iso
 ```
 
 **📖 For detailed download instructions, troubleshooting, and verification:**  
@@ -92,11 +92,11 @@ sudo ./ghostos-build.sh
 ```
 
 Builds bootable ISO with:
-- Parrot OS 7 Security Edition base
+- Debian 12 (Bookworm) base
 - GhostOS custom GUI and desktop environment
 - Complete Linux system with security tools
 - Hardware drivers (AMD, NVIDIA, Intel)
-- Privacy and security tools (Parrot + GhostOS)
+- Privacy and security tools (Kali + GhostOS)
 - Gaming support
 - Development tools
 
@@ -118,7 +118,7 @@ ghostos
 ```
 
 Installs:
-- Parrot Security OS proot environment
+- Debian 12 (Bookworm) proot environment
 - WiFi management tools (non-root)
 - Bluetooth management tools (non-root)
 - Driver optimization utilities
@@ -183,7 +183,7 @@ Installs:
 
 ### Desktop/Server
 - **Build OS**: Debian-based Linux (for building the ISO)
-- **Base OS**: Parrot OS 7 Security Edition (automatically bootstrapped)
+- **Base OS**: Debian 12 (Bookworm) - automatically bootstrapped
 - **RAM**: 8GB minimum, 16GB recommended
 - **Disk**: 50-100GB (depending on version)
 - **Root**: Required for building
@@ -275,8 +275,8 @@ Contributions welcome! Please:
 GhostOS build system and Android tools are provided as-is for educational and development purposes.
 
 Based on:
-- **Parrot OS 7 Security Edition** (Desktop) - GPLv3 and various licenses
-- **Debian GNU/Linux** - Various licenses (Parrot base)
+- **Debian 12 (Bookworm)** (Desktop) - Various open-source licenses
+- **Debian GNU/Linux** - Various licenses
 - **Termux** (Android) - GPLv3
 - **proot** (Android) - GPL
 - Numerous open-source packages with individual licenses
@@ -287,10 +287,10 @@ Please respect all applicable licenses.
 
 - **GitHub Repository**: https://github.com/jameshroop-art/GO-OS
 - **Issues/Support**: https://github.com/jameshroop-art/GO-OS/issues
-- **Parrot Security**: https://www.parrotsec.org
+- **Debian**: https://www.debian.org
+- **Kali Linux**: https://www.kali.org
 - **Termux**: https://termux.com
 - **F-Droid**: https://f-droid.org
-- **Debian**: https://www.debian.org
 
 ## 🆘 Support
 
@@ -327,17 +327,17 @@ See [ANDROID_INSTALLATION.md](Go-OS/ANDROID_INSTALLATION.md) troubleshooting sec
 ## 🎉 Version History
 
 ### Desktop
-- **v2.0** (2025): Parrot OS 7 base, Wayland, AI assistant, ARM support, plugin system
-- **v1.1** (2025): Parrot OS 7 base, Enhanced privacy, security tools, improved UI
-- **v1.0** (2025): Initial stable release, Parrot OS 7 Security base with GhostOS GUI
+- **v2.0** (2025): Debian 12 base, Wayland, AI assistant, ARM support, plugin system
+- **v1.1** (2025): Debian 12 base, Enhanced privacy, security tools, improved UI
+- **v1.0** (2025): Initial stable release, Debian 12 (Bookworm) base with GhostOS GUI
 
 ### Android
 - **v1.0-android** (2026-01): Initial Android release
   - Android 9+ support
   - Non-root WiFi/Bluetooth
-  - Parrot Security OS proot environment
+  - Debian 12 (Bookworm) proot environment
   - Driver optimization tools
 
 ---
 
-**GhostOS** - Security-focused, feature-rich operating system built on Parrot OS 7 Security Edition with custom GhostOS GUI. For desktop and mobile platforms. Build it, customize it, own it. 👻🦜
+**GhostOS** - Security-focused, feature-rich operating system built on Debian 12 (Bookworm) with custom GhostOS GUI. For desktop and mobile platforms. Build it, customize it, own it. 👻🐧
