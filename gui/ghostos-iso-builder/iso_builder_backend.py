@@ -42,6 +42,12 @@ class ISOBuilder:
             'chroot'
         ]
         
+        # Optional but recommended for TPM support
+        recommended_tools = [
+            'tpm2-tools',  # TPM 2.0 support
+            'tpm-tools',   # TPM 1.2 support
+        ]
+        
         missing = []
         for tool in required_tools:
             if shutil.which(tool) is None:
@@ -79,7 +85,7 @@ class ISOBuilder:
         cmd = [
             'debootstrap',
             '--arch=amd64',
-            '--include=wget,curl,ca-certificates,gnupg,sudo,systemd,network-manager',
+            '--include=wget,curl,ca-certificates,gnupg,sudo,systemd,network-manager,tpm2-tools,tpm-tools,libtss2-esys0,libtss2-tcti-device0',
             'bookworm',
             str(self.rootfs_dir),
             'http://deb.debian.org/debian'
@@ -1043,36 +1049,54 @@ python3 main.py "$@"
         print("✓ GhostOS Builder installed")
     
     def create_grub_config(self, version: str):
-        """Create GRUB bootloader configuration"""
-        print("[*] Creating GRUB configuration...")
+        """Create GRUB bootloader configuration with TPM support"""
+        print("[*] Creating GRUB configuration with TPM support...")
         
         grub_cfg = self.iso_dir / "boot" / "grub" / "grub.cfg"
         grub_cfg.write_text(f"""set timeout=30
 set default=0
 
+# TPM Support - Load TPM modules for all versions
+insmod tpm
+insmod tpm2
+
+# Graphics and display
 insmod all_video
 insmod gfxterm
 terminal_output gfxterm
 set gfxmode=1920x1080
 set gfxpayload=keep
 
-menuentry "👻 GhostOS {version} - Install (Pre-configured)" {{
-    linux /live/vmlinuz boot=live quiet splash installer-mode
+# Enable TPM measurement (optional, for secure boot)
+# This ensures compatibility with TPM 1.2 and TPM 2.0
+if [ -d (hd0,gpt1)/EFI ]; then
+    # UEFI mode - TPM 2.0 preferred
+    insmod efi_gop
+    insmod efi_uga
+fi
+
+menuentry "👻 Heck-CheckOS {version} - Install (Pre-configured)" {{
+    linux /live/vmlinuz boot=live quiet splash installer-mode tpm_tis.force=1
     initrd /live/initrd.img
 }}
 
-menuentry "👻 GhostOS {version} - Live Mode (Pre-configured)" {{
+menuentry "👻 Heck-CheckOS {version} - Live Mode (Pre-configured)" {{
+    linux /live/vmlinuz boot=live quiet splash tpm_tis.force=1
+    initrd /live/initrd.img
+}}
+
+menuentry "👻 Heck-CheckOS {version} - Safe Mode" {{
+    linux /live/vmlinuz boot=live nomodeset tpm_tis.force=1
+    initrd /live/initrd.img
+}}
+
+menuentry "👻 Heck-CheckOS {version} - No TPM Mode" {{
     linux /live/vmlinuz boot=live quiet splash
-    initrd /live/initrd.img
-}}
-
-menuentry "👻 GhostOS {version} - Safe Mode" {{
-    linux /live/vmlinuz boot=live nomodeset
     initrd /live/initrd.img
 }}
 """)
         
-        print("✓ GRUB configuration created")
+        print("✓ GRUB configuration created with TPM support")
     
     def create_squashfs(self, progress_callback=None):
         """Create squashfs filesystem"""
