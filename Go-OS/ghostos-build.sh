@@ -957,6 +957,68 @@ echo "    ✓ NO Windows Update"
 echo "    ✓ Privacy-first configuration"
 
 # ============================================
+# Windows Driver Emulator
+# ============================================
+echo ""
+echo "[*] Installing Windows Driver Emulator..."
+echo "    Lightweight driver compatibility layer"
+
+# Install Python dependencies for driver emulator
+apt-get install -y \
+    python3 \
+    python3-pip \
+    usbutils \
+    util-linux
+
+# Copy driver emulator to system
+DRIVER_EMULATOR_SRC="$BUILD_DIR/../windows_driver_emulator"
+DRIVER_EMULATOR_DST="/opt/ghostos/windows_driver_emulator"
+
+if [ -d "$DRIVER_EMULATOR_SRC" ]; then
+    # Create directories
+    mkdir -p "$DRIVER_EMULATOR_DST"
+    mkdir -p /opt/ghostos/drivers
+    mkdir -p /etc/ghostos
+    mkdir -p /var/log/ghostos
+    
+    # Copy emulator files
+    cp -r "$DRIVER_EMULATOR_SRC"/* "$DRIVER_EMULATOR_DST/"
+    
+    # Install CLI utilities
+    install -m 0755 "$DRIVER_EMULATOR_DST/ghostos-driver-load" /usr/local/bin/
+    install -m 0755 "$DRIVER_EMULATOR_DST/ghostos-driver-list" /usr/local/bin/
+    install -m 0755 "$DRIVER_EMULATOR_DST/ghostos-driver-unload" /usr/local/bin/
+    install -m 0755 "$DRIVER_EMULATOR_DST/ghostos-driver-check" /usr/local/bin/
+    
+    # Install configuration
+    if [ ! -f /etc/ghostos/driver-emulator.conf ]; then
+        cp "$DRIVER_EMULATOR_DST/driver-emulator.conf" /etc/ghostos/
+    fi
+    
+    # Make emulator executable
+    chmod +x "$DRIVER_EMULATOR_DST/emulator.py"
+    chmod +x "$DRIVER_EMULATOR_DST/install.py"
+    
+    echo ""
+    echo "[*] Windows Driver Emulator installed!"
+    echo "    Commands:"
+    echo "    - ghostos-driver-load <driver.sys>   : Load Windows driver"
+    echo "    - ghostos-driver-list                : List loaded drivers"
+    echo "    - ghostos-driver-unload <driver>     : Unload driver"
+    echo "    - ghostos-driver-check <driver.sys>  : Check compatibility"
+    echo ""
+    echo "    Features:"
+    echo "    ✓ USB device driver support"
+    echo "    ✓ HID device support (keyboards, mice, controllers)"
+    echo "    ✓ Storage device support"
+    echo "    ✓ User-space operation (no kernel modification)"
+    echo "    ✓ Security sandboxing"
+    echo "    ✓ Network isolation support"
+else
+    echo "    Warning: Driver emulator source not found, skipping..."
+fi
+
+# ============================================
 # Network Security Monitoring (Low Impact)
 # ============================================
 echo ""

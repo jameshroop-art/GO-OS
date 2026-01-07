@@ -26,6 +26,7 @@ from ui.repo_browser import RepoBrowserWidget
 from ui.credentials_dialog import CredentialsDialog
 from ui.touchscreen_keyboard import TouchscreenKeyboard
 from ui.keyboard_designer import KeyboardLayoutDesigner
+from ui.driver_manager import DriverManagerWidget
 
 
 class GhostOSBuilderGUI(QMainWindow):
@@ -89,6 +90,11 @@ class GhostOSBuilderGUI(QMainWindow):
         self.repo_browser = RepoBrowserWidget()
         self.repo_browser.integration_selected.connect(self.on_integration_selected)
         self.main_tabs.addTab(self.repo_browser, "📦 Repository Browser")
+        
+        # Windows Driver Manager tab
+        self.driver_manager = DriverManagerWidget()
+        self.driver_manager.driver_loaded.connect(self.on_driver_loaded)
+        self.main_tabs.addTab(self.driver_manager, "🔧 Driver Manager")
         
         left_layout.addWidget(self.main_tabs)
         
@@ -514,6 +520,10 @@ class GhostOSBuilderGUI(QMainWindow):
         """Handle integration selected event"""
         repo_name = integration_data.get('name', 'Unknown')
         self.statusBar().showMessage(f"Integration selected: {repo_name}")
+    
+    def on_driver_loaded(self, driver_info):
+        """Handle driver loaded event"""
+        self.statusBar().showMessage(f"Driver loaded: {driver_info}")
         
     def show_credentials_dialog(self):
         """Show credentials management dialog"""
