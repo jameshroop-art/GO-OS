@@ -1,14 +1,14 @@
-# Touchscreen Keyboard for Android GhostOS
+# Touchscreen Keyboard for Android Heck-CheckOS
 
 ## Overview
 
-The GhostOS touchscreen keyboard is designed primarily for **Android devices** running the GhostOS environment. It provides a full-featured virtual keyboard with calibration support, perfect for Android tablets and phones.
+The Heck-CheckOS touchscreen keyboard is designed primarily for **Android devices** running the Heck-CheckOS environment. It provides a full-featured virtual keyboard with calibration support, perfect for Android tablets and phones.
 
 ## Why This Keyboard?
 
 ### Android Use Cases
 
-1. **Termux + GhostOS**: Use the keyboard within the Termux proot environment
+1. **Termux + Heck-CheckOS**: Use the keyboard within the Termux proot environment
 2. **Python GUI Apps**: Run Python/PyQt6 apps on Android with full keyboard support
 3. **Development**: Code and test on Android with proper keyboard input
 4. **Remote Access**: Control remote systems from Android with virtual keyboard
@@ -33,7 +33,7 @@ pkg install python git -y
 
 # Clone repository
 git clone https://github.com/jameshroop-art/GO-OS
-cd GO-OS/gui/ghostos-iso-builder
+cd GO-OS/gui/heckcheckos-iso-builder
 
 # Install dependencies
 pip install -r requirements.txt
@@ -57,7 +57,7 @@ vncserver :1 -geometry 1920x1080
 # In a VNC viewer app, connect to localhost:5901
 # Then run:
 export DISPLAY=:1
-cd GO-OS/gui/ghostos-iso-builder
+cd GO-OS/gui/heckcheckos-iso-builder
 python3 main.py
 ```
 
@@ -68,7 +68,7 @@ python3 main.py
 
 # In Termux:
 export DISPLAY=:0
-cd GO-OS/gui/ghostos-iso-builder
+cd GO-OS/gui/heckcheckos-iso-builder
 ./start-gui.sh
 ```
 
@@ -76,7 +76,7 @@ cd GO-OS/gui/ghostos-iso-builder
 
 ```bash
 # Run just the keyboard
-cd GO-OS/gui/ghostos-iso-builder
+cd GO-OS/gui/heckcheckos-iso-builder
 python3 -c "
 import sys
 from PyQt6.QtWidgets import QApplication
@@ -361,7 +361,7 @@ termux-setup-storage
 
 # Save keyboard layouts to shared storage
 mkdir -p ~/storage/shared/keyboard_layouts
-cp ~/.config/ghostos-builder/keyboard_layouts/* ~/storage/shared/keyboard_layouts/
+cp ~/.config/heckcheckos-builder/keyboard_layouts/* ~/storage/shared/keyboard_layouts/
 ```
 
 ### Android Notifications
@@ -381,7 +381,7 @@ Add to `~/.bashrc`:
 ```bash
 # Auto-start keyboard in background
 if [ -n "$DISPLAY" ]; then
-    ~/GO-OS/gui/ghostos-iso-builder/start-keyboard.sh &
+    ~/GO-OS/gui/heckcheckos-iso-builder/start-keyboard.sh &
 fi
 ```
 
@@ -496,6 +496,6 @@ python3 main.py 2>&1 | tee keyboard.log
 
 ---
 
-**GhostOS Touchscreen Keyboard** - Professional virtual keyboard for Android and touchscreen Linux devices
+**Heck-CheckOS Touchscreen Keyboard** - Professional virtual keyboard for Android and touchscreen Linux devices
 
 For desktop touchscreen usage, see [KEYBOARD_GUIDE.md](KEYBOARD_GUIDE.md)

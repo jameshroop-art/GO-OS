@@ -1,13 +1,13 @@
-# GhostOS Component Launcher
+# Heck-CheckOS Component Launcher
 
 ## Run Components As Needed
 
-This launcher system allows you to run GhostOS components independently, on an as-needed basis, without having to start the full GUI.
+This launcher system allows you to run Heck-CheckOS components independently, on an as-needed basis, without having to start the full GUI.
 
 ## Quick Start
 
 ```bash
-cd gui/ghostos-iso-builder
+cd gui/heckcheckos-iso-builder
 
 # Interactive menu
 ./launch-menu.sh
@@ -130,14 +130,14 @@ Debian 12 using port 3389 (RDP):
 
 All changes are automatic and saved to:
 ```
-~/.config/ghostos-builder/port_allocations.json
-~/.config/ghostos-builder/windows_vm_ports.conf
+~/.config/heckcheckos-builder/port_allocations.json
+~/.config/heckcheckos-builder/windows_vm_ports.conf
 ```
 
 ## Configuration Files
 
 ### Port Allocations
-**Location**: `~/.config/ghostos-builder/port_allocations.json`
+**Location**: `~/.config/heckcheckos-builder/port_allocations.json`
 
 ```json
 {
@@ -158,7 +158,7 @@ All changes are automatic and saved to:
 ```
 
 ### Windows VM Configuration
-**Location**: `~/.config/ghostos-builder/windows_vm_ports.conf`
+**Location**: `~/.config/heckcheckos-builder/windows_vm_ports.conf`
 
 Contains environment variables and QEMU command examples with allocated ports.
 
@@ -167,7 +167,7 @@ Contains environment variables and QEMU command examples with allocated ports.
 ### Example 1: Just Need Keyboard
 
 ```bash
-cd gui/ghostos-iso-builder
+cd gui/heckcheckos-iso-builder
 ./start-keyboard-only.sh
 ```
 
@@ -176,7 +176,7 @@ Keyboard appears, ready to use with any application.
 ### Example 2: Setup Windows VM Ports
 
 ```bash
-cd gui/ghostos-iso-builder
+cd gui/heckcheckos-iso-builder
 python3 port_manager.py
 ```
 
@@ -197,14 +197,14 @@ Allocating ports for Windows VM:
 ### Example 3: Interactive Menu
 
 ```bash
-cd gui/ghostos-iso-builder
+cd gui/heckcheckos-iso-builder
 ./launch-menu.sh
 ```
 
 Menu appears:
 ```
 ╔════════════════════════════════════════════════════════╗
-║        GhostOS - Component Launcher Menu             ║
+║        Heck-CheckOS - Component Launcher Menu             ║
 ║        Run components independently as needed         ║
 ╚════════════════════════════════════════════════════════╝
 
@@ -307,7 +307,7 @@ vncserver :1
 export DISPLAY=:1
 
 # Launch components
-cd GO-OS/gui/ghostos-iso-builder
+cd GO-OS/gui/heckcheckos-iso-builder
 ./launch-menu.sh
 ```
 
@@ -321,7 +321,7 @@ When Windows integration is set up:
    ```
 
 2. **Use Allocated Ports**:
-   - Read from `~/.config/ghostos-builder/windows_vm_ports.conf`
+   - Read from `~/.config/heckcheckos-builder/windows_vm_ports.conf`
    - Use allocated ports in Windows VM configuration
    - No conflicts with Debian 12
 

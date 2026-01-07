@@ -1,6 +1,6 @@
-# GhostOS Advanced ISO Builder GUI
+# Heck-CheckOS Advanced ISO Builder GUI
 
-A comprehensive PyQt6-based GUI for building customized GhostOS ISOs with multi-source support, theme customization, and repository integration.
+A comprehensive PyQt6-based GUI for building customized Heck-CheckOS ISOs with multi-source support, theme customization, and repository integration.
 
 ## Features
 
@@ -67,7 +67,7 @@ A comprehensive PyQt6-based GUI for building customized GhostOS ISOs with multi-
 ### Run Components As Needed (NEW!)
 
 ```bash
-cd gui/ghostos-iso-builder
+cd gui/heckcheckos-iso-builder
 
 # Interactive launcher menu
 ./launch-menu.sh
@@ -83,7 +83,7 @@ python3 port_manager.py        # Port management
 ### Desktop/Linux Quick Start
 
 ```bash
-cd gui/ghostos-iso-builder
+cd gui/heckcheckos-iso-builder
 
 # Easy launcher with dependency checks
 ./start-gui.sh
@@ -98,7 +98,7 @@ pkg install python git -y
 
 # Clone repository
 git clone https://github.com/jameshroop-art/GO-OS
-cd GO-OS/gui/ghostos-iso-builder
+cd GO-OS/gui/heckcheckos-iso-builder
 
 # Install dependencies
 pip install -r requirements.txt
@@ -117,7 +117,7 @@ export DISPLAY=:1
 ### Manual Installation
 
 ```bash
-cd gui/ghostos-iso-builder
+cd gui/heckcheckos-iso-builder
 
 # Install dependencies
 pip install -r requirements.txt
@@ -196,7 +196,7 @@ python main.py
 ## Architecture
 
 ```
-gui/ghostos-iso-builder/
+gui/heckcheckos-iso-builder/
 ├── main.py                    # Main application entry point
 ├── requirements.txt           # Python dependencies
 ├── ui/                        # UI components
@@ -244,7 +244,7 @@ gui/ghostos-iso-builder/
 
 ## License
 
-GhostOS ISO Builder is part of the GO-OS project.
+Heck-CheckOS ISO Builder is part of the GO-OS project.
 
 All integrated external projects maintain their original licenses (see integrations/README.md).
 

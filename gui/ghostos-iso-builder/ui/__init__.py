@@ -1,5 +1,5 @@
 """
-UI Components for GhostOS ISO Builder
+UI Components for Heck-CheckOS ISO Builder
 """
 
 from .iso_loader import ISOLoaderWidget

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The GhostOS ISO Builder now includes a fully-featured touchscreen keyboard with calibration support, customization capabilities, and seamless integration with all GUI components.
+The Heck-CheckOS ISO Builder now includes a fully-featured touchscreen keyboard with calibration support, customization capabilities, and seamless integration with all GUI components.
 
 ## Features
 
@@ -38,7 +38,7 @@ The GhostOS ISO Builder now includes a fully-featured touchscreen keyboard with 
 ### Starting the GUI with Keyboard Support
 
 ```bash
-cd gui/ghostos-iso-builder
+cd gui/heckcheckos-iso-builder
 ./start-gui.sh
 ```
 
@@ -95,7 +95,7 @@ The launcher script will:
    - Colors (background and text)
    - Font size
 5. Save layout to JSON file
-6. Load in any GhostOS installation
+6. Load in any Heck-CheckOS installation
 
 ## Calibration Guide
 
@@ -127,7 +127,7 @@ Calibrate your keyboard when:
 4. **Apply Calibration**
    - Click **Finish** to save
    - Calibration applies immediately
-   - Stored in `~/.config/ghostos-builder/keyboard_calibration.json`
+   - Stored in `~/.config/heckcheckos-builder/keyboard_calibration.json`
 
 ### Calibration Tips
 
@@ -143,7 +143,7 @@ Calibrate your keyboard when:
 
 Calibration data is stored per-user:
 ```
-~/.config/ghostos-builder/
+~/.config/heckcheckos-builder/
 ├── keyboard_calibration.json    # Touch offset data
 ├── keyboard_layouts/            # Custom layouts
 │   ├── my_layout.json
@@ -207,7 +207,7 @@ The keyboard automatically snaps to screen edges:
 The keyboard is automatically included when building ISOs with the self-install option enabled:
 
 1. Build ISO with **🔧 Self-Installation: ENABLED**
-2. Keyboard installs to `/opt/ghostos-builder/ui/touchscreen_keyboard.py`
+2. Keyboard installs to `/opt/heckcheckos-builder/ui/touchscreen_keyboard.py`
 3. Calibration data migrates to new installations
 4. Desktop entry includes keyboard launcher
 
@@ -295,10 +295,10 @@ class KeyboardLayoutDesigner(QDialog):
 **Problem**: Calibration resets after restart
 
 **Solutions**:
-- Check write permissions: `~/.config/ghostos-builder/`
+- Check write permissions: `~/.config/heckcheckos-builder/`
 - Verify file exists: `keyboard_calibration.json`
 - Check disk space: `df -h ~`
-- Review file permissions: `ls -la ~/.config/ghostos-builder/`
+- Review file permissions: `ls -la ~/.config/heckcheckos-builder/`
 
 ### Keyboard Doesn't Snap
 
@@ -360,7 +360,7 @@ To add new keyboard features:
 
 ## License
 
-The touchscreen keyboard is part of GhostOS ISO Builder and follows the same license terms. See main repository LICENSE for details.
+The touchscreen keyboard is part of Heck-CheckOS ISO Builder and follows the same license terms. See main repository LICENSE for details.
 
 ## Credits
 
@@ -374,8 +374,8 @@ Built with:
 For issues or questions:
 - GitHub Issues: https://github.com/jameshroop-art/GO-OS/issues
 - Documentation: See main README.md
-- Examples: Check `gui/ghostos-iso-builder/examples/`
+- Examples: Check `gui/heckcheckos-iso-builder/examples/`
 
 ---
 
-**GhostOS ISO Builder** - Professional ISO customization with integrated touchscreen keyboard support
+**Heck-CheckOS ISO Builder** - Professional ISO customization with integrated touchscreen keyboard support

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# GhostOS Touchscreen Keyboard - Android Launcher
+# Heck-CheckOS Touchscreen Keyboard - Android Launcher
 # Optimized for Termux on Android
 # Fallback for different Termux installations
 
@@ -15,7 +15,7 @@ fi
 set -e
 
 echo "========================================"
-echo "  GhostOS Keyboard - Android Launcher"
+echo "  Heck-CheckOS Keyboard - Android Launcher"
 echo "========================================"
 echo ""
 
@@ -109,7 +109,7 @@ if command -v getprop &> /dev/null; then
 fi
 
 # Create config directory
-CONFIG_DIR="$HOME/.config/ghostos-builder"
+CONFIG_DIR="$HOME/.config/heckcheckos-builder"
 mkdir -p "$CONFIG_DIR"
 echo -e "${GREEN}✓${NC} Config directory: $CONFIG_DIR"
 
@@ -151,7 +151,7 @@ try:
     
     print("Creating application...")
     app = QApplication(sys.argv)
-    app.setApplicationName("GhostOS Touchscreen Keyboard")
+    app.setApplicationName("Heck-CheckOS Touchscreen Keyboard")
     
     print("Creating keyboard...")
     keyboard = TouchscreenKeyboard()

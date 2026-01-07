@@ -1,8 +1,8 @@
-# GhostOS ISO Builder - Quick Start Guide
+# Heck-CheckOS ISO Builder - Quick Start Guide
 
 ## Overview
 
-This guide helps you quickly start the GhostOS ISO Builder GUI with full touchscreen keyboard support and access to all integrations.
+This guide helps you quickly start the Heck-CheckOS ISO Builder GUI with full touchscreen keyboard support and access to all integrations.
 
 ## Prerequisites
 
@@ -18,7 +18,7 @@ This guide helps you quickly start the GhostOS ISO Builder GUI with full touchsc
 The easiest way to start the GUI:
 
 ```bash
-cd /path/to/GO-OS/gui/ghostos-iso-builder
+cd /path/to/GO-OS/gui/heckcheckos-iso-builder
 ./start-gui.sh
 ```
 
@@ -36,7 +36,7 @@ This launcher script:
 If you prefer manual control:
 
 ```bash
-cd /path/to/GO-OS/gui/ghostos-iso-builder
+cd /path/to/GO-OS/gui/heckcheckos-iso-builder
 
 # Install dependencies first
 pip3 install -r requirements.txt
@@ -50,14 +50,14 @@ python3 main.py
 Install the GUI system-wide (requires root):
 
 ```bash
-cd /path/to/GO-OS/gui/ghostos-iso-builder
+cd /path/to/GO-OS/gui/heckcheckos-iso-builder
 sudo ./install.sh
 ```
 
 After installation:
-- Run from terminal: `ghostos-builder`
-- Launch from app menu: "GhostOS ISO Builder"
-- Standalone keyboard: `ghostos-keyboard`
+- Run from terminal: `heckcheckos-builder`
+- Launch from app menu: "Heck-CheckOS ISO Builder"
+- Standalone keyboard: `heckcheckos-keyboard`
 
 ## First Launch
 
@@ -186,7 +186,7 @@ On first launch, you'll see:
    ```
    Click: 🚀 Build ISO
    Monitor progress in build dialog
-   ISO saved to: $HOME/ghostos-ultimate/
+   ISO saved to: $HOME/heckcheckos-ultimate/
    ```
 
 ## Integrations Available
@@ -216,7 +216,7 @@ All integrations respect original licenses and maintain attribution.
 ### Storage Locations
 
 ```
-$HOME/.config/ghostos-builder/
+$HOME/.config/heckcheckos-builder/
 ├── keyboard_calibration.json    # Touch offset data
 ├── keyboard_layouts/            # Custom keyboard layouts
 ├── keyboard_settings.json       # Keyboard preferences
@@ -285,10 +285,10 @@ python3 main.py --verbose
 python3 -c "from PyQt6.QtWidgets import QApplication; print('OK')"
 
 # Check config directory permissions
-ls -la ~/.config/ghostos-builder/
+ls -la ~/.config/heckcheckos-builder/
 
 # Reset keyboard config
-rm -rf ~/.config/ghostos-builder/keyboard*
+rm -rf ~/.config/heckcheckos-builder/keyboard*
 
 # Restart GUI
 ```
@@ -369,13 +369,13 @@ python3 main.py --show-keyboard
 
 ```bash
 # Custom config directory
-export GHOSTOS_CONFIG_DIR="$HOME/.ghostos"
+export HECKCHECKOS_CONFIG_DIR="$HOME/.heckcheckos"
 
 # Disable keyboard
-export GHOSTOS_NO_KEYBOARD=1
+export HECKCHECKOS_NO_KEYBOARD=1
 
 # Set default theme
-export GHOSTOS_THEME="gaming"
+export HECKCHECKOS_THEME="gaming"
 
 # Launch
 python3 main.py
@@ -387,12 +387,12 @@ Run just the touchscreen keyboard:
 
 ```bash
 # If installed system-wide
-ghostos-keyboard
+heckcheckos-keyboard
 
 # Or directly
 python3 -c "
 import sys
-sys.path.insert(0, 'gui/ghostos-iso-builder')
+sys.path.insert(0, 'gui/heckcheckos-iso-builder')
 from PyQt6.QtWidgets import QApplication
 from ui.touchscreen_keyboard import TouchscreenKeyboard
 
@@ -444,21 +444,21 @@ done
 Before major operations:
 ```bash
 # Backup config
-cp -r ~/.config/ghostos-builder ~/ghostos-backup-$(date +%F)
+cp -r ~/.config/heckcheckos-builder ~/ghostos-backup-$(date +%F)
 
 # Backup custom layouts
-tar -czf layouts-backup.tar.gz ~/.config/ghostos-builder/keyboard_layouts/
+tar -czf layouts-backup.tar.gz ~/.config/heckcheckos-builder/keyboard_layouts/
 
 # Backup built ISOs
-cp $HOME/ghostos-ultimate/*.iso ~/iso-backups/
+cp $HOME/heckcheckos-ultimate/*.iso ~/iso-backups/
 ```
 
 ## Support & Resources
 
 ### Documentation
 
-- **Main README**: `gui/ghostos-iso-builder/README.md`
-- **Keyboard Guide**: `gui/ghostos-iso-builder/KEYBOARD_GUIDE.md`
+- **Main README**: `gui/heckcheckos-iso-builder/README.md`
+- **Keyboard Guide**: `gui/heckcheckos-iso-builder/KEYBOARD_GUIDE.md`
 - **Architecture**: `Go-OS/ARCHITECTURE.md`
 - **FAQ**: `Go-OS/FAQ.md`
 
@@ -507,10 +507,10 @@ python3 main.py
 sudo ./install.sh
 
 # Standalone keyboard
-ghostos-keyboard
+heckcheckos-keyboard
 
 # Uninstall
-sudo /opt/ghostos-builder/uninstall.sh
+sudo /opt/heckcheckos-builder/uninstall.sh
 ```
 
 ### Keyboard Shortcuts
@@ -532,6 +532,6 @@ sudo /opt/ghostos-builder/uninstall.sh
 
 ---
 
-**GhostOS ISO Builder** - Professional ISO customization with integrated touchscreen keyboard support
+**Heck-CheckOS ISO Builder** - Professional ISO customization with integrated touchscreen keyboard support
 
 For detailed keyboard documentation, see [KEYBOARD_GUIDE.md](KEYBOARD_GUIDE.md)

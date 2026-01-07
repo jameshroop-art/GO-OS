@@ -54,7 +54,7 @@ class DriverCheckThread(QThread):
         
         # Run driver check command
         result = subprocess.run(
-            ['python3', '/opt/ghostos/windows_driver_emulator/emulator.py', 
+            ['python3', '/opt/heckcheckos/windows_driver_emulator/emulator.py', 
              'check', self.driver_path],
             capture_output=True,
             text=True
@@ -85,7 +85,7 @@ class DriverCheckThread(QThread):
             return
         
         result = subprocess.run(
-            ['sudo', 'python3', '/opt/ghostos/windows_driver_emulator/emulator.py',
+            ['sudo', 'python3', '/opt/heckcheckos/windows_driver_emulator/emulator.py',
              'load', self.driver_path],
             capture_output=True,
             text=True
@@ -108,7 +108,7 @@ class DriverCheckThread(QThread):
             return
         
         result = subprocess.run(
-            ['sudo', 'python3', '/opt/ghostos/windows_driver_emulator/emulator.py',
+            ['sudo', 'python3', '/opt/heckcheckos/windows_driver_emulator/emulator.py',
              'unload', self.driver_name],
             capture_output=True,
             text=True
@@ -158,7 +158,7 @@ class DriverCheckThread(QThread):
     def _list_drivers(self):
         """List loaded drivers"""
         result = subprocess.run(
-            ['python3', '/opt/ghostos/windows_driver_emulator/emulator.py', 'list'],
+            ['python3', '/opt/heckcheckos/windows_driver_emulator/emulator.py', 'list'],
             capture_output=True,
             text=True
         )
@@ -300,9 +300,9 @@ class DriverManagerWidget(QWidget):
         self.paths_text = QTextEdit()
         self.paths_text.setMaximumHeight(100)
         self.paths_text.setPlainText(
-            "/opt/ghostos/drivers\n"
-            "/usr/local/share/ghostos/drivers\n"
-            "~/.ghostos/drivers"
+            "/opt/heckcheckos/drivers\n"
+            "/usr/local/share/heckcheckos/drivers\n"
+            "~/.heckcheckos/drivers"
         )
         config_form_layout.addWidget(self.paths_text)
         
@@ -528,7 +528,7 @@ class DriverManagerWidget(QWidget):
         QMessageBox.information(
             self,
             "Configuration",
-            "Configuration will be saved to /etc/ghostos/driver-emulator.conf"
+            "Configuration will be saved to /etc/heckcheckos/driver-emulator.conf"
         )
 
 

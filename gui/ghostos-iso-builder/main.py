@@ -675,7 +675,7 @@ class HeckCheckOSBuilderGUI(QMainWindow):
         file_path, _ = QFileDialog.getSaveFileName(
             self,
             "Save Configuration",
-            str(Path.home() / "ghostos-config.json"),
+            str(Path.home() / "heckcheckos-config.json"),
             "JSON Files (*.json);;All Files (*)"
         )
         
