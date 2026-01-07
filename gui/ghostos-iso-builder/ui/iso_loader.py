@@ -56,7 +56,7 @@ class ISOAnalyzerThread(QThread):
                         'GNOME Desktop': {'size': '720MB', 'required': False},
                     },
                     'Security Tools': {
-                        'Parrot Security Suite': {'size': '1.2GB', 'required': False},
+                        'Debian Security Suite': {'size': '1.2GB', 'required': False},
                         'Network Analysis': {'size': '450MB', 'required': False},
                         'Forensics Tools': {'size': '380MB', 'required': False},
                         'Password Cracking': {'size': '280MB', 'required': False},

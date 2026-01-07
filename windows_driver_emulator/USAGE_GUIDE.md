@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Windows Driver Emulator is a lightweight compatibility layer that allows Windows device drivers to work on GhostOS/Parrot OS without Wine or virtualization. It translates Windows driver API calls to their Linux kernel equivalents.
+The Windows Driver Emulator is a lightweight compatibility layer that allows Windows device drivers to work on GhostOS/Debian 12 without Wine or virtualization. It translates Windows driver API calls to their Linux kernel equivalents.
 
 ## What It Does
 

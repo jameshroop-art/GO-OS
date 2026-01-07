@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 GhostOS Port Manager
-Detects used ports on Parrot OS and allocates free ports for Windows integration
+Detects used ports on Debian 12 and allocates free ports for Windows integration
 """
 
 import socket
@@ -15,7 +15,7 @@ from typing import List, Dict, Tuple, Optional
 class PortManager:
     """Manages port allocation to avoid conflicts"""
     
-    # Common Parrot OS / Linux services and their default ports
+    # Common Debian 12 / Linux services and their default ports
     KNOWN_SERVICES = {
         'ssh': [22],
         'http': [80, 8080],
@@ -111,11 +111,11 @@ class PortManager:
         
         return sorted(list(set(used_ports)))
     
-    def get_parrot_os_ports(self) -> Dict[str, List[int]]:
-        """Get ports used by Parrot OS services"""
+    def get_debian_os_ports(self) -> Dict[str, List[int]]:
+        """Get ports used by Debian 12 services"""
         used_ports = {}
         
-        print("Detecting Parrot OS service ports...")
+        print("Detecting Debian 12 service ports...")
         
         # Check known services
         for service, ports in self.KNOWN_SERVICES.items():
@@ -157,12 +157,12 @@ class PortManager:
         print("=" * 50)
         
         # Get currently used ports
-        parrot_ports = self.get_parrot_os_ports()
+        debian_ports = self.get_debian_os_ports()
         all_used = []
-        for ports in parrot_ports.values():
+        for ports in debian_ports.values():
             all_used.extend(ports)
         
-        print(f"\nParrot OS is using {len(all_used)} ports")
+        print(f"\nDebian 12 is using {len(all_used)} ports")
         print(f"Used port ranges: {min(all_used) if all_used else 'none'} - {max(all_used) if all_used else 'none'}")
         
         # Allocate Windows ports
@@ -183,7 +183,7 @@ class PortManager:
         """Save port configuration to file"""
         config = {
             'windows_ports': windows_ports,
-            'parrot_ports': self.get_parrot_os_ports(),
+            'debian_ports': self.get_debian_os_ports(),
             'timestamp': str(subprocess.check_output(['date']).decode().strip())
         }
         
@@ -208,7 +208,7 @@ class PortManager:
         
         config = f"""
 # Windows 10 VM Configuration
-# Generated port allocations to avoid conflicts with Parrot OS
+# Generated port allocations to avoid conflicts with Debian 12
 
 # Display Options
 VNC_PORT={windows_ports['vnc']}
@@ -244,12 +244,12 @@ HTTPS_PORT={windows_ports['https']}
         print("  GhostOS Port Manager - System Analysis")
         print("=" * 60)
         
-        # Get Parrot OS ports
-        parrot_ports = self.get_parrot_os_ports()
+        # Get Debian 12 ports
+        debian_ports = self.get_debian_os_ports()
         
-        print("\n📊 Parrot OS Services:")
-        if parrot_ports:
-            for service, ports in parrot_ports.items():
+        print("\n📊 Debian 12 Services:")
+        if debian_ports:
+            for service, ports in debian_ports.items():
                 print(f"  • {service:20s}: {', '.join(map(str, ports))}")
         else:
             print("  No services detected on common ports")

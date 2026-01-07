@@ -2,7 +2,7 @@
 
 ## Overview
 
-A lightweight Windows driver compatibility layer for GhostOS/Parrot OS 7, enabling Windows driver functionality on the Linux host without Wine or virtualization.
+A lightweight Windows driver compatibility layer for GhostOS/Debian 12 7, enabling Windows driver functionality on the Linux host without Wine or virtualization.
 
 ## Purpose
 

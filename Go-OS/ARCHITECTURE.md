@@ -30,14 +30,14 @@ Visual and technical overview of GhostOS architecture for both Desktop and Andro
                  ▼
 ┌─────────────────────────────────────────────────────────┐
 │  Create Root Filesystem (debootstrap)                   │
-│  - Base Parrot OS 7 Security (lory) system             │
+│  - Base Debian 12 (Bookworm) system                     │
 │  - Core utilities and libraries                         │
 └────────────────┬────────────────────────────────────────┘
                  │
                  ▼
 ┌─────────────────────────────────────────────────────────┐
 │  Execute Installation Scripts (chroot)                  │
-│  - Configure Parrot OS 7 repositories                   │
+│  - Configure Debian 12 (Bookworm) repositories          │
 │  - Install version-specific packages                    │
 │  - Apply GhostOS GUI and customizations                 │
 │  - Configure system                                     │
@@ -90,14 +90,14 @@ Visual and technical overview of GhostOS architecture for both Desktop and Andro
 │  System Services                                        │
 │  - systemd, NetworkManager, PulseAudio                 │
 │  - Security: UFW, AppArmor (v2.0), ClamAV (v1.1+)     │
-│  - Parrot Security Tools (penetration testing, etc.)   │
+│  - Kali Security Tools (penetration testing, etc.)     │
 ├────────────────────────────────────────────────────────┤
 │  Package Management                                     │
-│  - apt/dpkg (Parrot/Debian package manager)            │
+│  - apt/dpkg (Debian package manager)                   │
 │  - Flatpak (optional additional packages)              │
 ├────────────────────────────────────────────────────────┤
-│  Parrot OS 7 Security Base                             │
-│  - Parrot kernel with security enhancements            │
+│  Debian 12 (Bookworm) Base                             │
+│  - Linux kernel with security features                 │
 │  - Drivers: AMD, NVIDIA, Intel, USB4, Thunderbolt     │
 ├────────────────────────────────────────────────────────┤
 │  Hardware                                               │

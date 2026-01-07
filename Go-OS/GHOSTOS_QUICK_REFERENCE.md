@@ -1,6 +1,6 @@
 #GhostOS Build System - Quick Reference
 
-**Base OS:** Parrot OS 7 Security Edition
+**Base OS:** Debian 12 (Bookworm)
 **GUI:** GhostOS Custom Desktop Environment
 
 ## Quick Start
@@ -21,9 +21,9 @@ sudo ./ghostos-build.sh
 
 | Option | Version | Features | ISO Size |
 |--------|---------|----------|----------|
-| 1 | v1.0 | Parrot OS 7 base, GhostOS GUI, core features | ~10GB |
-| 2 | v1.1 | Parrot OS 7 base, enhanced privacy, Malwarebytes, improved UI | ~11GB |
-| 3 | v2.0 | Parrot OS 7 base, Wayland, AI, cloud backup, plugins, ARM | ~12GB |
+| 1 | v1.0 | Debian 12 base, GhostOS GUI, core features | ~10GB |
+| 2 | v1.1 | Debian 12 base, enhanced privacy, Malwarebytes, improved UI | ~11GB |
+| 3 | v2.0 | Debian 12 base, Wayland, AI, cloud backup, plugins, ARM | ~12GB |
 | 4 | All | Build all three versions | ~33GB total |
 
 ## Command Reference
