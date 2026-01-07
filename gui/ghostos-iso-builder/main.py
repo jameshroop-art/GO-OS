@@ -275,14 +275,24 @@ class GhostOSBuilderGUI(QMainWindow):
             )
             return
         
-        # Check if running as root
-        if os.geteuid() != 0:
+        # Check if running as root (Unix/Linux only - ISO building is Linux-specific)
+        try:
+            if os.geteuid() != 0:
+                QMessageBox.warning(
+                    self,
+                    "Root Required",
+                    "ISO building requires root privileges.\n\n"
+                    "Please run the builder with sudo:\n"
+                    "sudo python3 main.py"
+                )
+                return
+        except AttributeError:
+            # os.geteuid() doesn't exist on Windows
             QMessageBox.warning(
                 self,
-                "Root Required",
-                "ISO building requires root privileges.\n\n"
-                "Please run the builder with sudo:\n"
-                "sudo python3 main.py"
+                "Platform Not Supported",
+                "ISO building requires a Linux system with root privileges.\n\n"
+                "Windows is not supported for ISO building."
             )
             return
         
