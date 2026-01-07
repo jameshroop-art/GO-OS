@@ -2,6 +2,8 @@
 
 ## Date: 2026-01-07
 
+**HISTORICAL NOTE:** This document reflects the infringement check conducted when the project was based on Parrot OS 7 Security Edition. The project has since been updated to use Debian 12 (Bookworm) as its base operating system. The legal compliance documentation has been updated accordingly.
+
 ## Overview
 
 This document summarizes the infringement check conducted on the GhostOS repository and the remediation actions taken to ensure legal compliance.
