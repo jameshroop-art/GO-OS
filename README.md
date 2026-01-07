@@ -2,6 +2,8 @@
 
 Complete operating system distribution available for multiple platforms with advanced privacy features, driver support, and full customization.
 
+> ⚖️ **Legal Notice:** This is an independent project based on Parrot OS. Not affiliated with, endorsed by, or officially associated with Parrot Security, Ghost Foundation, or any other "Ghost" branded software. See [LEGAL_COMPLIANCE.md](LEGAL_COMPLIANCE.md) for complete legal information.
+
 ## 🚀 Platforms
 
 ### 🐧 Desktop/Server (Linux ISO) THIS REPO DOES NOT CONTAIN THE ISO YOU CAN GET IT HERE: https://start.parrotsec.org
@@ -270,18 +272,26 @@ Contributions welcome! Please:
 3. Make your changes
 4. Submit a pull request
 
-## 📄 License
+## 📄 License & Legal
 
-GhostOS build system and Android tools are provided as-is for educational and development purposes.
+**GhostOS build scripts and configuration** are licensed under the MIT License. See [LICENSE](LICENSE) file.
 
-Based on:
-- **Parrot OS 7 Security Edition** (Desktop) - GPLv3 and various licenses
-- **Debian GNU/Linux** - Various licenses (Parrot base)
+**Important Legal Information:**
+- 📋 **Full Legal Compliance**: See [LEGAL_COMPLIANCE.md](LEGAL_COMPLIANCE.md)
+- ⚖️ **Trademark Notice**: Not affiliated with Ghost Foundation or Parrot Security
+- 🔓 **Open Source**: Based on Parrot OS 7 Security Edition (GPL and various licenses)
+- 📦 **Third-Party Components**: All upstream packages retain their original licenses
+
+**This is a derivative work based on:**
+- **Parrot OS 7 Security Edition** (Desktop) - GPLv3 and various licenses - https://www.parrotsec.org
+- **Debian GNU/Linux** - Various licenses (DFSG-compliant)
 - **Termux** (Android) - GPLv3
 - **proot** (Android) - GPL
-- Numerous open-source packages with individual licenses
+- Numerous other open-source packages with individual licenses
 
-Please respect all applicable licenses.
+**Disclaimer:** This project is NOT an official Parrot OS release and is NOT endorsed by Parrot Security. Parrot OS™ is a trademark of Parrot Security.
+
+Please respect all applicable licenses and trademark rights.
 
 ## 🔗 Links
 
