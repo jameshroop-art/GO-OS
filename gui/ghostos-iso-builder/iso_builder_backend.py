@@ -85,7 +85,7 @@ class ISOBuilder:
         cmd = [
             'debootstrap',
             '--arch=amd64',
-            '--include=wget,curl,ca-certificates,gnupg,sudo,systemd,network-manager,tpm2-tools,tpm-tools,libtss2-esys0,libtss2-tcti-device0',
+            '--include=wget,curl,ca-certificates,gnupg,sudo,systemd,network-manager,tpm2-tools,tpm-tools,libtss2-esys0,libtss2-tcti-device0,cpufrequtils,linux-cpupower,amd64-microcode',
             'bookworm',
             str(self.rootfs_dir),
             'http://deb.debian.org/debian'
@@ -964,6 +964,131 @@ gtk-enable-animations=0
         
         print("✓ Theme applied")
     
+    def configure_amd_am5_support(self, progress_callback=None):
+        """Configure AMD AM5 platform with 3D V-Cache support"""
+        if progress_callback:
+            progress_callback(33, "Configuring AMD AM5 3D V-Cache support...")
+        
+        print("[*] Configuring AMD AM5 platform with 3D V-Cache support...")
+        
+        # 1. Enable AMD P-state driver and CPPC (Collaborative Processor Performance Control)
+        # This is critical for AM5 Ryzen 7000 series and X3D processors
+        modprobe_conf = self.rootfs_dir / "etc" / "modprobe.d" / "amd-pstate.conf"
+        modprobe_conf.parent.mkdir(parents=True, exist_ok=True)
+        modprobe_conf.write_text("""# AMD AM5 Platform Configuration
+# Enable AMD P-state driver for Ryzen 7000 series
+# This provides better frequency scaling and power management for 3D V-Cache CPUs
+
+# Load AMD P-state driver
+options amd_pstate shared_mem=1
+
+# AMD Preferred Core (for X3D CPUs with asymmetric cores)
+# Ensures the OS knows which cores have 3D V-Cache
+options amd_pstate prefcore=enable
+""")
+        
+        # 2. Configure CPU frequency scaling governor for AM5
+        cpufreq_conf = self.rootfs_dir / "etc" / "default" / "cpufrequtils"
+        cpufreq_conf.parent.mkdir(parents=True, exist_ok=True)
+        cpufreq_conf.write_text("""# CPU Frequency Scaling for AMD AM5
+# Use schedutil governor for best performance with 3D V-Cache
+GOVERNOR="schedutil"
+MIN_SPEED="400MHz"
+MAX_SPEED="0"  # Use CPU maximum
+""")
+        
+        # 3. Create systemd service to enable AMD P-state on boot
+        amd_service = self.rootfs_dir / "etc" / "systemd" / "system" / "amd-pstate-enable.service"
+        amd_service.parent.mkdir(parents=True, exist_ok=True)
+        amd_service.write_text("""[Unit]
+Description=Enable AMD P-state Driver for AM5 Platform
+After=sysinit.target
+Before=basic.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'echo active > /sys/devices/system/cpu/amd_pstate/status 2>/dev/null || true'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+""")
+        
+        # Enable the service
+        systemd_link = self.rootfs_dir / "etc" / "systemd" / "system" / "multi-user.target.wants" / "amd-pstate-enable.service"
+        systemd_link.parent.mkdir(parents=True, exist_ok=True)
+        if not systemd_link.exists():
+            systemd_link.symlink_to("../amd-pstate-enable.service")
+        
+        # 4. Configure kernel parameters for optimal 3D V-Cache performance
+        sysctl_amd = self.rootfs_dir / "etc" / "sysctl.d" / "90-amd-am5.conf"
+        sysctl_amd.parent.mkdir(parents=True, exist_ok=True)
+        sysctl_amd.write_text("""# AMD AM5 3D V-Cache Optimization
+# Optimize for large L3 cache (96MB+ on X3D processors)
+
+# Increase CPU cache pressure threshold (more aggressive caching)
+vm.vfs_cache_pressure=50
+
+# Allow more memory to be used for file cache (leverages large L3)
+vm.swappiness=10
+
+# Optimize scheduler for heterogeneous CPU topologies (X3D + non-X3D cores)
+kernel.sched_migration_cost_ns=500000
+kernel.sched_min_granularity_ns=1000000
+kernel.sched_wakeup_granularity_ns=1500000
+""")
+        
+        # 5. Create documentation for AMD AM5 features
+        amd_doc = self.rootfs_dir / "etc" / "heckcheckos" / "amd-am5-info.txt"
+        amd_doc.parent.mkdir(parents=True, exist_ok=True)
+        amd_doc.write_text("""AMD AM5 Platform with 3D V-Cache Support
+==========================================
+
+This system is optimized for AMD Ryzen 7000 series processors, including
+X3D variants with 3D V-Cache technology.
+
+ENABLED FEATURES:
+✓ AMD P-state driver (active mode)
+✓ AMD Preferred Core (CPPC) support
+✓ Schedutil CPU frequency governor
+✓ Optimized cache management for large L3
+✓ Heterogeneous core topology support
+
+SUPPORTED PROCESSORS:
+• Ryzen 9 7950X3D (16 cores, 144MB cache)
+• Ryzen 9 7900X3D (12 cores, 140MB cache)
+• Ryzen 7 7800X3D (8 cores, 104MB cache)
+• Ryzen 9 7950X / 7900X / 7700X / 7600X
+• And all other AM5 processors
+
+BOOT OPTIONS:
+• Default: AMD P-state active + Preferred Core enabled
+• Optimized: Additional cache and scheduler optimizations
+  (Use "AM5 3D V-Cache Optimized" boot option)
+
+VERIFY SUPPORT:
+Check if AMD P-state is active:
+  cat /sys/devices/system/cpu/amd_pstate/status
+
+Check preferred core support:
+  cat /sys/devices/system/cpu/cpu*/acpi_cppc/highest_perf
+
+PERFORMANCE TIPS:
+1. Use schedutil governor (enabled by default)
+2. Enable PBO (Precision Boost Overdrive) in BIOS if desired
+3. Ensure good cooling for sustained boost clocks
+4. Update BIOS for latest AGESA microcode
+
+For more information:
+https://www.kernel.org/doc/html/latest/admin-guide/pm/amd-pstate.html
+""")
+        
+        print("  ✓ AMD P-state driver configured")
+        print("  ✓ CPPC (Preferred Core) support enabled")
+        print("  ✓ Schedutil governor configured")
+        print("  ✓ 3D V-Cache optimizations applied")
+        print("  ✓ AM5 platform fully supported")
+    
     def install_custom_packages(self, packages: list, progress_callback=None):
         """Install custom packages in the chroot"""
         if not packages:
@@ -1049,8 +1174,8 @@ python3 main.py "$@"
         print("✓ GhostOS Builder installed")
     
     def create_grub_config(self, version: str):
-        """Create GRUB bootloader configuration with TPM support"""
-        print("[*] Creating GRUB configuration with TPM support...")
+        """Create GRUB bootloader configuration with TPM and AMD AM5 3D V-Cache support"""
+        print("[*] Creating GRUB configuration with TPM and AMD AM5 support...")
         
         grub_cfg = self.iso_dir / "boot" / "grub" / "grub.cfg"
         grub_cfg.write_text(f"""set timeout=30
@@ -1076,12 +1201,17 @@ if [ -d (hd0,gpt1)/EFI ]; then
 fi
 
 menuentry "👻 Heck-CheckOS {version} - Install (Pre-configured)" {{
-    linux /live/vmlinuz boot=live quiet splash installer-mode tpm_tis.force=1
+    linux /live/vmlinuz boot=live quiet splash installer-mode tpm_tis.force=1 amd_pstate=active amd_prefcore=enable
     initrd /live/initrd.img
 }}
 
 menuentry "👻 Heck-CheckOS {version} - Live Mode (Pre-configured)" {{
-    linux /live/vmlinuz boot=live quiet splash tpm_tis.force=1
+    linux /live/vmlinuz boot=live quiet splash tpm_tis.force=1 amd_pstate=active amd_prefcore=enable
+    initrd /live/initrd.img
+}}
+
+menuentry "👻 Heck-CheckOS {version} - AM5 3D V-Cache Optimized" {{
+    linux /live/vmlinuz boot=live quiet splash tpm_tis.force=1 amd_pstate=active amd_prefcore=enable processor.max_cstate=1 idle=poll
     initrd /live/initrd.img
 }}
 
@@ -1091,12 +1221,12 @@ menuentry "👻 Heck-CheckOS {version} - Safe Mode" {{
 }}
 
 menuentry "👻 Heck-CheckOS {version} - No TPM Mode" {{
-    linux /live/vmlinuz boot=live quiet splash
+    linux /live/vmlinuz boot=live quiet splash amd_pstate=active amd_prefcore=enable
     initrd /live/initrd.img
 }}
 """)
         
-        print("✓ GRUB configuration created with TPM support")
+        print("✓ GRUB configuration created with TPM and AMD AM5 support")
     
     def create_squashfs(self, progress_callback=None):
         """Create squashfs filesystem"""
@@ -1263,6 +1393,9 @@ menuentry "👻 Heck-CheckOS {version} - No TPM Mode" {{
             
             # Configure Program Autonomy (allow programs to operate naturally)
             self.configure_program_autonomy(progress_callback)
+            
+            # Configure AMD AM5 3D V-Cache support
+            self.configure_amd_am5_support(progress_callback)
             
             # Merge ISO components if multiple sources provided
             merged_packages = []
