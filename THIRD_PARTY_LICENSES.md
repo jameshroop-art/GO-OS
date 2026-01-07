@@ -1,6 +1,6 @@
 # Third-Party Licenses and Attributions
 
-This document lists all third-party software, libraries, and components used in the GhostOS project, along with their licenses and attributions.
+This document lists all third-party software, libraries, and components used in the Heck-CheckOS project, along with their licenses and attributions.
 
 ## Base Operating Systems
 
@@ -9,7 +9,7 @@ This document lists all third-party software, libraries, and components used in 
 - **Copyright:** Software in the Public Interest, Inc. and individual package maintainers
 - **Website:** https://www.debian.org
 - **Description:** Universal Operating System - Stable Linux distribution
-- **Note:** GhostOS is a derivative work that adds custom configurations, security tools, and packages to Debian 12
+- **Note:** Heck-CheckOS is a derivative work that adds custom configurations, security tools, and packages to Debian 12
 - **Trademark:** Debian® is a registered trademark of Software in the Public Interest, Inc.
 
 ## Build Tools and System Utilities
@@ -69,7 +69,7 @@ This document lists all third-party software, libraries, and components used in 
 - **License:** GPL, LGPL, BSD
 - **Website:** https://www.xfce.org
 - **Description:** Lightweight desktop environment
-- **Used in:** GhostOS v1.0, v1.1
+- **Used in:** Heck-CheckOS v1.0, v1.1
 
 ### GNOME (if used)
 - **License:** GPL, LGPL
@@ -81,7 +81,7 @@ This document lists all third-party software, libraries, and components used in 
 - **License:** MIT
 - **Website:** https://wayland.freedesktop.org
 - **Description:** Display server protocol
-- **Used in:** GhostOS v2.0
+- **Used in:** Heck-CheckOS v2.0
 
 ## Security and Privacy Tools
 

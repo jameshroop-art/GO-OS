@@ -1,5 +1,5 @@
 #!/bin/bash
-# GhostOS Windows Driver Emulator - List Drivers
-# Usage: ghostos-driver-list
+# Heck-CheckOS Windows Driver Emulator - List Drivers
+# Usage: heckcheckos-driver-list
 
-python3 /opt/ghostos/windows_driver_emulator/emulator.py list
+python3 /opt/heckcheckos/windows_driver_emulator/emulator.py list

@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ============================================
-# GhostOS Android Installation Script
+# Heck-CheckOS Android Installation Script
 # For Android 9+ (Termux/proot environment)
 # Non-root WiFi/Bluetooth driver patching
 # 
@@ -38,7 +38,7 @@
 set -e
 
 echo "========================================"
-echo "  👻 GhostOS for Android"
+echo "  👻 Heck-CheckOS for Android"
 echo "  🐧 Security Edition - Debian 12"
 echo "  Version: 1.0-android-security"
 echo "  Target: Android 9+"
@@ -55,7 +55,7 @@ echo "[*] Performing security checks..."
 if [ "$(id -u)" -eq 0 ]; then
     echo "❌ ERROR: Running as root detected!"
     echo ""
-    echo "GhostOS MUST NOT run as root to protect:"
+    echo "Heck-CheckOS MUST NOT run as root to protect:"
     echo "  • System security"
     echo "  • Knox Security (Samsung devices)"
     echo "  • Device warranty"
@@ -68,7 +68,7 @@ fi
 # Check for su/root access attempts
 if command -v su >/dev/null 2>&1; then
     echo "⚠️  WARNING: Root access (su) detected on device"
-    echo "   GhostOS will NOT use root privileges"
+    echo "   Heck-CheckOS will NOT use root privileges"
     echo "   All operations will be userspace-only"
     echo ""
 fi
@@ -82,7 +82,7 @@ DEVICE_MANUFACTURER=$(getprop ro.product.manufacturer 2>/dev/null)
 
 if [ -n "$KNOX_VERSION" ]; then
     echo "✅ Samsung Knox detected: $KNOX_VERSION"
-    echo "   GhostOS is Knox-safe (no system modifications)"
+    echo "   Heck-CheckOS is Knox-safe (no system modifications)"
     
     # Specific check for Samsung Galaxy Note 8/Note 8 Plus
     if echo "$DEVICE_MODEL" | grep -iq "SM-N950"; then
@@ -119,7 +119,7 @@ if [ -n "$KNOX_VERSION" ]; then
     echo ""
 elif echo "$DEVICE_MANUFACTURER" | grep -iq "LGE\|LG"; then
     echo "✅ LG Device detected: $DEVICE_MODEL"
-    echo "   GhostOS compatible (no Knox, userspace only)"
+    echo "   Heck-CheckOS compatible (no Knox, userspace only)"
     
     # Check for LG Stylo 5
     if echo "$DEVICE_MODEL" | grep -iq "LM-Q720"; then
@@ -148,7 +148,7 @@ fi
 CURRENT_UID=$(id -u)
 if [ "$CURRENT_UID" -lt 10000 ]; then
     echo "❌ ERROR: Not running in app user context (UID: $CURRENT_UID)"
-    echo "   GhostOS requires normal app UID (10000+)"
+    echo "   Heck-CheckOS requires normal app UID (10000+)"
     echo "   This protects system security"
     exit 1
 fi
@@ -224,12 +224,12 @@ proot-distro install debian
 INSTALL_SECURITY_TOOLS=true
 
 # ============================================
-# Create GhostOS directory structure
+# Create Heck-CheckOS directory structure
 # ============================================
-GHOSTOS_HOME="$HOME/ghostos-android"
+GHOSTOS_HOME="$HOME/heckcheckos-android"
 mkdir -p "$GHOSTOS_HOME"/{bin,config,drivers,logs}
 
-echo "[*] GhostOS directory created: $GHOSTOS_HOME"
+echo "[*] Heck-CheckOS directory created: $GHOSTOS_HOME"
 
 # ============================================
 # Non-Root WiFi Management Script
@@ -240,11 +240,11 @@ echo "[*] Creating non-root WiFi management tools..."
 cat > "$GHOSTOS_HOME/bin/ghostos-wifi" << 'WIFI_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS WiFi Manager (Non-Root)
+# Heck-CheckOS WiFi Manager (Non-Root)
 # Uses Android Termux-API for WiFi control
 
 echo "==================================="
-echo "  GhostOS WiFi Manager"
+echo "  Heck-CheckOS WiFi Manager"
 echo "  Non-Root Mode"
 echo "==================================="
 echo ""
@@ -340,11 +340,11 @@ echo "[*] Creating non-root Bluetooth management tools..."
 cat > "$GHOSTOS_HOME/bin/ghostos-bluetooth" << 'BT_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS Bluetooth Manager (Non-Root)
+# Heck-CheckOS Bluetooth Manager (Non-Root)
 # Uses Android Termux-API for Bluetooth control
 
 echo "==================================="
-echo "  GhostOS Bluetooth Manager"
+echo "  Heck-CheckOS Bluetooth Manager"
 echo "  Non-Root Mode"
 echo "==================================="
 echo ""
@@ -439,15 +439,15 @@ chmod +x "$GHOSTOS_HOME/bin/ghostos-bluetooth"
 echo ""
 echo "[*] Creating driver bridge system..."
 
-cat > "$GHOSTOS_HOME/bin/ghostos-driver-bridge" << 'BRIDGE_EOF'
+cat > "$GHOSTOS_HOME/bin/heckcheckos-driver-bridge" << 'BRIDGE_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS Driver Bridge
+# Heck-CheckOS Driver Bridge
 # Attempts to bridge connect to device default drivers when drivers not found
 # Non-root userspace implementation
 
 echo "==================================="
-echo "  GhostOS Driver Bridge System"
+echo "  Heck-CheckOS Driver Bridge System"
 echo "  Auto-connect to Default Drivers"
 echo "==================================="
 echo ""
@@ -692,7 +692,7 @@ case "$1" in
         bridge_all_drivers
         ;;
     *)
-        echo "Usage: ghostos-driver-bridge [driver]"
+        echo "Usage: heckcheckos-driver-bridge [driver]"
         echo ""
         echo "Drivers:"
         echo "  wifi       - Bridge WiFi driver"
@@ -706,7 +706,7 @@ case "$1" in
 esac
 BRIDGE_EOF
 
-chmod +x "$GHOSTOS_HOME/bin/ghostos-driver-bridge"
+chmod +x "$GHOSTOS_HOME/bin/heckcheckos-driver-bridge"
 
 # ============================================
 # WiFi/Bluetooth Driver Optimizer (Enhanced)
@@ -714,16 +714,16 @@ chmod +x "$GHOSTOS_HOME/bin/ghostos-driver-bridge"
 echo ""
 echo "[*] Creating enhanced driver optimizer..."
 
-cat > "$GHOSTOS_HOME/bin/ghostos-driver-optimizer" << 'DRIVER_EOF'
+cat > "$GHOSTOS_HOME/bin/heckcheckos-driver-optimizer" << 'DRIVER_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS Driver Optimizer
+# Heck-CheckOS Driver Optimizer
 # Optimizes WiFi and Bluetooth performance without root
 # Uses userspace tools and Android APIs
 # Auto-bridges to default drivers if not found
 
 echo "==================================="
-echo "  GhostOS Driver Optimizer"
+echo "  Heck-CheckOS Driver Optimizer"
 echo "  Non-Root Driver Patcher & Bridge"
 echo "==================================="
 echo ""
@@ -737,7 +737,7 @@ optimize_wifi() {
     
     if [ $? -ne 0 ] || [ -z "$WIFI_INFO" ]; then
         echo "⚠️  WiFi driver not responding, attempting bridge..."
-        ghostos-driver-bridge wifi
+        heckcheckos-driver-bridge wifi
         
         # Retry after bridge
         WIFI_INFO=$(termux-wifi-connectioninfo 2>/dev/null)
@@ -788,7 +788,7 @@ optimize_bluetooth() {
     
     if [ $? -ne 0 ] || [ -z "$BT_INFO" ]; then
         echo "⚠️  Bluetooth driver not responding, attempting bridge..."
-        ghostos-driver-bridge bluetooth
+        heckcheckos-driver-bridge bluetooth
         
         # Retry after bridge
         BT_INFO=$(termux-bluetooth-connectioninfo 2>/dev/null)
@@ -853,7 +853,7 @@ echo ""
 echo "Note: This tool works without root access by using"
 echo "Android's standard APIs and userspace tools."
 echo ""
-echo "If drivers not found, run: ghostos-driver-bridge"
+echo "If drivers not found, run: heckcheckos-driver-bridge"
 echo ""
 echo "For advanced features, consider:"
 echo "  - Using WiFi analyzer apps"
@@ -861,22 +861,22 @@ echo "  - Adjusting router settings"
 echo "  - Updating Android system"
 DRIVER_EOF
 
-chmod +x "$GHOSTOS_HOME/bin/ghostos-driver-optimizer"
+chmod +x "$GHOSTOS_HOME/bin/heckcheckos-driver-optimizer"
 
 # ============================================
-# Create main GhostOS launcher
+# Create main Heck-CheckOS launcher
 # ============================================
 echo ""
-echo "[*] Creating GhostOS launcher..."
+echo "[*] Creating Heck-CheckOS launcher..."
 
 cat > "$GHOSTOS_HOME/bin/ghostos" << 'LAUNCHER_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS Main Launcher for Android
+# Heck-CheckOS Main Launcher for Android
 
 clear
 echo "========================================"
-echo "  👻 GhostOS for Android"
+echo "  👻 Heck-CheckOS for Android"
 echo "  Version: 1.0-android"
 echo "========================================"
 echo ""
@@ -884,7 +884,7 @@ echo "Available Commands:"
 echo ""
 echo "  ghostos-wifi              - WiFi management"
 echo "  ghostos-bluetooth         - Bluetooth management"
-echo "  ghostos-driver-optimizer  - Optimize drivers"
+echo "  heckcheckos-driver-optimizer  - Optimize drivers"
 echo "  ghostos-debian            - Launch Debian 12 (Bookworm) Linux"
 echo "  ghostos-linux             - Launch Linux environment (alias)"
 echo "  ghostos-system            - System information"
@@ -904,7 +904,7 @@ cat > "$GHOSTOS_HOME/bin/ghostos-debian" << 'DEBIAN_EOF'
 # Launch Debian 12 (Bookworm) proot environment
 
 echo "========================================"
-echo "  🐧 GhostOS Debian Security"
+echo "  🐧 Heck-CheckOS Debian Security"
 echo "  Debian 12 (Bookworm) - Security Edition"
 echo "========================================"
 echo ""
@@ -916,7 +916,7 @@ if proot-distro list 2>/dev/null | grep -q "debian.*installed"; then
     proot-distro login debian
 else
     echo "❌ No Linux environment installed!"
-    echo "   Please reinstall GhostOS"
+    echo "   Please reinstall Heck-CheckOS"
     exit 1
 fi
 DEBIAN_EOF
@@ -932,10 +932,10 @@ ln -sf "$GHOSTOS_HOME/bin/ghostos-debian" "$GHOSTOS_HOME/bin/ghostos-linux"
 cat > "$GHOSTOS_HOME/bin/ghostos-system" << 'SYSINFO_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS System Information
+# Heck-CheckOS System Information
 
 echo "==================================="
-echo "  GhostOS System Information"
+echo "  Heck-CheckOS System Information"
 echo "==================================="
 echo ""
 echo "Android Information:"
@@ -950,8 +950,8 @@ echo "  Prefix: $PREFIX"
 echo "  Home: $HOME"
 echo "  Shell: $SHELL"
 echo ""
-echo "GhostOS Information:"
-echo "  Installation: $HOME/ghostos-android"
+echo "Heck-CheckOS Information:"
+echo "  Installation: $HOME/heckcheckos-android"
 echo "  WiFi Manager: Installed"
 echo "  Bluetooth Manager: Installed"
 echo "  Driver Optimizer: Installed"
@@ -973,10 +973,10 @@ cat > "$GHOSTOS_HOME/bin/ghostos-help" << 'HELP_EOF'
 
 cat << 'HELP_TEXT'
 ==================================="
-  GhostOS for Android - Help
+  Heck-CheckOS for Android - Help
 ==================================="
 
-GhostOS provides a lightweight Linux environment on Android 9+
+Heck-CheckOS provides a lightweight Linux environment on Android 9+
 without requiring root access.
 
 FEATURES:
@@ -999,7 +999,7 @@ COMMANDS:
     Manage Bluetooth without root
     Commands: scan, devices, info, enable, disable, status
 
-  ghostos-driver-optimizer
+  heckcheckos-driver-optimizer
     Optimize WiFi and Bluetooth performance
     Analyzes signal strength and connection quality
 
@@ -1009,7 +1009,7 @@ COMMANDS:
 
   ghostos-system
     Display system information
-    Shows Android, Termux, and GhostOS details
+    Shows Android, Termux, and Heck-CheckOS details
 
 REQUIREMENTS:
   • Android 9+ (API 28+)
@@ -1021,8 +1021,8 @@ REQUIREMENTS:
 INSTALLATION:
   1. Install Termux from F-Droid
   2. Install Termux:API from F-Droid
-  3. Run: bash ghostos-android.sh
-  4. Add to PATH: export PATH="$HOME/ghostos-android/bin:$PATH"
+  3. Run: bash heckcheckos-android.sh
+  4. Add to PATH: export PATH="$HOME/heckcheckos-android/bin:$PATH"
 
 PERMISSIONS:
   Grant these permissions to Termux in Android settings:
@@ -1053,7 +1053,7 @@ EXAMPLES:
   ghostos-bluetooth enable
 
   # Optimize drivers
-  ghostos-driver-optimizer
+  heckcheckos-driver-optimizer
 
   # Launch Linux environment
   ghostos-debian
@@ -1089,11 +1089,11 @@ echo "[*] Creating NFC management tools..."
 cat > "$GHOSTOS_HOME/bin/ghostos-nfc" << 'NFC_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS NFC Manager (Non-Root)
+# Heck-CheckOS NFC Manager (Non-Root)
 # Uses Android Termux-API for NFC control
 
 echo "==================================="
-echo "  GhostOS NFC Manager"
+echo "  Heck-CheckOS NFC Manager"
 echo "  RF Reader/Writer"
 echo "==================================="
 echo ""
@@ -1166,11 +1166,11 @@ echo "[*] Creating camera management tools..."
 cat > "$GHOSTOS_HOME/bin/ghostos-camera" << 'CAMERA_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS Camera Manager (Non-Root)
+# Heck-CheckOS Camera Manager (Non-Root)
 # Uses Android Termux-API for camera control
 
 echo "==================================="
-echo "  GhostOS Camera Manager"
+echo "  Heck-CheckOS Camera Manager"
 echo "==================================="
 echo ""
 
@@ -1251,11 +1251,11 @@ echo "[*] Creating hotspot/tethering management tools..."
 cat > "$GHOSTOS_HOME/bin/ghostos-hotspot" << 'HOTSPOT_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS Hotspot Manager (Non-Root)
+# Heck-CheckOS Hotspot Manager (Non-Root)
 # Uses Android settings for hotspot control
 
 echo "==================================="
-echo "  GhostOS Hotspot Manager"
+echo "  Heck-CheckOS Hotspot Manager"
 echo "==================================="
 echo ""
 
@@ -1317,11 +1317,11 @@ echo "[*] Creating flashlight management tools..."
 cat > "$GHOSTOS_HOME/bin/ghostos-flashlight" << 'FLASHLIGHT_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS Flashlight Manager (Non-Root)
+# Heck-CheckOS Flashlight Manager (Non-Root)
 # Uses Android Termux-API for flashlight control
 
 echo "==================================="
-echo "  GhostOS Flashlight Manager"
+echo "  Heck-CheckOS Flashlight Manager"
 echo "==================================="
 echo ""
 
@@ -1392,11 +1392,11 @@ echo "[*] Creating location spoofer tools..."
 cat > "$GHOSTOS_HOME/bin/ghostos-location" << 'LOCATION_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS Location Manager (Non-Root)
+# Heck-CheckOS Location Manager (Non-Root)
 # Uses Android Termux-API for location
 
 echo "==================================="
-echo "  GhostOS Location Manager"
+echo "  Heck-CheckOS Location Manager"
 echo "  GPS & Location Services"
 echo "==================================="
 echo ""
@@ -1464,11 +1464,11 @@ echo "[*] Creating MAC address tools..."
 cat > "$GHOSTOS_HOME/bin/ghostos-mac" << 'MAC_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS MAC Address Manager (Non-Root)
+# Heck-CheckOS MAC Address Manager (Non-Root)
 # View MAC addresses (modification requires root)
 
 echo "==================================="
-echo "  GhostOS MAC Address Manager"
+echo "  Heck-CheckOS MAC Address Manager"
 echo "==================================="
 echo ""
 
@@ -1546,11 +1546,11 @@ echo "[*] Creating touchscreen management tools..."
 cat > "$GHOSTOS_HOME/bin/ghostos-touchscreen" << 'TOUCH_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS Touchscreen Manager (Non-Root)
+# Heck-CheckOS Touchscreen Manager (Non-Root)
 # Touchscreen information and testing
 
 echo "==================================="
-echo "  GhostOS Touchscreen Manager"
+echo "  Heck-CheckOS Touchscreen Manager"
 echo "==================================="
 echo ""
 
@@ -1619,11 +1619,11 @@ echo "[*] Creating QR code tools..."
 cat > "$GHOSTOS_HOME/bin/ghostos-qr" << 'QR_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS QR Code Manager (Non-Root)
+# Heck-CheckOS QR Code Manager (Non-Root)
 # QR code reading and generation
 
 echo "==================================="
-echo "  GhostOS QR Code Manager"
+echo "  Heck-CheckOS QR Code Manager"
 echo "  Reader & Writer"
 echo "==================================="
 echo ""
@@ -1730,11 +1730,11 @@ echo "[*] Creating VPN management tools..."
 cat > "$GHOSTOS_HOME/bin/ghostos-vpn" << 'VPN_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS VPN Manager (Non-Root)
+# Heck-CheckOS VPN Manager (Non-Root)
 # VPN connection management
 
 echo "==================================="
-echo "  GhostOS VPN Manager"
+echo "  Heck-CheckOS VPN Manager"
 echo "==================================="
 echo ""
 
@@ -1818,11 +1818,11 @@ echo "[*] Creating audio management tools..."
 cat > "$GHOSTOS_HOME/bin/ghostos-audio" << 'AUDIO_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS Audio Manager (Non-Root)
+# Heck-CheckOS Audio Manager (Non-Root)
 # Audio and Dolby Atmos information
 
 echo "==================================="
-echo "  GhostOS Audio Manager"
+echo "  Heck-CheckOS Audio Manager"
 echo "  Dolby Atmos Support"
 echo "==================================="
 echo ""
@@ -1907,11 +1907,11 @@ echo "[*] Creating VoIP/WiFi calling tools..."
 cat > "$GHOSTOS_HOME/bin/ghostos-voip" << 'VOIP_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS VoIP Manager (Non-Root)
+# Heck-CheckOS VoIP Manager (Non-Root)
 # VoIP and WiFi calling information
 
 echo "==================================="
-echo "  GhostOS VoIP Manager"
+echo "  Heck-CheckOS VoIP Manager"
 echo "  WiFi Calling Support"
 echo "==================================="
 echo ""
@@ -1982,12 +1982,12 @@ echo "[*] Creating device ID masking tools..."
 cat > "$GHOSTOS_HOME/bin/ghostos-device-mask" << 'MASK_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS Device ID Masking System
+# Heck-CheckOS Device ID Masking System
 # Masks device identifiers for privacy
 # Non-root implementation
 
 echo "==================================="
-echo "  GhostOS Device ID Masking"
+echo "  Heck-CheckOS Device ID Masking"
 echo "  Privacy Protection System"
 echo "==================================="
 echo ""
@@ -2046,31 +2046,31 @@ show_device_ids() {
     echo ""
     
     echo "Note: Some IDs require special permissions to access."
-    echo "GhostOS masks what's available in userspace."
+    echo "Heck-CheckOS masks what's available in userspace."
 }
 
 mask_device_ids() {
     echo "[*] Enabling Device ID Masking..."
     echo ""
     
-    MASK_CONFIG="$HOME/ghostos-android/config/device-mask.conf"
+    MASK_CONFIG="$HOME/heckcheckos-android/config/device-mask.conf"
     
     # Generate random identifiers
     RANDOM_SERIAL="GOS$(head /dev/urandom | tr -dc A-Z0-9 | head -c 10)"
     RANDOM_ID="ghostos$(head /dev/urandom | tr -dc a-f0-9 | head -c 12)"
-    RANDOM_BUILD="GhostOS.$(date +%Y%m%d).$(head /dev/urandom | tr -dc 0-9 | head -c 6)"
+    RANDOM_BUILD="Heck-CheckOS.$(date +%Y%m%d).$(head /dev/urandom | tr -dc 0-9 | head -c 6)"
     
     # Save masked IDs to config
     cat > "$MASK_CONFIG" << EOF
-# GhostOS Device Masking Configuration
+# Heck-CheckOS Device Masking Configuration
 # Generated: $(date)
 MASKED=true
 MASK_SERIAL=$RANDOM_SERIAL
 MASK_ANDROID_ID=$RANDOM_ID
 MASK_BUILD_ID=$RANDOM_BUILD
-MASK_MODEL=GhostOS_Device
-MASK_BRAND=GhostOS
-MASK_MANUFACTURER=GhostOS_Labs
+MASK_MODEL=Heck-CheckOS_Device
+MASK_BRAND=Heck-CheckOS
+MASK_MANUFACTURER=Heck-CheckOS_Labs
 EOF
     
     echo "✅ Device ID masking enabled"
@@ -2079,15 +2079,15 @@ EOF
     echo "  Serial: $RANDOM_SERIAL"
     echo "  Android ID: $RANDOM_ID"
     echo "  Build ID: $RANDOM_BUILD"
-    echo "  Model: GhostOS_Device"
+    echo "  Model: Heck-CheckOS_Device"
     echo ""
     
     # Create environment wrapper
-    cat > "$HOME/ghostos-android/bin/masked-env" << 'ENVEOF'
+    cat > "$HOME/heckcheckos-android/bin/masked-env" << 'ENVEOF'
 #!/data/data/com.termux/files/usr/bin/bash
 # Load masked device IDs
-if [ -f "$HOME/ghostos-android/config/device-mask.conf" ]; then
-    source "$HOME/ghostos-android/config/device-mask.conf"
+if [ -f "$HOME/heckcheckos-android/config/device-mask.conf" ]; then
+    source "$HOME/heckcheckos-android/config/device-mask.conf"
     export GHOSTOS_SERIAL="$MASK_SERIAL"
     export GHOSTOS_ANDROID_ID="$MASK_ANDROID_ID"
     export GHOSTOS_BUILD_ID="$MASK_BUILD_ID"
@@ -2095,13 +2095,13 @@ if [ -f "$HOME/ghostos-android/config/device-mask.conf" ]; then
 fi
 ENVEOF
     
-    chmod +x "$HOME/ghostos-android/bin/masked-env"
+    chmod +x "$HOME/heckcheckos-android/bin/masked-env"
     
     # Add to bashrc if not present
     if ! grep -q "masked-env" "$HOME/.bashrc" 2>/dev/null; then
         echo "" >> "$HOME/.bashrc"
-        echo "# GhostOS Device ID Masking" >> "$HOME/.bashrc"
-        echo "source \$HOME/ghostos-android/bin/masked-env 2>/dev/null" >> "$HOME/.bashrc"
+        echo "# Heck-CheckOS Device ID Masking" >> "$HOME/.bashrc"
+        echo "source \$HOME/heckcheckos-android/bin/masked-env 2>/dev/null" >> "$HOME/.bashrc"
     fi
     
     echo "⚠️  IMPORTANT: Masking limitations without root:"
@@ -2117,7 +2117,7 @@ unmask_device_ids() {
     echo "[*] Disabling Device ID Masking..."
     echo ""
     
-    MASK_CONFIG="$HOME/ghostos-android/config/device-mask.conf"
+    MASK_CONFIG="$HOME/heckcheckos-android/config/device-mask.conf"
     
     if [ -f "$MASK_CONFIG" ]; then
         sed -i 's/MASKED=true/MASKED=false/' "$MASK_CONFIG"
@@ -2135,7 +2135,7 @@ check_mask_status() {
     echo "[*] Device ID Masking Status:"
     echo ""
     
-    MASK_CONFIG="$HOME/ghostos-android/config/device-mask.conf"
+    MASK_CONFIG="$HOME/heckcheckos-android/config/device-mask.conf"
     
     if [ -f "$MASK_CONFIG" ]; then
         source "$MASK_CONFIG"
@@ -2163,7 +2163,7 @@ check_mask_status() {
     
     echo ""
     echo "Current environment variables:"
-    env | grep -E "GHOSTOS_|ANDROID_" | head -10 || echo "  No GhostOS masking variables set"
+    env | grep -E "GHOSTOS_|ANDROID_" | head -10 || echo "  No Heck-CheckOS masking variables set"
 }
 
 generate_random_ids() {
@@ -2172,7 +2172,7 @@ generate_random_ids() {
     
     echo "Random Serial: GOS$(head /dev/urandom | tr -dc A-Z0-9 | head -c 10)"
     echo "Random Android ID: $(head /dev/urandom | tr -dc a-f0-9 | head -c 16)"
-    echo "Random Build ID: GhostOS.$(date +%Y%m%d).$(head /dev/urandom | tr -dc 0-9 | head -c 6)"
+    echo "Random Build ID: Heck-CheckOS.$(date +%Y%m%d).$(head /dev/urandom | tr -dc 0-9 | head -c 6)"
     echo "Random MAC: $(printf '%02x:%02x:%02x:%02x:%02x:%02x\n' $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)))"
     echo ""
     echo "Note: These are example IDs. Use 'mask' command to apply."
@@ -2254,11 +2254,11 @@ echo "[*] Enhancing MAC address tools with masking..."
 cat > "$GHOSTOS_HOME/bin/ghostos-mac-mask" << 'MACMASK_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS MAC Address Masking
+# Heck-CheckOS MAC Address Masking
 # MAC randomization and spoofing info
 
 echo "==================================="
-echo "  GhostOS MAC Address Masking"
+echo "  Heck-CheckOS MAC Address Masking"
 echo "==================================="
 echo ""
 
@@ -2395,11 +2395,11 @@ echo "[*] Creating system integrity verification tool..."
 cat > "$GHOSTOS_HOME/bin/ghostos-verify-system" << 'VERIFY_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS System Integrity Verifier
+# Heck-CheckOS System Integrity Verifier
 # Confirms original Android OS is untouched
 
 echo "==================================="
-echo "  GhostOS System Integrity Check"
+echo "  Heck-CheckOS System Integrity Check"
 echo "  Verify Original OS Safety"
 echo "==================================="
 echo ""
@@ -2468,7 +2468,7 @@ verify_knox_security() {
             echo "⚠️  Knox warranty bit: $KNOX_WARRANTY"
         fi
         
-        echo "✅ GhostOS does not affect Knox"
+        echo "✅ Heck-CheckOS does not affect Knox"
     else
         echo "ℹ️  Not a Samsung device (Knox N/A)"
     fi
@@ -2497,23 +2497,23 @@ verify_safetynet() {
     
     echo ""
     echo "Note: For full SafetyNet check, use Play Store"
-    echo "Banking apps should work normally with GhostOS"
+    echo "Banking apps should work normally with Heck-CheckOS"
 }
 
 verify_ghostos_isolation() {
     echo ""
-    echo "[*] Verifying GhostOS Isolation..."
+    echo "[*] Verifying Heck-CheckOS Isolation..."
     echo ""
     
-    # Check GhostOS is in user space
-    if [ -d "$HOME/ghostos-android" ]; then
-        echo "✅ GhostOS location: $HOME/ghostos-android"
+    # Check Heck-CheckOS is in user space
+    if [ -d "$HOME/heckcheckos-android" ]; then
+        echo "✅ Heck-CheckOS location: $HOME/heckcheckos-android"
         echo "✅ Installation: Userspace only"
         
-        GHOSTOS_SIZE=$(du -sh "$HOME/ghostos-android" 2>/dev/null | awk '{print $1}')
-        echo "✅ GhostOS size: $GHOSTOS_SIZE (isolated)"
+        GHOSTOS_SIZE=$(du -sh "$HOME/heckcheckos-android" 2>/dev/null | awk '{print $1}')
+        echo "✅ Heck-CheckOS size: $GHOSTOS_SIZE (isolated)"
     else
-        echo "ℹ️  GhostOS not found in expected location"
+        echo "ℹ️  Heck-CheckOS not found in expected location"
     fi
     
     # Verify no system modifications
@@ -2558,15 +2558,15 @@ show_removal_instructions() {
     echo ""
     echo "To restore 100% original state:"
     echo ""
-    echo "1. Remove GhostOS directory:"
-    echo "   rm -rf ~/ghostos-android"
+    echo "1. Remove Heck-CheckOS directory:"
+    echo "   rm -rf ~/heckcheckos-android"
     echo ""
     echo "2. Remove Linux environment:"
     echo "   proot-distro remove debian"
     echo ""
-    echo "3. Edit .bashrc (remove GhostOS lines):"
+    echo "3. Edit .bashrc (remove Heck-CheckOS lines):"
     echo "   nano ~/.bashrc"
-    echo "   # Delete lines between '# GhostOS' comments"
+    echo "   # Delete lines between '# Heck-CheckOS' comments"
     echo ""
     echo "4. Clear Termux data (optional):"
     echo "   Settings → Apps → Termux → Clear Data"
@@ -2599,7 +2599,7 @@ echo "✅ System files: UNMODIFIED"
 echo "✅ Boot process: NORMAL"
 echo "✅ Security: PRESERVED"
 echo ""
-echo "GhostOS Impact:"
+echo "Heck-CheckOS Impact:"
 echo "  • Isolated to Termux app"
 echo "  • No system modifications"
 echo "  • Original OS boots normally"
@@ -2615,7 +2615,7 @@ echo "Summary: Your device is SAFE"
 echo "  • Original OS unchanged"
 echo "  • Can reboot normally"
 echo "  • No warranty issues"
-echo "  • GhostOS = just an app"
+echo "  • Heck-CheckOS = just an app"
 echo ""
 echo "==================================="
 VERIFY_EOF
@@ -2631,11 +2631,11 @@ echo "[*] Creating Samsung device optimization tool..."
 cat > "$GHOSTOS_HOME/bin/ghostos-samsung" << 'SAMSUNG_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS Samsung Device Optimizer
+# Heck-CheckOS Samsung Device Optimizer
 # Specialized support for Samsung devices including Galaxy Note 8
 
 echo "==================================="
-echo "  GhostOS Samsung Optimizer"
+echo "  Heck-CheckOS Samsung Optimizer"
 echo "  Knox-Safe Device Support"
 echo "==================================="
 echo ""
@@ -2695,7 +2695,7 @@ detect_samsung() {
         fi
         
         echo ""
-        echo "GhostOS Features Enabled:"
+        echo "Heck-CheckOS Features Enabled:"
         echo "  ✅ S Pen digitizer support"
         echo "  ✅ Dual camera access"
         echo "  ✅ Edge panel compatibility"
@@ -2749,7 +2749,7 @@ detect_samsung() {
         fi
         
         echo ""
-        echo "GhostOS Features Enabled:"
+        echo "Heck-CheckOS Features Enabled:"
         echo "  ✅ Quad camera system access"
         echo "  ✅ Large display optimization"
         echo "  ✅ Battery life monitoring (5000mAh)"
@@ -2812,7 +2812,7 @@ check_knox() {
         echo "  • Secure Boot: Active"
         echo "  • Real-time Kernel Protection: Active"
         echo ""
-        echo "✅ GhostOS does not modify Knox"
+        echo "✅ Heck-CheckOS does not modify Knox"
         echo "✅ All Knox features remain functional"
         
     else
@@ -2976,7 +2976,7 @@ dex_features() {
     echo "  • Converts phone UI to desktop"
     echo "  • Requires DeX Station/Pad or USB-C to HDMI"
     echo ""
-    echo "GhostOS + DeX:"
+    echo "Heck-CheckOS + DeX:"
     echo "  • Termux runs in DeX mode"
     echo "  • Full keyboard/mouse support"
     echo "  • Multi-window with Linux apps"
@@ -3001,12 +3001,12 @@ bixby_integration() {
     echo ""
     echo "Possible integrations:"
     echo "  • 'Hi Bixby, open Termux'"
-    echo "  • 'Hi Bixby, run GhostOS'"
+    echo "  • 'Hi Bixby, run Heck-CheckOS'"
     echo "  • Custom quick commands"
     echo ""
     echo "Bixby Routines:"
     echo "  • Auto-launch Termux on schedule"
-    echo "  • Trigger GhostOS commands"
+    echo "  • Trigger Heck-CheckOS commands"
     echo "  • Automated workflows"
 }
 
@@ -3028,9 +3028,9 @@ edge_panel() {
     echo "  • People edge"
     echo "  • Tasks edge"
     echo ""
-    echo "GhostOS Integration:"
+    echo "Heck-CheckOS Integration:"
     echo "  • Add Termux to Edge panel"
-    echo "  • Quick access to GhostOS"
+    echo "  • Quick access to Heck-CheckOS"
     echo "  • Swipe from edge to launch"
 }
 
@@ -3078,11 +3078,11 @@ echo "[*] Creating LG device optimization tool..."
 cat > "$GHOSTOS_HOME/bin/ghostos-lg" << 'LG_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# GhostOS LG Device Optimizer
+# Heck-CheckOS LG Device Optimizer
 # Specialized support for LG devices including Stylo 5
 
 echo "==================================="
-echo "  GhostOS LG Optimizer"
+echo "  Heck-CheckOS LG Optimizer"
 echo "  LG Device Support"
 echo "==================================="
 echo ""
@@ -3154,7 +3154,7 @@ detect_lg() {
         fi
         
         echo ""
-        echo "GhostOS Features Enabled:"
+        echo "Heck-CheckOS Features Enabled:"
         echo "  ✅ Stylus pen support (capacitive)"
         echo "  ✅ Triple camera access"
         echo "  ✅ Large display optimization"
@@ -3300,7 +3300,7 @@ stylus_features() {
         echo "  • No active digitizer"
         echo "  • Battery-free operation"
         echo ""
-        echo "Using Stylus with GhostOS:"
+        echo "Using Stylus with Heck-CheckOS:"
         echo "  1. Install drawing apps in Debian"
         echo "  2. Use VNC for GUI access"
         echo "  3. Stylus works as precise touch input"
@@ -3330,7 +3330,7 @@ qslide_features() {
     echo "  • Messages"
     echo "  • Browser"
     echo ""
-    echo "GhostOS Integration:"
+    echo "Heck-CheckOS Integration:"
     echo "  • Termux can run alongside QSlide apps"
     echo "  • Multi-window with Linux apps (via VNC)"
     echo "  • Productivity workflows"
@@ -3384,16 +3384,16 @@ LG_EOF
 chmod +x "$GHOSTOS_HOME/bin/ghostos-lg"
 
 # ============================================
-# Add GhostOS to PATH
+# Add Heck-CheckOS to PATH
 # ============================================
 echo ""
-echo "[*] Adding GhostOS to PATH..."
+echo "[*] Adding Heck-CheckOS to PATH..."
 
-if ! grep -q "ghostos-android/bin" "$HOME/.bashrc"; then
+if ! grep -q "heckcheckos-android/bin" "$HOME/.bashrc"; then
     echo "" >> "$HOME/.bashrc"
-    echo "# GhostOS for Android" >> "$HOME/.bashrc"
-    echo "export PATH=\"\$HOME/ghostos-android/bin:\$PATH\"" >> "$HOME/.bashrc"
-    echo "alias ghostos-update='bash \$HOME/ghostos-android.sh'" >> "$HOME/.bashrc"
+    echo "# Heck-CheckOS for Android" >> "$HOME/.bashrc"
+    echo "export PATH=\"\$HOME/heckcheckos-android/bin:\$PATH\"" >> "$HOME/.bashrc"
+    echo "alias ghostos-update='bash \$HOME/heckcheckos-android.sh'" >> "$HOME/.bashrc"
 fi
 
 # ============================================
@@ -3404,7 +3404,7 @@ echo "==================================="
 echo "  Installation Complete!"
 echo "==================================="
 echo ""
-echo "✅ GhostOS for Android installed successfully!"
+echo "✅ Heck-CheckOS for Android installed successfully!"
 echo ""
 echo "Location: $GHOSTOS_HOME"
 echo ""
@@ -3423,7 +3423,7 @@ echo "  3. Run: ghostos-help (for detailed help)"
 echo ""
 echo "Commands available:"
 echo "  • ghostos - Main menu"
-echo "  • ghostos-driver-bridge - Auto-bridge to device drivers"
+echo "  • heckcheckos-driver-bridge - Auto-bridge to device drivers"
 echo "  • ghostos-wifi - WiFi management"
 echo "  • ghostos-bluetooth - Bluetooth management"
 echo "  • ghostos-nfc - NFC reader/writer"
@@ -3437,7 +3437,7 @@ echo "  • ghostos-qr - QR code reader/writer"
 echo "  • ghostos-vpn - VPN management"
 echo "  • ghostos-audio - Audio/Dolby Atmos"
 echo "  • ghostos-voip - VoIP/WiFi calling"
-echo "  • ghostos-driver-optimizer - Optimize drivers"
+echo "  • heckcheckos-driver-optimizer - Optimize drivers"
 echo "  • ghostos-device-mask - Device ID masking"
 echo "  • ghostos-verify-system - Verify OS integrity"
 echo "  • ghostos-samsung - Samsung device optimization"
@@ -3458,10 +3458,10 @@ echo ""
 export PATH="$GHOSTOS_HOME/bin:$PATH"
 
 # Run automatic driver bridge to connect all available drivers
-if [ -x "$GHOSTOS_HOME/bin/ghostos-driver-bridge" ]; then
+if [ -x "$GHOSTOS_HOME/bin/heckcheckos-driver-bridge" ]; then
     echo "Running automatic driver bridge..."
     echo ""
-    bash "$GHOSTOS_HOME/bin/ghostos-driver-bridge" all 2>&1 | head -50
+    bash "$GHOSTOS_HOME/bin/heckcheckos-driver-bridge" all 2>&1 | head -50
 else
     echo "⚠️  Driver bridge tool not found, skipping automatic bridge"
 fi
@@ -3484,7 +3484,7 @@ echo "✅ Knox Security: PRESERVED (Samsung devices)"
 echo "✅ SafetyNet: INTACT"
 echo "✅ Warranty: VALID"
 echo ""
-echo "GhostOS Installation Details:"
+echo "Heck-CheckOS Installation Details:"
 echo "  • Install location: $GHOSTOS_HOME (userspace only)"
 echo "  • System files: ZERO modifications"
 echo "  • Boot partition: UNTOUCHED"
@@ -3494,7 +3494,7 @@ echo ""
 echo "Your device will boot normally:"
 echo "  • Android OS boots as usual"
 echo "  • All apps work normally"
-echo "  • GhostOS runs only within Termux"
+echo "  • Heck-CheckOS runs only within Termux"
 echo "  • No boot-time interference"
 echo "  • Can be completely removed"
 echo ""
@@ -3504,9 +3504,9 @@ echo "  • Check Knox status: Settings → About Phone"
 echo "  • SafetyNet check: Play Store works normally"
 echo "  • All system apps: Function unchanged"
 echo ""
-echo "To completely remove GhostOS:"
-echo "  1. rm -rf ~/ghostos-android"
-echo "  2. Edit ~/.bashrc (remove GhostOS lines)"
+echo "To completely remove Heck-CheckOS:"
+echo "  1. rm -rf ~/heckcheckos-android"
+echo "  2. Edit ~/.bashrc (remove Heck-CheckOS lines)"
 echo "  3. Uninstall Termux (optional)"
 echo "  4. Device returns to 100% original state"
 echo ""
@@ -3514,12 +3514,12 @@ echo "==================================="
 echo ""
 echo "⚠️  IMPORTANT NOTES:"
 echo ""
-echo "• GhostOS lives ONLY in Termux app data"
+echo "• Heck-CheckOS lives ONLY in Termux app data"
 echo "• Android OS is completely separate"
 echo "• Termux is sandboxed by Android"
 echo "• No system-level changes made"
 echo "• Original OS always boots first"
-echo "• GhostOS starts only when you open Termux"
+echo "• Heck-CheckOS starts only when you open Termux"
 echo ""
 echo "Safe to use on:"
 echo "  ✅ Samsung devices (Knox-safe)"
@@ -3555,7 +3555,7 @@ echo "  • QR codes: ghostos-qr"
 echo "  • Touchscreen: ghostos-touchscreen"
 echo "  • MAC tools: ghostos-mac, ghostos-mac-mask"
 echo "  • Device masking: ghostos-device-mask"
-echo "  • Driver bridge: ghostos-driver-bridge"
+echo "  • Driver bridge: heckcheckos-driver-bridge"
 echo ""
 echo "Next steps:"
 echo "  1. source ~/.bashrc"

@@ -1,18 +1,18 @@
-# GhostOS - Frequently Asked Questions (FAQ)
+# Heck-CheckOS - Frequently Asked Questions (FAQ)
 
-Common questions and answers about GhostOS for Desktop and Android platforms.
+Common questions and answers about Heck-CheckOS for Desktop and Android platforms.
 
 ## General Questions
 
-### What is GhostOS?
+### What is Heck-CheckOS?
 
-GhostOS is a security-focused, customizable operating system available in two variants:
-1. **Desktop/Server**: Built on Debian 12 (Bookworm) with custom GhostOS GUI and settings, available as bootable ISOs
+Heck-CheckOS is a security-focused, customizable operating system available in two variants:
+1. **Desktop/Server**: Built on Debian 12 (Bookworm) with custom Heck-CheckOS GUI and settings, available as bootable ISOs
 2. **Android**: A Termux-based Debian 12 environment for Android 9+ devices
 
-### Is GhostOS free?
+### Is Heck-CheckOS free?
 
-Yes! GhostOS is completely free and open-source. It's based on Debian 12 (Bookworm) and other open-source projects.
+Yes! Heck-CheckOS is completely free and open-source. It's based on Debian 12 (Bookworm) and other open-source projects.
 
 ### Do I need to pay for anything?
 
@@ -21,9 +21,9 @@ No. All components are free. However, you may choose to:
 - Purchase USB drives for bootable media
 - Pay for cloud storage if using v2.0's backup features
 
-### Is GhostOS safe to use?
+### Is Heck-CheckOS safe to use?
 
-Yes. GhostOS:
+Yes. Heck-CheckOS:
 - Uses Debian 12 (Bookworm) as a trusted base
 - Uses official Debian and Kali packages
 - Makes no system modifications on Android (non-root)
@@ -35,9 +35,9 @@ Yes. GhostOS:
 
 ### What is the base operating system?
 
-GhostOS Desktop is built on **Debian 12 (Bookworm)**, the stable release of Debian GNU/Linux. GhostOS adds custom GUI, settings, and security features on top of Debian's stable foundation.
+Heck-CheckOS Desktop is built on **Debian 12 (Bookworm)**, the stable release of Debian GNU/Linux. Heck-CheckOS adds custom GUI, settings, and security features on top of Debian's stable foundation.
 
-### Do I need to be root to build GhostOS?
+### Do I need to be root to build Heck-CheckOS?
 
 Yes, building the ISO requires root/sudo access because:
 - debootstrap needs to create system files and bootstrap Debian 12
@@ -56,7 +56,7 @@ Build times vary:
 
 Depends on CPU speed, disk I/O, and internet connection.
 
-### Can I build GhostOS on Windows?
+### Can I build Heck-CheckOS on Windows?
 
 Not directly. You need a Debian-based Linux system to build. Options:
 1. Use WSL2 (Windows Subsystem for Linux) with Debian
@@ -77,7 +77,7 @@ apt-get install -y \
 
 ### Why are the ISOs so large?
 
-GhostOS includes:
+Heck-CheckOS includes:
 - Complete desktop environment
 - Development tools (compilers, IDEs)
 - Gaming support (Steam, Wine, Proton)
@@ -88,7 +88,7 @@ GhostOS includes:
 
 For smaller ISOs, remove packages from build scripts.
 
-### Can I install GhostOS without USB?
+### Can I install Heck-CheckOS without USB?
 
 Yes! Boot the ISO in:
 - **VirtualBox**: Full virtualization
@@ -96,9 +96,9 @@ Yes! Boot the ISO in:
 - **VMware**: Commercial option
 - **Network boot**: PXE boot setup
 
-### Will GhostOS work on my hardware?
+### Will Heck-CheckOS work on my hardware?
 
-Probably! GhostOS supports:
+Probably! Heck-CheckOS supports:
 - **x86_64**: All modern Intel/AMD CPUs
 - **ARM64**: Raspberry Pi, ARM servers (v2.0)
 - **NVIDIA**: GPU drivers included
@@ -107,22 +107,22 @@ Probably! GhostOS supports:
 
 Test in a VM first to verify.
 
-### Can I dual-boot GhostOS with Windows?
+### Can I dual-boot Heck-CheckOS with Windows?
 
 Yes, but:
 - Back up your data first
 - You'll need to partition your drive
 - Use GParted or similar tools
-- Install GhostOS to separate partition
+- Install Heck-CheckOS to separate partition
 - GRUB will detect Windows automatically
 
-**Easier option**: Use GhostOS in a VM or on a separate machine.
+**Easier option**: Use Heck-CheckOS in a VM or on a separate machine.
 
 ## Android Questions
 
-### Do I need root for Android GhostOS?
+### Do I need root for Android Heck-CheckOS?
 
-**NO!** GhostOS for Android is specifically designed to work **without root**. This means:
+**NO!** Heck-CheckOS for Android is specifically designed to work **without root**. This means:
 - ✅ No warranty void
 - ✅ No bootloader unlock required
 - ✅ No security risks
@@ -130,15 +130,15 @@ Yes, but:
 
 ### Why does it need Location permission?
 
-**Android requirement, not GhostOS!**
+**Android requirement, not Heck-CheckOS!**
 
 Android requires location permission for:
 - WiFi scanning (security/privacy measure by Google)
 - Bluetooth scanning (to prevent tracking)
 
-GhostOS never accesses your actual location. It only uses these permissions to scan WiFi/Bluetooth.
+Heck-CheckOS never accesses your actual location. It only uses these permissions to scan WiFi/Bluetooth.
 
-### Can I use GhostOS to hack WiFi?
+### Can I use Heck-CheckOS to hack WiFi?
 
 **No.** Without root access:
 - ❌ No monitor mode
@@ -146,7 +146,7 @@ GhostOS never accesses your actual location. It only uses these permissions to s
 - ❌ No WEP/WPA cracking
 - ❌ No raw 802.11 frames
 
-GhostOS provides legitimate WiFi management, not hacking tools.
+Heck-CheckOS provides legitimate WiFi management, not hacking tools.
 
 ### Why install Termux from F-Droid and not Google Play?
 
@@ -158,7 +158,7 @@ Google Play version is **outdated and incompatible**. F-Droid has:
 
 **Always use F-Droid!**
 
-### Will GhostOS drain my battery?
+### Will Heck-CheckOS drain my battery?
 
 Minimal impact:
 - **Idle**: <1% per hour
@@ -170,9 +170,9 @@ Tips to save battery:
 - Disable WiFi/Bluetooth when not needed
 - Use Android's battery optimization
 
-### Can I run Android apps from GhostOS?
+### Can I run Android apps from Heck-CheckOS?
 
-No. GhostOS provides:
+No. Heck-CheckOS provides:
 - Linux environment (Debian)
 - Command-line tools
 - WiFi/Bluetooth management
@@ -185,17 +185,17 @@ However, you can:
 - Install Python/Node.js apps
 - Compile and run Linux software
 
-### How do I uninstall GhostOS from Android?
+### How do I uninstall Heck-CheckOS from Android?
 
 Simple:
 ```bash
 # Remove Debian environment
 proot-distro remove debian
 
-# Remove GhostOS
-rm -rf ~/ghostos-android
+# Remove Heck-CheckOS
+rm -rf ~/heckcheckos-android
 
-# Edit ~/.bashrc and remove GhostOS lines
+# Edit ~/.bashrc and remove Heck-CheckOS lines
 nano ~/.bashrc
 
 # Optionally uninstall Termux apps
@@ -203,9 +203,9 @@ nano ~/.bashrc
 
 Completely reversible, no traces left.
 
-### Does GhostOS support Android 14?
+### Does Heck-CheckOS support Android 14?
 
-Yes! GhostOS supports:
+Yes! Heck-CheckOS supports:
 - ✅ Android 14 (latest)
 - ✅ Android 13
 - ✅ Android 12
@@ -215,9 +215,9 @@ Yes! GhostOS supports:
 
 Older versions (Android 8 and below) are not supported.
 
-### Can I use GhostOS on a tablet?
+### Can I use Heck-CheckOS on a tablet?
 
-Yes! GhostOS works on:
+Yes! Heck-CheckOS works on:
 - Android phones
 - Android tablets
 - Chromebooks with Android support
@@ -233,7 +233,7 @@ Without root:
 - Firmware is protected
 - SELinux enforces restrictions
 
-GhostOS optimizes **within** these limits but cannot modify drivers directly.
+Heck-CheckOS optimizes **within** these limits but cannot modify drivers directly.
 
 ## Technical Questions
 
@@ -249,7 +249,7 @@ GhostOS optimizes **within** these limits but cannot modify drivers directly.
 - Runs as regular user
 - Safer, more restricted
 
-GhostOS uses **proot** for Android (no root needed).
+Heck-CheckOS uses **proot** for Android (no root needed).
 
 ### Can I access Android storage from Debian?
 
@@ -266,7 +266,7 @@ cd /sdcard/Download
 ls -la
 ```
 
-### Can I use SSH with GhostOS Android?
+### Can I use SSH with Heck-CheckOS Android?
 
 Yes! Install OpenSSH in Termux:
 ```bash
@@ -280,11 +280,11 @@ ip addr show wlan0
 ssh -p 8022 user@<android-ip>
 ```
 
-### Does GhostOS collect data?
+### Does Heck-CheckOS collect data?
 
 **Absolutely not!**
 
-GhostOS:
+Heck-CheckOS:
 - ❌ No telemetry
 - ❌ No tracking
 - ❌ No analytics
@@ -293,7 +293,7 @@ GhostOS:
 
 Completely offline after installation.
 
-### Can I contribute to GhostOS?
+### Can I contribute to Heck-CheckOS?
 
 Yes! Contributions welcome:
 1. Fork the repository
@@ -310,14 +310,14 @@ Ideas for contributions:
 
 ### What programming languages are supported?
 
-**Desktop GhostOS**: Everything Linux supports
+**Desktop Heck-CheckOS**: Everything Linux supports
 - C, C++, Rust, Go
 - Python, Ruby, Perl
 - Java, Kotlin, Scala
 - JavaScript, TypeScript (Node.js)
 - PHP, Lua, and more
 
-**Android GhostOS**: Install via apt in Debian
+**Android Heck-CheckOS**: Install via apt in Debian
 - Python 3
 - Node.js
 - Java (OpenJDK)
@@ -342,9 +342,9 @@ But note: Android may restrict background services.
 
 ## Privacy & Security Questions
 
-### Is GhostOS more secure than regular Debian?
+### Is Heck-CheckOS more secure than regular Debian?
 
-Desktop GhostOS includes **additional security**:
+Desktop Heck-CheckOS includes **additional security**:
 - Enhanced firewall (UFW)
 - Security scanning (ClamAV, rkhunter)
 - Kernel hardening (v2.0)
@@ -353,9 +353,9 @@ Desktop GhostOS includes **additional security**:
 
 But it's based on secure Debian foundation.
 
-### Does GhostOS block telemetry?
+### Does Heck-CheckOS block telemetry?
 
-Yes! Desktop GhostOS (v1.1+) blocks:
+Yes! Desktop Heck-CheckOS (v1.1+) blocks:
 - Microsoft telemetry
 - Google analytics
 - Facebook tracking
@@ -365,9 +365,9 @@ Yes! Desktop GhostOS (v1.1+) blocks:
 
 Via `/etc/hosts` entries and firewall rules.
 
-### Can GhostOS be used for anonymity?
+### Can Heck-CheckOS be used for anonymity?
 
-No! GhostOS is **not** an anonymity OS like Tails or Whonix.
+No! Heck-CheckOS is **not** an anonymity OS like Tails or Whonix.
 
 For anonymity:
 - Use Tor Browser
@@ -375,9 +375,9 @@ For anonymity:
 - Use VPN services
 - Practice OPSEC
 
-GhostOS provides privacy (reduced telemetry) but not anonymity (hiding identity).
+Heck-CheckOS provides privacy (reduced telemetry) but not anonymity (hiding identity).
 
-### Is GhostOS audited?
+### Is Heck-CheckOS audited?
 
 No formal security audit. However:
 - Based on audited Debian
@@ -389,17 +389,17 @@ For high-security needs, use officially audited systems.
 
 ## Compatibility Questions
 
-### Does GhostOS work on Raspberry Pi?
+### Does Heck-CheckOS work on Raspberry Pi?
 
 **v2.0**: Yes, includes ARM64 support
 **v1.0/v1.1**: No, x86_64 only
 
 For Raspberry Pi:
-- Build GhostOS v2.0
+- Build Heck-CheckOS v2.0
 - Use ARM64 version
 - Test on Pi 4 or Pi 5
 
-### Can I run GhostOS on old hardware?
+### Can I run Heck-CheckOS on old hardware?
 
 Minimum requirements:
 - **Desktop**: 4GB RAM, 2-core CPU, 50GB disk
@@ -410,25 +410,25 @@ For very old hardware:
 - Remove unnecessary packages
 - Consider Alpine Linux base (manual)
 
-### Does GhostOS work on Apple Silicon (M1/M2)?
+### Does Heck-CheckOS work on Apple Silicon (M1/M2)?
 
 Not natively. Options:
 1. Use ARM64 build (v2.0) in VM
 2. Use Parallels/UTM virtualization
 3. Use QEMU emulation (slower)
 
-### Can I run Windows apps on GhostOS?
+### Can I run Windows apps on Heck-CheckOS?
 
 Yes, via Wine/Proton:
-- Desktop GhostOS includes Wine
+- Desktop Heck-CheckOS includes Wine
 - Steam Proton for games
 - CrossOver (commercial option)
 
 Not all Windows apps work. Check compatibility.
 
-### Does GhostOS support NVIDIA drivers?
+### Does Heck-CheckOS support NVIDIA drivers?
 
-Yes! Desktop GhostOS includes:
+Yes! Desktop Heck-CheckOS includes:
 - Proprietary NVIDIA drivers
 - CUDA toolkit
 - cuDNN (v2.0)
@@ -461,7 +461,7 @@ Works with RTX 40, 30, 20, 10 series.
 source ~/.bashrc
 
 # Or use full path:
-~/ghostos-android/bin/ghostos
+~/heckcheckos-android/bin/ghostos
 ```
 
 ### Termux:API not working
@@ -508,7 +508,7 @@ df -h
 
 ## Performance Questions
 
-### How does GhostOS compare to Ubuntu/Mint?
+### How does Heck-CheckOS compare to Ubuntu/Mint?
 
 **Similarities**:
 - Based on Debian (like Ubuntu)
@@ -522,7 +522,7 @@ df -h
 - AMD AM5 optimizations
 - Customized for specific hardware
 
-### Is Android GhostOS slow?
+### Is Android Heck-CheckOS slow?
 
 **proot overhead**: ~10-20% slower than native
 
@@ -532,7 +532,7 @@ df -h
 - Native Termux is full speed
 - Most tasks are I/O bound anyway
 
-### Can I play games on GhostOS?
+### Can I play games on Heck-CheckOS?
 
 **Desktop**: Yes!
 - Steam pre-installed
@@ -543,13 +543,13 @@ df -h
 
 **Android**: No gaming focus
 - Debian proot not for gaming
-- Android games run in Android (not GhostOS)
+- Android games run in Android (not Heck-CheckOS)
 
 ## Comparison Questions
 
-### GhostOS vs Arch Linux?
+### Heck-CheckOS vs Arch Linux?
 
-| Feature | GhostOS | Arch |
+| Feature | Heck-CheckOS | Arch |
 |---------|---------|------|
 | Base | Debian | Arch |
 | Stability | Stable | Rolling |
@@ -558,9 +558,9 @@ df -h
 | Privacy | Built-in | Manual setup |
 | Learning curve | Low | High |
 
-### GhostOS vs Linux Deploy (Android)?
+### Heck-CheckOS vs Linux Deploy (Android)?
 
-| Feature | GhostOS | Linux Deploy |
+| Feature | Heck-CheckOS | Linux Deploy |
 |---------|---------|--------------|
 | Root required | No | Yes (for full features) |
 | WiFi/Bluetooth tools | Yes | No |
@@ -568,9 +568,9 @@ df -h
 | Setup complexity | Easy | Medium |
 | Driver optimization | Yes | No |
 
-### GhostOS vs Andronix (Android)?
+### Heck-CheckOS vs Andronix (Android)?
 
-| Feature | GhostOS | Andronix |
+| Feature | Heck-CheckOS | Andronix |
 |---------|---------|----------|
 | Root required | No | No |
 | WiFi management | Yes | No |
@@ -580,7 +580,7 @@ df -h
 
 ## Future Plans
 
-### What's next for GhostOS?
+### What's next for Heck-CheckOS?
 
 **Desktop**:
 - More hardware support
@@ -596,7 +596,7 @@ df -h
 
 ### Will root features be added?
 
-**No.** GhostOS will remain root-free on Android to maintain:
+**No.** Heck-CheckOS will remain root-free on Android to maintain:
 - Security
 - Warranty protection
 - Simplicity

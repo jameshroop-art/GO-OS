@@ -1,4 +1,4 @@
-# GhostOS - Multi-Platform Operating System
+# Heck-CheckOS - Multi-Platform Operating System
 
 Complete operating system distribution available for multiple platforms with advanced privacy features, driver support, and full customization.
 
@@ -14,22 +14,22 @@ Full-featured **Debian 12 (Bookworm)**-based distribution with multiple versions
 
 **Base Operating System:** Debian 12 (Bookworm) - Stable Linux distribution
 
-**GhostOS Features:**
+**Heck-CheckOS Features:**
 - ✅ BIOS/UEFI boot support
 - ✅ AMD AM5/ASUS platform optimizations
 - ✅ Gaming and AI/ML tools
 - ✅ Enhanced privacy controls
-- ✅ Security tools and hardening (Kali + GhostOS)
-- ✅ Custom GhostOS GUI and desktop environment
+- ✅ Security tools and hardening (Kali + Heck-CheckOS)
+- ✅ Custom Heck-CheckOS GUI and desktop environment
 
 **Documentation:** See [`GHOSTOS_BUILD_README.md`](Go-OS/GHOSTOS_BUILD_README.md) and [`GHOSTOS_QUICK_REFERENCE.md`](Go-OS/GHOSTOS_QUICK_REFERENCE.md)
 
 ## 📥 Getting the Debian 12 ISO (Optional)
 
-**Note:** The GhostOS build script uses `debootstrap` to download Debian 12 automatically from official repositories. **You do NOT need to download the ISO to build GhostOS.**
+**Note:** The Heck-CheckOS build script uses `debootstrap` to download Debian 12 automatically from official repositories. **You do NOT need to download the ISO to build Heck-CheckOS.**
 
 **However, you may want to download the Debian 12 ISO (~600MB for netinst, ~4GB for full DVD) if you:**
-- Want to test Debian 12 before building GhostOS
+- Want to test Debian 12 before building Heck-CheckOS
 - Need to manually install Debian 12 on a system
 - Want a reference copy of the official Debian distribution
 
@@ -88,17 +88,17 @@ Lightweight Linux environment for Android with non-root WiFi/Bluetooth managemen
 
 ```bash
 # Download and run
-wget https://raw.githubusercontent.com/jameshroop-art/GO-OS/main/Go-OS/ghostos-build.sh
-chmod +x ghostos-build.sh
-sudo ./ghostos-build.sh
+wget https://raw.githubusercontent.com/jameshroop-art/GO-OS/main/Go-OS/heckcheckos-build.sh
+chmod +x heckcheckos-build.sh
+sudo ./heckcheckos-build.sh
 ```
 
 Builds bootable ISO with:
 - Debian 12 (Bookworm) base
-- GhostOS custom GUI and desktop environment
+- Heck-CheckOS custom GUI and desktop environment
 - Complete Linux system with security tools
 - Hardware drivers (AMD, NVIDIA, Intel)
-- Privacy and security tools (Kali + GhostOS)
+- Privacy and security tools (Kali + Heck-CheckOS)
 - Gaming support
 - Development tools
 
@@ -112,9 +112,9 @@ Builds bootable ISO with:
 # In Termux:
 pkg update -y && pkg upgrade -y
 pkg install wget -y
-wget https://raw.githubusercontent.com/jameshroop-art/GO-OS/main/Go-OS/ghostos-android.sh
-chmod +x ghostos-android.sh
-bash ghostos-android.sh
+wget https://raw.githubusercontent.com/jameshroop-art/GO-OS/main/Go-OS/heckcheckos-android.sh
+chmod +x heckcheckos-android.sh
+bash heckcheckos-android.sh
 source ~/.bashrc
 ghostos
 ```
@@ -133,7 +133,7 @@ Installs:
 ### Desktop/Server
 - **[Build System README](Go-OS/GHOSTOS_BUILD_README.md)** - Complete build guide
 - **[Quick Reference](Go-OS/GHOSTOS_QUICK_REFERENCE.md)** - Fast command reference
-- **[Build Script](Go-OS/ghostos-build.sh)** - Main build script
+- **[Build Script](Go-OS/heckcheckos-build.sh)** - Main build script
 - **[Files Report](Go-OS/GHOST_OS_FILES_REPORT.md)** - Project structure
 - **[Security Notes](Go-OS/VERIFICATION_TOOL_SECURITY_NOTES.md)** - Security documentation
 
@@ -141,7 +141,7 @@ Installs:
 - **[Installation Guide](Go-OS/ANDROID_INSTALLATION.md)** - Complete setup instructions
 - **[Quick Reference](Go-OS/ANDROID_QUICK_REFERENCE.md)** - Command cheat sheet
 - **[Technical Details](Go-OS/ANDROID_TECHNICAL_DETAILS.md)** - Architecture and compatibility
-- **[Install Script](Go-OS/ghostos-android.sh)** - Android installer
+- **[Install Script](Go-OS/heckcheckos-android.sh)** - Android installer
 
 ### General
 - **[FAQ](Go-OS/FAQ.md)** - Frequently Asked Questions
@@ -149,7 +149,7 @@ Installs:
 
 ## 🎯 Features Comparison
 
-### Desktop/Server GhostOS
+### Desktop/Server Heck-CheckOS
 
 | Feature | v1.0 | v1.1 | v2.0 |
 |---------|------|------|------|
@@ -166,7 +166,7 @@ Installs:
 | Plugin System | ❌ | ❌ | ✅ |
 | ARM Support | ❌ | ❌ | ✅ |
 
-### Android GhostOS
+### Android Heck-CheckOS
 
 | Feature | Status | Notes |
 |---------|--------|-------|
@@ -233,35 +233,35 @@ Installs:
 
 ```bash
 # Quick status
-ghostos-wifi status
-ghostos-bluetooth status
+heckcheckos-wifi status
+heckcheckos-bluetooth status
 
 # Scan networks/devices
-ghostos-wifi scan
-ghostos-bluetooth scan
+heckcheckos-wifi scan
+heckcheckos-bluetooth scan
 
 # Optimize performance
-ghostos-driver-optimizer
+heckcheckos-driver-optimizer
 
 # Launch Linux environment
-ghostos-debian
+heckcheckos-debian
 
 # Get help
-ghostos-help
+heckcheckos-help
 ```
 
 ## 🖥️ Desktop Commands
 
 ```bash
 # Build specific version
-sudo ./ghostos-build.sh
+sudo ./heckcheckos-build.sh
 # Select: 1 (v1.0), 2 (v1.1), 3 (v2.0), or 4 (all)
 
 # Create bootable USB
-sudo dd if=$HOME/ghostos-ultimate/GhostOS-v2.0.iso of=/dev/sdX bs=4M status=progress
+sudo dd if=$HOME/heckcheckos-ultimate/Heck-CheckOS-v2.0.iso of=/dev/sdX bs=4M status=progress
 
 # Test in VM
-qemu-system-x86_64 -enable-kvm -m 4096 -cdrom GhostOS-v2.0.iso
+qemu-system-x86_64 -enable-kvm -m 4096 -cdrom Heck-CheckOS-v2.0.iso
 ```
 
 ## 🤝 Contributing
@@ -274,7 +274,7 @@ Contributions welcome! Please:
 
 ## 📄 License & Legal
 
-**GhostOS build scripts and configuration** are licensed under the MIT License. See [LICENSE](LICENSE) file.
+**Heck-CheckOS build scripts and configuration** are licensed under the MIT License. See [LICENSE](LICENSE) file.
 
 <<<<<<< HEAD
 **Important Legal Information:**
@@ -340,7 +340,7 @@ See [ANDROID_INSTALLATION.md](Go-OS/ANDROID_INSTALLATION.md) troubleshooting sec
 ### Desktop
 - **v2.0** (2025): Debian 12 base, Wayland, AI assistant, ARM support, plugin system
 - **v1.1** (2025): Debian 12 base, Enhanced privacy, security tools, improved UI
-- **v1.0** (2025): Initial stable release, Debian 12 (Bookworm) base with GhostOS GUI
+- **v1.0** (2025): Initial stable release, Debian 12 (Bookworm) base with Heck-CheckOS GUI
 
 ### Android
 - **v1.0-android** (2026-01): Initial Android release
@@ -351,4 +351,4 @@ See [ANDROID_INSTALLATION.md](Go-OS/ANDROID_INSTALLATION.md) troubleshooting sec
 
 ---
 
-**GhostOS** - Security-focused, feature-rich operating system built on Debian 12 (Bookworm) with custom GhostOS GUI. For desktop and mobile platforms. Build it, customize it, own it. 👻🐧
+**Heck-CheckOS** - Security-focused, feature-rich operating system built on Debian 12 (Bookworm) with custom Heck-CheckOS GUI. For desktop and mobile platforms. Build it, customize it, own it. 👻🐧

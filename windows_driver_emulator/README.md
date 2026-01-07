@@ -1,8 +1,8 @@
-# Windows Driver Emulator for GhostOS
+# Windows Driver Emulator for Heck-CheckOS
 
 ## Overview
 
-A lightweight Windows driver compatibility layer for GhostOS/Debian 12, enabling Windows driver functionality on the Linux host without Wine or virtualization.
+A lightweight Windows driver compatibility layer for Heck-CheckOS/Debian 12, enabling Windows driver functionality on the Linux host without Wine or virtualization.
 
 ## Purpose
 
@@ -85,10 +85,10 @@ This is a **lightweight emulator** with the following constraints:
 
 ### Installation
 
-The emulator is automatically installed with GhostOS. To manually install:
+The emulator is automatically installed with Heck-CheckOS. To manually install:
 
 ```bash
-cd /opt/ghostos/windows_driver_emulator
+cd /opt/heckcheckos/windows_driver_emulator
 sudo python3 install.py
 ```
 
@@ -96,18 +96,18 @@ sudo python3 install.py
 
 ```bash
 # Load a Windows driver
-sudo ghostos-driver-load /path/to/driver.sys
+sudo heckcheckos-driver-load /path/to/driver.sys
 
 # List loaded drivers
-ghostos-driver-list
+heckcheckos-driver-list
 
 # Unload a driver
-sudo ghostos-driver-unload driver_name
+sudo heckcheckos-driver-unload driver_name
 ```
 
 ### Configuration
 
-Edit `/etc/ghostos/driver-emulator.conf` to configure:
+Edit `/etc/heckcheckos/driver-emulator.conf` to configure:
 - Supported device types
 - Driver search paths
 - Logging level
@@ -118,7 +118,7 @@ Edit `/etc/ghostos/driver-emulator.conf` to configure:
 - All driver operations run in user-space (no kernel modifications)
 - Sandboxed execution environment
 - Limited system access
-- Integrated with GhostOS security policies
+- Integrated with Heck-CheckOS security policies
 - Network isolation support
 
 ## Performance
@@ -131,14 +131,14 @@ The emulator adds minimal overhead:
 ## Troubleshooting
 
 ### Driver fails to load
-1. Check driver compatibility: `ghostos-driver-check /path/to/driver.sys`
+1. Check driver compatibility: `heckcheckos-driver-check /path/to/driver.sys`
 2. Verify device is connected: `lsusb` or `lspci`
-3. Check logs: `journalctl -u ghostos-driver-emulator`
+3. Check logs: `journalctl -u heckcheckos-driver-emulator`
 
 ### Device not recognized
 1. Ensure udev rules are loaded: `sudo udevadm trigger`
 2. Check device permissions: `ls -l /dev/`
-3. Verify driver is loaded: `ghostos-driver-list`
+3. Verify driver is loaded: `heckcheckos-driver-list`
 
 ## Development
 
@@ -151,7 +151,7 @@ To add support for a new device type:
 
 ## License
 
-Part of GhostOS project. See main repository license.
+Part of Heck-CheckOS project. See main repository license.
 
 ## Credits
 

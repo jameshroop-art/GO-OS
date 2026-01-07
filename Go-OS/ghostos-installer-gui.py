@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-GhostOS Security Edition - GUI Installer & USB Creator
+Heck-CheckOS Security Edition - GUI Installer & USB Creator
 Creates bootable USB drives and manages disk partitioning for PC installation
 Supports Windows, Linux, and macOS host systems
 
 LICENSE: MIT (see LICENSE file in repository root)
 
 LEGAL NOTICE:
-This is part of GhostOS, a derivative work based on Debian 12 (Bookworm).
+This is part of Heck-CheckOS, a derivative work based on Debian 12 (Bookworm).
 NOT an official Debian release. NOT endorsed by the Debian Project.
 See LEGAL_COMPLIANCE.md for full legal information.
 """
@@ -27,10 +27,10 @@ except ImportError:
     print("Error: tkinter not found. Install with: sudo apt-get install python3-tk")
     sys.exit(1)
 
-class GhostOSInstallerGUI:
+class Heck-CheckOSInstallerGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("GhostOS Security Edition - Installer & USB Creator")
+        self.root.title("Heck-CheckOS Security Edition - Installer & USB Creator")
         self.root.geometry("900x700")
         self.root.resizable(True, True)
         
@@ -67,7 +67,7 @@ class GhostOSInstallerGUI:
         header = tk.Frame(self.root, bg="#2c3e50", height=80)
         header.pack(fill=tk.X, side=tk.TOP)
         
-        title = tk.Label(header, text="👻 GhostOS Security Edition", 
+        title = tk.Label(header, text="👻 Heck-CheckOS Security Edition", 
                         font=("Arial", 24, "bold"), fg="white", bg="#2c3e50")
         title.pack(pady=10)
         
@@ -111,7 +111,7 @@ class GhostOSInstallerGUI:
     def setup_usb_tab(self, parent):
         """Setup USB Creator tab"""
         # ISO Selection
-        iso_frame = ttk.LabelFrame(parent, text="Step 1: Select GhostOS ISO", padding="10")
+        iso_frame = ttk.LabelFrame(parent, text="Step 1: Select Heck-CheckOS ISO", padding="10")
         iso_frame.pack(fill=tk.X, padx=10, pady=10)
         
         ttk.Label(iso_frame, text="ISO File:").grid(row=0, column=0, sticky=tk.W, pady=5)
@@ -285,7 +285,7 @@ class GhostOSInstallerGUI:
     def browse_iso(self):
         """Browse for ISO file"""
         filename = filedialog.askopenfilename(
-            title="Select GhostOS ISO",
+            title="Select Heck-CheckOS ISO",
             filetypes=[("ISO files", "*.iso"), ("All files", "*.*")]
         )
         if filename:
@@ -556,7 +556,7 @@ class GhostOSInstallerGUI:
             # Create UEFI boot entry (if efibootmgr available)
             if subprocess.run(['which', 'efibootmgr'], capture_output=True).returncode == 0:
                 subprocess.run(['efibootmgr', '--create', '--disk', device, '--part', '1',
-                              '--label', 'GhostOS', '--loader', '\\EFI\\BOOT\\BOOTX64.EFI'],
+                              '--label', 'Heck-CheckOS', '--loader', '\\EFI\\BOOT\\BOOTX64.EFI'],
                               stderr=subprocess.DEVNULL)
             
         finally:
@@ -729,7 +729,7 @@ class GhostOSInstallerGUI:
             self.req_text.insert(tk.END, "⚠️  System booted in Legacy BIOS mode\n")
             self.req_text.insert(tk.END, "   USB will still support UEFI boot\n")
         
-        self.req_text.insert(tk.END, "\n=== GhostOS System Requirements ===\n")
+        self.req_text.insert(tk.END, "\n=== Heck-CheckOS System Requirements ===\n")
         self.req_text.insert(tk.END, "• 64-bit x86_64 processor\n")
         self.req_text.insert(tk.END, "• 8GB RAM minimum (16GB recommended)\n")
         self.req_text.insert(tk.END, "• 32GB storage minimum\n")
@@ -760,7 +760,7 @@ def main():
         pass
     
     # Create app
-    app = GhostOSInstallerGUI(root)
+    app = Heck-CheckOSInstallerGUI(root)
     
     # Run
     root.mainloop()

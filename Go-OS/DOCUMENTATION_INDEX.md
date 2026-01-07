@@ -1,6 +1,6 @@
-# GhostOS - Complete Documentation Index
+# Heck-CheckOS - Complete Documentation Index
 
-Comprehensive index of all GhostOS documentation for Desktop and Android platforms.
+Comprehensive index of all Heck-CheckOS documentation for Desktop and Android platforms.
 
 ## 📱 Android Documentation (NEW!)
 
@@ -29,7 +29,7 @@ Comprehensive index of all GhostOS documentation for Desktop and Android platfor
    - Security model
 
 ### Scripts
-4. **[ghostos-android.sh](ghostos-android.sh)** - Android installation script
+4. **[heckcheckos-android.sh](heckcheckos-android.sh)** - Android installation script
    - Automated installation
    - Dependency management
    - Script generation
@@ -53,7 +53,7 @@ Comprehensive index of all GhostOS documentation for Desktop and Android platfor
    - Common use cases
 
 ### Scripts
-7. **[ghostos-build.sh](ghostos-build.sh)** - Desktop build script
+7. **[heckcheckos-build.sh](heckcheckos-build.sh)** - Desktop build script
    - Multi-version builder
    - Automated ISO creation
    - USB bootloader support
@@ -89,19 +89,19 @@ Comprehensive index of all GhostOS documentation for Desktop and Android platfor
 
 ## 📚 Documentation by Use Case
 
-### "I want to install GhostOS on Android"
+### "I want to install Heck-CheckOS on Android"
 1. Read [Android Installation Guide](ANDROID_INSTALLATION.md)
 2. Follow step-by-step instructions
 3. Use [Android Quick Reference](ANDROID_QUICK_REFERENCE.md) for commands
 4. Check [FAQ](FAQ.md) if you have questions
 
-### "I want to build GhostOS Desktop ISO"
+### "I want to build Heck-CheckOS Desktop ISO"
 1. Read [Build System README](#GHOSTOS_BUILD_README.md)
-2. Run [ghostos-build.sh](ghostos-build.sh)
+2. Run [heckcheckos-build.sh](heckcheckos-build.sh)
 3. Use [Quick Reference](GHOSTOS_QUICK_REFERENCE.md) for commands
 4. Check [FAQ](FAQ.md) for troubleshooting
 
-### "I want to understand how GhostOS works"
+### "I want to understand how Heck-CheckOS works"
 1. Read [Main README](../README.md) for overview
 2. Read [Architecture Overview](ARCHITECTURE.md) for technical details
 3. Check [Android Technical Details](ANDROID_TECHNICAL_DETAILS.md) for Android specifics
@@ -168,13 +168,13 @@ Comprehensive index of all GhostOS documentation for Desktop and Android platfor
 **Android Developers:**
 1. [Android Technical Details](ANDROID_TECHNICAL_DETAILS.md) - Architecture
 2. [Architecture Overview](ARCHITECTURE.md) - System design
-3. [ghostos-android.sh](ghostos-android.sh) - Script source
+3. [heckcheckos-android.sh](heckcheckos-android.sh) - Script source
 4. [FAQ](FAQ.md) - Technical details
 
 **System Integrators:**
 1. [Architecture Overview](ARCHITECTURE.md) - System design
 2. [Build System README](#GHOSTOS_BUILD_README.md) - Build system
-3. [ghostos-build.sh](ghostos-build.sh) - Script source
+3. [heckcheckos-build.sh](heckcheckos-build.sh) - Script source
 4. [FAQ](FAQ.md) - Advanced topics
 
 ## 🔗 External Resources
@@ -209,8 +209,8 @@ Comprehensive index of all GhostOS documentation for Desktop and Android platfor
 - Architecture: [ARCHITECTURE.md](ARCHITECTURE.md)
 
 **Scripts**
-- Android: [ghostos-android.sh](ghostos-android.sh)
-- Desktop: [ghostos-build.sh](ghostos-build.sh)
+- Android: [heckcheckos-android.sh](heckcheckos-android.sh)
+- Desktop: [heckcheckos-build.sh](heckcheckos-build.sh)
 
 **Troubleshooting**
 - General: [FAQ.md](FAQ.md)

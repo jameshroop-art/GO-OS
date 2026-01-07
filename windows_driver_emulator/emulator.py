@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-GhostOS Windows Driver Emulator
+Heck-CheckOS Windows Driver Emulator
 Lightweight Windows driver compatibility layer for Linux
 
 This emulator provides a translation layer between Windows driver APIs
@@ -9,7 +9,7 @@ and Linux kernel interfaces, enabling Windows drivers to work on the host OS.
 LICENSE: MIT (see LICENSE file in repository root)
 
 LEGAL NOTICE:
-This is part of GhostOS, a derivative work based on Debian 12 (Bookworm).
+This is part of Heck-CheckOS, a derivative work based on Debian 12 (Bookworm).
 NOT an official Debian release. NOT endorsed by the Debian Project.
 See LEGAL_COMPLIANCE.md for full legal information.
 """
@@ -32,7 +32,7 @@ logger = logging.getLogger('WindowsDriverEmulator')
 class DriverEmulator:
     """Main Windows Driver Emulator class"""
     
-    def __init__(self, config_path: str = "/etc/ghostos/driver-emulator.conf"):
+    def __init__(self, config_path: str = "/etc/heckcheckos/driver-emulator.conf"):
         """
         Initialize the driver emulator
         
@@ -50,9 +50,9 @@ class DriverEmulator:
         """Load emulator configuration"""
         default_config = {
             "driver_search_paths": [
-                "/opt/ghostos/drivers",
-                "/usr/local/share/ghostos/drivers",
-                "~/.ghostos/drivers"
+                "/opt/heckcheckos/drivers",
+                "/usr/local/share/heckcheckos/drivers",
+                "~/.heckcheckos/drivers"
             ],
             "supported_device_types": [
                 "usb",
@@ -68,7 +68,7 @@ class DriverEmulator:
             },
             "logging": {
                 "level": "INFO",
-                "file": "/var/log/ghostos/driver-emulator.log"
+                "file": "/var/log/heckcheckos/driver-emulator.log"
             }
         }
         
@@ -274,7 +274,7 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(
-        description='GhostOS Windows Driver Emulator'
+        description='Heck-CheckOS Windows Driver Emulator'
     )
     parser.add_argument(
         'action',

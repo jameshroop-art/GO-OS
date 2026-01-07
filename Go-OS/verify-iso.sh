@@ -1,12 +1,12 @@
 #!/bin/bash
 # ============================================
-# GhostOS ISO Verification Script
+# Heck-CheckOS ISO Verification Script
 # Verifies Debian 12 ISO integrity before using
 # ============================================
 # LICENSE: MIT (see LICENSE file in repository root)
 # 
 # LEGAL NOTICE:
-# This script is part of GhostOS, a derivative work based on Debian 12.
+# This script is part of Heck-CheckOS, a derivative work based on Debian 12.
 # NOT an official Debian release. See LEGAL_COMPLIANCE.md.
 # ============================================
 
@@ -23,7 +23,7 @@ EXPECTED_SIZE_MIN=500000000   # ~500MB minimum (netinst)
 EXPECTED_SIZE_MAX=5000000000  # ~5GB maximum (full DVD)
 
 echo "=========================================="
-echo "  GhostOS ISO Verification Tool"
+echo "  Heck-CheckOS ISO Verification Tool"
 echo "=========================================="
 echo ""
 
@@ -154,6 +154,6 @@ echo "  • Test Debian 12 in a VM"
 echo "  • Create a bootable USB for Debian 12 installation"
 echo "  • Keep as a reference for the official Debian distribution"
 echo ""
-echo "Note: The GhostOS build script (ghostos-build.sh) downloads"
+echo "Note: The Heck-CheckOS build script (heckcheckos-build.sh) downloads"
 echo "Debian 12 automatically via debootstrap and doesn't require the ISO."
 echo ""

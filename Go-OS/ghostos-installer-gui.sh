@@ -1,22 +1,22 @@
 #!/bin/bash
 # ============================================
-# GhostOS GUI Installer Launcher
+# Heck-CheckOS GUI Installer Launcher
 # Launches the Python GUI for USB creation and disk partitioning
 # ============================================
 # LICENSE: MIT (see LICENSE file in repository root)
 # 
 # LEGAL NOTICE:
-# This script is part of GhostOS, a derivative work based on Debian 12 (Bookworm).
+# This script is part of Heck-CheckOS, a derivative work based on Debian 12 (Bookworm).
 # NOT an official Debian release. See LEGAL_COMPLIANCE.md.
 # ============================================
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-GUI_SCRIPT="$SCRIPT_DIR/ghostos-installer-gui.py"
+GUI_SCRIPT="$SCRIPT_DIR/heckcheckos-installer-gui.py"
 
 echo "========================================"
-echo "  👻 GhostOS Security Edition"
+echo "  👻 Heck-CheckOS Security Edition"
 echo "  GUI Installer & USB Creator"
 echo "========================================"
 echo ""
@@ -134,7 +134,7 @@ echo "[✓] Filesystem tools check complete"
 echo ""
 
 # Launch GUI
-echo "[*] Launching GhostOS Installer GUI..."
+echo "[*] Launching Heck-CheckOS Installer GUI..."
 echo ""
 
 if [ ! -f "$GUI_SCRIPT" ]; then
