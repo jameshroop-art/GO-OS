@@ -476,7 +476,7 @@ cp $HOME/ghostos-ultimate/*.iso ~/iso-backups/
 
 - **Repository**: https://github.com/jameshroop-art/GO-OS
 - **Issues**: https://github.com/jameshroop-art/GO-OS/issues
-- **Debian 12**: https://www.parrotsec.org
+- **Debian 12**: https://www.debian.org
 - **Debian**: https://www.debian.org
 
 ## Next Steps
