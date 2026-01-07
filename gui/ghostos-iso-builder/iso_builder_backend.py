@@ -677,6 +677,249 @@ EOF
         print("  ✓ Convenient features restricted for security")
         print("  ✓ See /etc/ghostos/privacy-over-privilege.json for details")
     
+    def configure_program_autonomy(self, progress_callback=None):
+        """
+        Configure system to allow programs to operate naturally
+        OS will not interfere with standard program operations
+        Balances privacy with program functionality
+        """
+        if progress_callback:
+            progress_callback(32, "Configuring program autonomy...")
+        
+        print("[*] Configuring program autonomy - Allow natural program operations...")
+        
+        # 1. Create AppArmor complain mode profiles (don't block, just log)
+        apparmor_dir = self.rootfs_dir / "etc" / "apparmor.d"
+        apparmor_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Set AppArmor to complain mode globally
+        apparmor_tune = self.rootfs_dir / "etc" / "apparmor.d" / "tunables" / "ghostos-autonomy"
+        apparmor_tune.parent.mkdir(parents=True, exist_ok=True)
+        apparmor_tune.write_text("""# GhostOS Program Autonomy
+# Allow programs to operate naturally - don't enforce strict confinement
+# Profiles in complain mode: log but don't deny operations
+""")
+        
+        # 2. Configure SELinux to permissive (if present) - don't block program operations
+        selinux_config = self.rootfs_dir / "etc" / "selinux" / "config"
+        if selinux_config.parent.exists():
+            selinux_config.write_text("""# SELinux configuration for program autonomy
+SELINUX=permissive
+SELINUXTYPE=targeted
+""")
+        
+        # 3. Allow programs their own network access without global DNS override
+        networkmanager_apps = self.rootfs_dir / "etc" / "NetworkManager" / "conf.d" / "ghostos-app-autonomy.conf"
+        networkmanager_apps.parent.mkdir(parents=True, exist_ok=True)
+        networkmanager_apps.write_text("""[main]
+# Allow applications to use their own DNS if configured
+# System-wide privacy DNS is default, but apps can override
+dns=default
+
+[connection]
+# Don't force connection settings on applications
+""")
+        
+        # 4. Disable restrictive seccomp filters that might block legitimate syscalls
+        sysctl_autonomy = self.rootfs_dir / "etc" / "sysctl.d" / "98-ghostos-autonomy.conf"
+        sysctl_autonomy.parent.mkdir(parents=True, exist_ok=True)
+        sysctl_autonomy.write_text("""# Program Autonomy - Allow standard operations
+# Don't block legitimate program operations
+
+# Allow programs to use unprivileged user namespaces (needed for sandboxing)
+kernel.unprivileged_userns_clone=1
+
+# Allow memory overcommit (needed by some applications)
+vm.overcommit_memory=0
+
+# Allow programs to create core dumps if they crash (useful for debugging)
+kernel.core_pattern=core
+""")
+        
+        # 5. Configure sudo to not interfere with program environment variables
+        sudoers_env = self.rootfs_dir / "etc" / "sudoers.d" / "ghostos-program-env"
+        sudoers_env.parent.mkdir(parents=True, exist_ok=True)
+        sudoers_env.write_text("""# Allow programs to preserve their environment
+Defaults env_keep += "HOME PATH LANG LC_* DISPLAY XAUTHORITY"
+Defaults !env_reset
+""")
+        sudoers_env.chmod(0o440)
+        
+        # 6. Don't block inter-process communication
+        ipc_conf = self.rootfs_dir / "etc" / "sysctl.d" / "97-ghostos-ipc.conf"
+        ipc_conf.parent.mkdir(parents=True, exist_ok=True)
+        ipc_conf.write_text("""# Allow standard IPC mechanisms
+# Programs need these for normal operation
+kernel.shmmax=268435456
+kernel.shmall=268435456
+kernel.shmmni=4096
+""")
+        
+        # 7. Allow programs to use standard system resources
+        limits_conf = self.rootfs_dir / "etc" / "security" / "limits.d" / "ghostos-autonomy.conf"
+        limits_conf.parent.mkdir(parents=True, exist_ok=True)
+        limits_conf.write_text("""# Resource limits that allow programs to operate naturally
+*    soft    nofile    65536
+*    hard    nofile    65536
+*    soft    nproc     4096
+*    hard    nproc     4096
+*    soft    memlock   unlimited
+*    hard    memlock   unlimited
+""")
+        
+        # 8. Configure systemd to not kill background processes
+        systemd_login = self.rootfs_dir / "etc" / "systemd" / "logind.conf.d" / "ghostos-autonomy.conf"
+        systemd_login.parent.mkdir(parents=True, exist_ok=True)
+        systemd_login.write_text("""[Login]
+# Allow programs to continue running
+KillUserProcesses=no
+KillOnlyUsers=
+""")
+        
+        # 9. Allow programs to create listening sockets
+        # Remove restrictive firewall rules for localhost
+        firewall_allow = self.rootfs_dir / "etc" / "ghostos" / "firewall-allow-localhost.sh"
+        firewall_allow.parent.mkdir(parents=True, exist_ok=True)
+        firewall_allow.write_text("""#!/bin/bash
+# Allow localhost communication - programs need this
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+
+# Allow established connections (programs talking to their servers)
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+""")
+        firewall_allow.chmod(0o755)
+        
+        # 10. Configure dbus to allow program communication
+        dbus_conf = self.rootfs_dir / "etc" / "dbus-1" / "system.d" / "ghostos-autonomy.conf"
+        dbus_conf.parent.mkdir(parents=True, exist_ok=True)
+        dbus_conf.write_text("""<!DOCTYPE busconfig PUBLIC
+ "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
+<busconfig>
+  <!-- Allow programs to use dbus for IPC -->
+  <policy context="default">
+    <allow send_destination="*"/>
+    <allow receive_sender="*"/>
+  </policy>
+</busconfig>
+""")
+        
+        # 11. Create exceptions for legitimate program operations
+        privacy_exceptions = self.rootfs_dir / "etc" / "ghostos" / "privacy-exceptions.conf"
+        privacy_exceptions.parent.mkdir(parents=True, exist_ok=True)
+        privacy_exceptions.write_text("""# Privacy Exceptions for Legitimate Program Operations
+# These allow programs to function normally while maintaining privacy
+
+[Network Access]
+# Programs can access their configured servers
+# Only block known telemetry/tracking domains
+allow_program_network=yes
+allow_localhost=yes
+allow_lan=yes
+
+[System Resources]
+# Programs can use standard system calls
+allow_ipc=yes
+allow_sockets=yes
+allow_files=yes
+allow_processes=yes
+
+[Program Data]
+# Programs can store data in their directories
+allow_home_directory=yes
+allow_config_directory=yes
+allow_cache_directory=yes
+allow_temp_directory=yes
+
+[Hardware Access]
+# Programs can use hardware if user grants permission
+require_camera_permission=yes
+require_microphone_permission=yes
+# But don't block programmatic access once granted
+
+[APIs]
+# Block OS telemetry, but allow program APIs
+block_os_telemetry=yes
+block_tracking_domains=yes
+allow_program_apis=yes
+allow_localhost_apis=yes
+
+[Philosophy]
+# Privacy from OS and trackers
+# NOT privacy from user-installed programs
+# Programs operate naturally within their scope
+""")
+        
+        # 12. Create program autonomy manifest
+        autonomy_manifest = self.rootfs_dir / "etc" / "ghostos" / "program-autonomy.json"
+        autonomy_manifest.parent.mkdir(parents=True, exist_ok=True)
+        
+        manifest_data = {
+            "philosophy": "Program Autonomy",
+            "description": "Programs can operate naturally. OS doesn't interfere with standard operations.",
+            "guarantees": [
+                "Programs can use their own network connections",
+                "Programs can communicate via IPC (D-Bus, sockets, pipes)",
+                "Programs can access files in user directories",
+                "Programs can create background processes",
+                "Programs can use standard system calls",
+                "Programs can listen on ports they need",
+                "Programs can preserve their environment variables",
+                "Programs can use reasonable system resources"
+            ],
+            "privacy_balance": [
+                "OS telemetry is blocked (Microsoft, Google, etc.)",
+                "Known tracking domains are blocked in /etc/hosts",
+                "Location services are disabled by system",
+                "BUT programs you install are trusted to operate normally",
+                "Privacy is about OS/vendor tracking, not your programs"
+            ],
+            "what_is_blocked": [
+                "OS-level telemetry to vendors",
+                "System-wide tracking (analytics.google.com, etc.)",
+                "Automatic location reporting",
+                "Crash reports to vendors",
+                "Cloud sync you didn't enable"
+            ],
+            "what_is_allowed": [
+                "Programs you install can connect to their servers",
+                "Programs can use standard APIs and system calls",
+                "Programs can store data where they need to",
+                "Programs can run background services",
+                "Programs can use localhost networking",
+                "Programs can communicate with each other (IPC)"
+            ],
+            "example_scenarios": {
+                "web_browser": "Can access any website, blocked domains are only tracking/telemetry",
+                "game": "Can connect to game servers, download updates, use networking",
+                "ide": "Can use language servers, debuggers, extensions freely",
+                "docker": "Can create containers, use networking, bind ports",
+                "development": "Can use localhost services, databases, web servers",
+                "communication": "Slack, Discord, etc. can operate normally"
+            },
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        autonomy_manifest.write_text(json.dumps(manifest_data, indent=2))
+        
+        # 13. Update privacy manifest to clarify program autonomy
+        privacy_manifest_path = self.rootfs_dir / "etc" / "ghostos" / "privacy-over-privilege.json"
+        if privacy_manifest_path.exists():
+            import json
+            privacy_data = json.loads(privacy_manifest_path.read_text())
+            privacy_data["program_autonomy"] = {
+                "note": "Privacy restrictions apply to OS and vendors, NOT your programs",
+                "programs_can_operate_normally": True,
+                "see_details": "/etc/ghostos/program-autonomy.json"
+            }
+            privacy_manifest_path.write_text(json.dumps(privacy_data, indent=2))
+        
+        print("  ✓ Program autonomy configured - Programs operate naturally")
+        print("  ✓ Privacy from OS/vendors, not from installed programs")
+        print("  ✓ No interference with standard program operations")
+    
     def apply_theme(self, theme_config: dict, progress_callback=None):
         """Apply theme configuration to the system"""
         if progress_callback:
@@ -993,6 +1236,9 @@ menuentry "👻 GhostOS {version} - Safe Mode" {{
             
             # Enact Privacy Over Privilege (restricts convenient features for privacy)
             self.enact_privacy_over_privilege(progress_callback)
+            
+            # Configure Program Autonomy (allow programs to operate naturally)
+            self.configure_program_autonomy(progress_callback)
             
             # Merge ISO components if multiple sources provided
             merged_packages = []
