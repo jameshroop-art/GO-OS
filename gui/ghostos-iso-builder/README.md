@@ -5,7 +5,7 @@ A comprehensive PyQt6-based GUI for building customized GhostOS ISOs with multi-
 ## Features
 
 ### 🎯 Multi-ISO Source Support
-- Load multiple ISO sources (Parrot OS, Ubuntu, Debian, etc.)
+- Load multiple ISO sources (Debian 12, Ubuntu, Debian, etc.)
 - Select specific components from each ISO
 - Combine packages from different distributions
 - Component categorization and filtering
@@ -223,7 +223,7 @@ gui/ghostos-iso-builder/
 ## Key Capabilities
 
 ### Multi-Source ISO Building
-- Combine Parrot Security tools with Ubuntu packages
+- Combine Debian tools with Ubuntu packages
 - Mix Debian stability with Arch bleeding-edge
 - Create truly custom distributions
 
@@ -252,7 +252,7 @@ All integrated external projects maintain their original licenses (see integrati
 
 Built on top of:
 - PyQt6 for the GUI framework
-- Parrot Security OS as primary base
+- Debian OS as primary base
 - Multiple open-source integrations (see integrations/)
 
 Thank you to all contributors and the open-source community! 🎉

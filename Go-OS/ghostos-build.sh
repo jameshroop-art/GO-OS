@@ -4,9 +4,24 @@
 # ============================================
 # GhostOS Complete Build System
 # Versions: 1.0, 1.1, 2.0
-# Base: Parrot OS 7 Security Edition
+# Base: Debian 12 (Bookworm)
 # GUI: GhostOS Custom Desktop Environment
 # With USB Bootloader Creation
+# ============================================
+# 
+# LICENSE: MIT (for this build script)
+# See LICENSE file in repository root
+#
+# LEGAL NOTICE:
+# This script builds a derivative work based on Debian 12 (Bookworm).
+# - NOT an official Debian release
+# - NOT endorsed by the Debian Project
+# - Debian® is a registered trademark of Software in the Public Interest, Inc.
+# - This is an independent community project
+# - See LEGAL_COMPLIANCE.md for full legal information
+#
+# All packages and software from Debian retain their 
+# original licenses (GPL, LGPL, BSD, MIT, etc.)
 # ============================================
 
 set -e
@@ -18,7 +33,7 @@ ISO_DIR="$BUILD_DIR/iso"
 
 echo "========================================"
 echo "  👻 GhostOS Build System"
-echo "  🦜 Parrot OS 7 Security Base"
+echo "  🐧 Debian 12 (Bookworm) Base"
 echo "  Multi-Version Builder"
 echo "========================================"
 echo ""
@@ -35,17 +50,17 @@ fi
 # ============================================
 echo "Select GhostOS version to build:"
 echo ""
-echo "  🦜 Base: Parrot OS 7 Security Edition"
+echo "  🐧 Base: Debian 12 (Bookworm)"
 echo "  👻 GUI: GhostOS Custom Desktop"
 echo ""
 echo "  1) GhostOS v1.0 - Stable Release"
-echo "     • Parrot OS 7 Security base"
+echo "     • Debian 12 (Bookworm) base"
 echo "     • Complete base system"
 echo "     • All core features"
 echo "     • ~10GB ISO"
 echo ""
 echo "  2) GhostOS v1.1 - Enhanced Edition"
-echo "     • Parrot OS 7 Security base"
+echo "     • Debian 12 (Bookworm) base"
 echo "     • Improved UI (smooth animations)"
 echo "     • Enhanced privacy controls"
 echo "     • Malwarebytes Premium"
@@ -53,7 +68,7 @@ echo "     • System consolidation"
 echo "     • ~11GB ISO"
 echo ""
 echo "  3) GhostOS v2.0 - Next Generation"
-echo "     • Parrot OS 7 Security base"
+echo "     • Debian 12 (Bookworm) base"
 echo "     • Modern Wayland support"
 echo "     • AI assistant integration"
 echo "     • Advanced UI (blur effects, transitions)"
@@ -140,20 +155,21 @@ create_install_script_1.0() {
 set -e
 export DEBIAN_FRONTEND=noninteractive
 
-echo "Installing GhostOS v1.0 on Parrot OS 7 Security base..."
+echo "Installing GhostOS v1.0 on Debian 12 (Bookworm) base..."
 
 # ============================================
-# Configure Parrot OS 7 Security Repositories
+# Configure Debian 12 (Bookworm) Repositories
 # ============================================
 echo ""
-echo "[*] Configuring Parrot OS 7 Security repositories..."
+echo "[*] Configuring Debian 12 (Bookworm) repositories..."
 
-cat > /etc/apt/sources.list << 'PARROT_EOF'
-# Parrot OS 7 (lory) - Security Edition Base
-deb https://deb.parrot.sh/parrot lory main contrib non-free non-free-firmware
-deb https://deb.parrot.sh/parrot lory-security main contrib non-free non-free-firmware
-deb https://deb.parrot.sh/parrot lory-backports main contrib non-free non-free-firmware
-PARROT_EOF
+cat > /etc/apt/sources.list << 'DEBIAN_EOF'
+# Debian 12 (Bookworm) - Stable Release Base
+deb http://deb.debian.org/debian bookworm main contrib non-free non-free-firmware
+deb http://deb.debian.org/debian bookworm-updates main contrib non-free non-free-firmware
+deb http://deb.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
+deb http://deb.debian.org/debian bookworm-backports main contrib non-free non-free-firmware
+DEBIAN_EOF
 
 # ============================================
 # System Base and Kernel
@@ -356,8 +372,8 @@ apt-get install -y \
     vulkan-tools \
     xserver-xorg-dev
 
-# Parrot OS already includes non-free repositories in sources.list
-# Update package cache for latest Parrot repository information
+# Debian 12 already includes non-free repositories in sources.list
+# Update package cache for latest Debian repository information
 apt-get update
 
 # Clone nvidia-driver-installer from trusted GitHub source
@@ -2078,11 +2094,11 @@ echo ""
 echo "    All devices work immediately when plugged in!"
 
 # ============================================
-# Penetration Testing Tools (Kali + Parrot OS)
+# Penetration Testing Tools (Kali Linux)
 # ============================================
 echo ""
 echo "[*] Installing penetration testing and security tools..."
-echo "    Full Kali Linux and Parrot Security OS toolsets"
+echo "    Kali Linux security toolset"
 
 # Add Kali Linux repositories
 cat > /etc/apt/sources.list.d/kali.list << 'EOF'
@@ -2092,8 +2108,8 @@ EOF
 # Add Kali GPG key
 wget -q -O - https://archive.kali.org/archive-key.asc | apt-key add -
 
-# Parrot Security tools are already available from the base Parrot OS 7 repositories
-# No need to add additional Parrot repositories
+# Security tools from Kali repositories
+# Additional security packages available from Debian 12 base repositories
 
 apt-get update
 
@@ -2500,7 +2516,7 @@ apt-get install -y \
     kerbrute
 
 # ============================================
-# Custom Kali/Parrot Menu
+# Custom Kali Security Menu
 # ============================================
 echo ""
 echo "[*] Creating penetration testing menu..."
@@ -2522,7 +2538,7 @@ show_menu() {
 ║   ░╚═════╝░╚═╝░░╚═╝░╚════╝░╚═════╝░░░░╚═╝░░░░╚════╝░╚═════╝░  ║
 ║                                                            ║
 ║           PENETRATION TESTING TOOLKIT                     ║
-║           (Kali Linux + Parrot Security Tools)            ║
+║           (Kali Linux Security Tools)                     ║
 ║                                                            ║
 ╚════════════════════════════════════════════════════════════╝
 
@@ -2814,7 +2830,7 @@ chmod +x /usr/local/bin/ghostos-pentest
 cat > /usr/share/applications/ghostos-pentest.desktop << 'EOF'
 [Desktop Entry]
 Name=Penetration Testing Tools
-Comment=Kali Linux + Parrot Security toolkit
+Comment=Kali Linux Security toolkit
 Exec=xfce4-terminal -e ghostos-pentest
 Icon=security-high
 Terminal=true
@@ -2840,7 +2856,7 @@ echo "    ✓ Reverse Engineering (ghidra, radare2, gdb, IDA)"
 echo "    ✓ Social Engineering (SET, gophish, evilginx2, king-phisher)"
 echo "    ✓ Reporting (cherrytree, dradis, faraday)"
 echo ""
-echo "    Full Kali Linux + Parrot Security OS toolkit!"
+echo "    Full Kali Linux security toolkit!"
 
 # ============================================
 # Virtualization (VMware + VirtualBox)
@@ -5216,21 +5232,22 @@ export DEBIAN_FRONTEND=noninteractive
 echo "========================================"
 echo "  Installing GhostOS v1.1"
 echo "  Enhanced Edition"
-echo "  on Parrot OS 7 Security base"
+echo "  on Debian 12 (Bookworm) base"
 echo "========================================"
 
 # ============================================
-# Configure Parrot OS 7 Security Repositories
+# Configure Debian 12 (Bookworm) Repositories
 # ============================================
 echo ""
-echo "[*] Configuring Parrot OS 7 Security repositories..."
+echo "[*] Configuring Debian 12 (Bookworm) repositories..."
 
-cat > /etc/apt/sources.list << 'PARROT_EOF'
-# Parrot OS 7 (lory) - Security Edition Base
-deb https://deb.parrot.sh/parrot lory main contrib non-free non-free-firmware
-deb https://deb.parrot.sh/parrot lory-security main contrib non-free non-free-firmware
-deb https://deb.parrot.sh/parrot lory-backports main contrib non-free non-free-firmware
-PARROT_EOF
+cat > /etc/apt/sources.list << 'DEBIAN_EOF'
+# Debian 12 (Bookworm) - Stable Release Base
+deb http://deb.debian.org/debian bookworm main contrib non-free non-free-firmware
+deb http://deb.debian.org/debian bookworm-updates main contrib non-free non-free-firmware
+deb http://deb.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
+deb http://deb.debian.org/debian bookworm-backports main contrib non-free non-free-firmware
+DEBIAN_EOF
 
 # ============================================
 # BASE SYSTEM (from v1.0)
@@ -5953,21 +5970,22 @@ export DEBIAN_FRONTEND=noninteractive
 echo "========================================"
 echo "  Installing GhostOS v2.0"
 echo "  Next Generation"
-echo "  on Parrot OS 7 Security base"
+echo "  on Debian 12 (Bookworm) base"
 echo "========================================"
 
 # ============================================
-# Configure Parrot OS 7 Security Repositories
+# Configure Debian 12 (Bookworm) Repositories
 # ============================================
 echo ""
-echo "[*] Configuring Parrot OS 7 Security repositories..."
+echo "[*] Configuring Debian 12 (Bookworm) repositories..."
 
-cat > /etc/apt/sources.list << 'PARROT_EOF'
-# Parrot OS 7 (lory) - Security Edition Base
-deb https://deb.parrot.sh/parrot lory main contrib non-free non-free-firmware
-deb https://deb.parrot.sh/parrot lory-security main contrib non-free non-free-firmware
-deb https://deb.parrot.sh/parrot lory-backports main contrib non-free non-free-firmware
-PARROT_EOF
+cat > /etc/apt/sources.list << 'DEBIAN_EOF'
+# Debian 12 (Bookworm) - Stable Release Base
+deb http://deb.debian.org/debian bookworm main contrib non-free non-free-firmware
+deb http://deb.debian.org/debian bookworm-updates main contrib non-free non-free-firmware
+deb http://deb.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
+deb http://deb.debian.org/debian bookworm-backports main contrib non-free non-free-firmware
+DEBIAN_EOF
 
 # ============================================
 # BASE SYSTEM (from v1.0)
@@ -7004,10 +7022,10 @@ for VERSION in "${VERSIONS[@]}"; do
     
     # Bootstrap if needed
     if [ ! -d "$ROOTFS_DIR/usr" ]; then
-        echo "[*] Bootstrapping Parrot OS 7 Security base system..."
-        echo "    Using Parrot Security repositories for enhanced security features"
+        echo "[*] Bootstrapping Debian 12 (Bookworm) base system..."
+        echo "    Using official Debian repositories"
         debootstrap --arch=amd64 --include=wget,curl,ca-certificates,gnupg \
-            lory "$ROOTFS_DIR" https://deb.parrot.sh/parrot
+            bookworm "$ROOTFS_DIR" http://deb.debian.org/debian
     fi
     
     # Create version-specific installation script

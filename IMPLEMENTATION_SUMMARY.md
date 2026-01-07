@@ -292,7 +292,7 @@ Successfully implemented a lightweight Windows driver emulator that:
 
 The implementation addresses the problem statement: "Going to have to temporarily patch this with a light weight emulator for Supporting Windows Drivers for the host OS."
 
-This provides a practical solution for using Windows device drivers on GhostOS/Parrot OS while maintaining security and avoiding the complexity of full Wine or VM solutions.
+This provides a practical solution for using Windows device drivers on GhostOS/Debian 12 while maintaining security and avoiding the complexity of full Wine or VM solutions.
 
 ## Files Changed
 

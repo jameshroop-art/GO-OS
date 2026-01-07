@@ -7,25 +7,25 @@ Common questions and answers about GhostOS for Desktop and Android platforms.
 ### What is GhostOS?
 
 GhostOS is a security-focused, customizable operating system available in two variants:
-1. **Desktop/Server**: Built on Parrot OS 7 Security Edition with custom GhostOS GUI and settings, available as bootable ISOs
-2. **Android**: A Termux-based Parrot Security OS environment for Android 9+ devices
+1. **Desktop/Server**: Built on Debian 12 (Bookworm) with custom GhostOS GUI and settings, available as bootable ISOs
+2. **Android**: A Termux-based Debian 12 environment for Android 9+ devices
 
 ### Is GhostOS free?
 
-Yes! GhostOS is completely free and open-source. It's based on Parrot OS 7 Security Edition (which is based on Debian Linux) and other open-source projects.
+Yes! GhostOS is completely free and open-source. It's based on Debian 12 (Bookworm) and other open-source projects.
 
 ### Do I need to pay for anything?
 
 No. All components are free. However, you may choose to:
-- Donate to upstream projects (Parrot Security, Debian, Termux, etc.)
+- Donate to upstream projects (Debian, Kali Linux, Termux, etc.)
 - Purchase USB drives for bootable media
 - Pay for cloud storage if using v2.0's backup features
 
 ### Is GhostOS safe to use?
 
 Yes. GhostOS:
-- Uses Parrot OS 7 Security Edition as a trusted base
-- Uses official Parrot and Debian packages
+- Uses Debian 12 (Bookworm) as a trusted base
+- Uses official Debian and Kali packages
 - Makes no system modifications on Android (non-root)
 - Can be fully removed without traces
 - Contains no telemetry or tracking
@@ -35,12 +35,12 @@ Yes. GhostOS:
 
 ### What is the base operating system?
 
-GhostOS Desktop is built on **Parrot OS 7 Security Edition** (codename: lory), a Debian-based security-focused distribution. GhostOS adds custom GUI, settings, and additional features on top of Parrot's security foundation.
+GhostOS Desktop is built on **Debian 12 (Bookworm)**, the stable release of Debian GNU/Linux. GhostOS adds custom GUI, settings, and security features on top of Debian's stable foundation.
 
 ### Do I need to be root to build GhostOS?
 
 Yes, building the ISO requires root/sudo access because:
-- debootstrap needs to create system files and bootstrap Parrot OS
+- debootstrap needs to create system files and bootstrap Debian 12
 - Loop devices and mounting require root
 - GRUB installation requires root
 

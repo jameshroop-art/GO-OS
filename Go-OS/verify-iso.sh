@@ -1,6 +1,14 @@
 #!/bin/bash
+# ============================================
 # GhostOS ISO Verification Script
-# Verifies Parrot Security OS ISO integrity before using
+# Verifies Debian 12 ISO integrity before using
+# ============================================
+# LICENSE: MIT (see LICENSE file in repository root)
+# 
+# LEGAL NOTICE:
+# This script is part of GhostOS, a derivative work based on Debian 12.
+# NOT an official Debian release. See LEGAL_COMPLIANCE.md.
+# ============================================
 
 set -e
 
@@ -11,8 +19,8 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 ISO_PATH="$1"
-EXPECTED_SIZE_MIN=7000000000  # ~7GB minimum
-EXPECTED_SIZE_MAX=9000000000  # ~9GB maximum
+EXPECTED_SIZE_MIN=500000000   # ~500MB minimum (netinst)
+EXPECTED_SIZE_MAX=5000000000  # ~5GB maximum (full DVD)
 
 echo "=========================================="
 echo "  GhostOS ISO Verification Tool"
@@ -46,7 +54,7 @@ fi
 # Check if ISO path provided
 if [ -z "$ISO_PATH" ]; then
     echo -e "${RED}Error: No ISO file specified${NC}"
-    echo "Usage: $0 /path/to/Parrot-security-7.0_amd64.iso"
+    echo "Usage: $0 /path/to/debian-12.8.0-amd64-netinst.iso"
     exit 1
 fi
 
@@ -55,7 +63,7 @@ if [ ! -f "$ISO_PATH" ]; then
     echo -e "${RED}Error: ISO file not found: $ISO_PATH${NC}"
     echo ""
     echo "Please download the ISO first:"
-    echo "  wget https://deb.parrot.sh/parrot/iso/7.0/Parrot-security-7.0_amd64.iso"
+    echo "  wget https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.8.0-amd64-netinst.iso"
     exit 1
 fi
 
@@ -121,8 +129,8 @@ echo "  Calculated SHA256: $ACTUAL_SHA256"
 echo ""
 echo -e "${YELLOW}⚠ IMPORTANT: Manual checksum verification required${NC}"
 echo ""
-echo "  Visit the official Parrot download page to get the expected checksum:"
-echo "  https://www.parrotsec.org/download/"
+echo "  Visit the official Debian download page to get the expected checksum:"
+echo "  https://www.debian.org/CD/verify"
 echo ""
 echo "  Compare the checksum above with the official one."
 echo "  If they match, your ISO is authentic and uncorrupted."
@@ -142,10 +150,10 @@ echo -e "${GREEN}✓ Basic checks passed${NC}"
 echo -e "${YELLOW}⚠ Please verify checksum manually before using${NC}"
 echo ""
 echo "You can now use the ISO to:"
-echo "  • Test Parrot Security OS in a VM"
-echo "  • Create a bootable USB for Parrot OS installation"
-echo "  • Keep as a reference for the official Parrot distribution"
+echo "  • Test Debian 12 in a VM"
+echo "  • Create a bootable USB for Debian 12 installation"
+echo "  • Keep as a reference for the official Debian distribution"
 echo ""
 echo "Note: The GhostOS build script (ghostos-build.sh) downloads"
-echo "Parrot OS automatically via debootstrap and doesn't require the ISO."
+echo "Debian 12 automatically via debootstrap and doesn't require the ISO."
 echo ""

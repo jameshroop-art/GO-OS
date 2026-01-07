@@ -3,6 +3,12 @@
 # GhostOS GUI Installer Launcher
 # Launches the Python GUI for USB creation and disk partitioning
 # ============================================
+# LICENSE: MIT (see LICENSE file in repository root)
+# 
+# LEGAL NOTICE:
+# This script is part of GhostOS, a derivative work based on Debian 12 (Bookworm).
+# NOT an official Debian release. See LEGAL_COMPLIANCE.md.
+# ============================================
 
 set -e
 

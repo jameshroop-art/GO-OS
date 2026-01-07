@@ -77,7 +77,7 @@ On first launch, you'll see:
 
 1. **Load an ISO**:
    - Click "➕ Add ISO" in the ISO Loader tab
-   - Select a Parrot OS, Ubuntu, or Debian ISO
+   - Select a Debian 12, Ubuntu, or Debian ISO
    - Wait for analysis to complete
 
 2. **Enable Touchscreen Keyboard** (Optional):
@@ -353,7 +353,7 @@ pip3 list | grep -E "PyQt6|requests|cryptography"
 
 ```bash
 # Launch with specific ISO
-python3 main.py --iso /path/to/parrot.iso
+python3 main.py --iso /path/to/debian.iso
 
 # Load configuration
 python3 main.py --config /path/to/config.json
@@ -476,7 +476,7 @@ cp $HOME/ghostos-ultimate/*.iso ~/iso-backups/
 
 - **Repository**: https://github.com/jameshroop-art/GO-OS
 - **Issues**: https://github.com/jameshroop-art/GO-OS/issues
-- **Parrot OS**: https://www.parrotsec.org
+- **Debian 12**: https://www.debian.org
 - **Debian**: https://www.debian.org
 
 ## Next Steps

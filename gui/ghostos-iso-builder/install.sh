@@ -76,7 +76,7 @@ Exec=ghostos-builder
 Icon=ghostos-builder
 Terminal=false
 Categories=System;Development;Utility;
-Keywords=iso;builder;ghostos;parrot;linux;customization;
+Keywords=iso;builder;ghostos;debian;linux;customization;
 StartupNotify=true
 EOF
 

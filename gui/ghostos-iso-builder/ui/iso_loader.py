@@ -56,7 +56,7 @@ class ISOAnalyzerThread(QThread):
                         'GNOME Desktop': {'size': '720MB', 'required': False},
                     },
                     'Security Tools': {
-                        'Parrot Security Suite': {'size': '1.2GB', 'required': False},
+                        'Debian Security Suite': {'size': '1.2GB', 'required': False},
                         'Network Analysis': {'size': '450MB', 'required': False},
                         'Forensics Tools': {'size': '380MB', 'required': False},
                         'Password Cracking': {'size': '280MB', 'required': False},
@@ -107,16 +107,45 @@ class ISOLoaderWidget(QWidget):
         layout.setContentsMargins(10, 10, 10, 10)
         
         # Header
-        header_label = QLabel("📀 Multi-ISO Source Loader")
+        header_label = QLabel("📀 Multi-ISO Source Loader & Merger")
         header_font = QFont()
         header_font.setPointSize(14)
         header_font.setBold(True)
         header_label.setFont(header_font)
         layout.addWidget(header_label)
         
-        info_label = QLabel("Load multiple ISO sources and select components to include in your build")
+        info_label = QLabel("Load up to 2 ISO sources and merge components from both to create a custom hybrid OS")
         info_label.setStyleSheet("color: #888888; font-size: 10pt;")
         layout.addWidget(info_label)
+        
+        # Dual ISO mode indicator
+        self.dual_iso_frame = QFrame()
+        self.dual_iso_frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.dual_iso_frame.setStyleSheet("""
+            QFrame {
+                background-color: #1a4d2e;
+                border: 2px solid #2d7a4f;
+                border-radius: 5px;
+                padding: 10px;
+            }
+        """)
+        dual_iso_layout = QVBoxLayout(self.dual_iso_frame)
+        
+        self.merge_status_label = QLabel("🔄 Merge Mode: Load 2 ISOs to combine features")
+        self.merge_status_label.setStyleSheet("color: #4ade80; font-weight: bold; font-size: 11pt;")
+        dual_iso_layout.addWidget(self.merge_status_label)
+        
+        merge_info = QLabel(
+            "• Load Base OS (e.g., Debian, Ubuntu) + Feature OS (e.g., Kali, Security tools)\n"
+            "• Select components from both to create a custom merged distribution\n"
+            "• Combine desktop environments, tools, and packages from multiple sources"
+        )
+        merge_info.setStyleSheet("color: #a3e635; font-size: 9pt;")
+        merge_info.setWordWrap(True)
+        dual_iso_layout.addWidget(merge_info)
+        
+        self.dual_iso_frame.setVisible(False)
+        layout.addWidget(self.dual_iso_frame)
         
         layout.addSpacing(10)
         
@@ -324,15 +353,36 @@ class ISOLoaderWidget(QWidget):
             if iso['path'] == iso_path:
                 QMessageBox.information(self, "Already Loaded", "This ISO is already loaded.")
                 return
+        
+        # Limit to 2 ISOs for optimal merging
+        if len(self.loaded_isos) >= 2:
+            reply = QMessageBox.question(
+                self,
+                "Maximum ISOs Loaded",
+                "You already have 2 ISOs loaded. The merger works best with 2 sources.\n\n"
+                "Would you like to remove the first ISO and add this one?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            )
+            if reply == QMessageBox.StandardButton.Yes:
+                # Remove first ISO
+                first_iso = self.loaded_isos[0]
+                self.loaded_isos = self.loaded_isos[1:]
+                self.iso_list.takeItem(0)
+            else:
+                return
                 
         # Add to list
         iso_name = Path(iso_path).name
-        item = QListWidgetItem(f"📀 {iso_name}")
+        iso_number = len(self.loaded_isos) + 1
+        item = QListWidgetItem(f"📀 ISO #{iso_number}: {iso_name}")
         item.setData(Qt.ItemDataRole.UserRole, iso_path)
         self.iso_list.addItem(item)
         
         # Start analysis in background
         self.analyze_iso(iso_path)
+        
+        # Update dual ISO mode indicator
+        self.update_merge_mode_ui()
         
         self.iso_loaded.emit(iso_path)
         
@@ -380,8 +430,52 @@ class ISOLoaderWidget(QWidget):
             # Remove from UI
             self.iso_list.takeItem(self.iso_list.row(current_item))
             
+            # Renumber remaining ISOs
+            for i in range(self.iso_list.count()):
+                item = self.iso_list.item(i)
+                iso_path = item.data(Qt.ItemDataRole.UserRole)
+                iso_name = Path(iso_path).name
+                item.setText(f"📀 ISO #{i+1}: {iso_name}")
+            
             # Refresh component tree
             self.populate_component_tree()
+            
+            # Update merge mode UI
+            self.update_merge_mode_ui()
+    
+    def update_merge_mode_ui(self):
+        """Update the merge mode UI based on loaded ISOs"""
+        iso_count = len(self.loaded_isos)
+        
+        if iso_count == 0:
+            self.dual_iso_frame.setVisible(False)
+            self.merge_status_label.setText("🔄 Merge Mode: Load 2 ISOs to combine features")
+        elif iso_count == 1:
+            self.dual_iso_frame.setVisible(True)
+            iso1_name = Path(self.loaded_isos[0]['name']).stem
+            self.merge_status_label.setText(f"📀 Single ISO Mode: {iso1_name}")
+            self.dual_iso_frame.setStyleSheet("""
+                QFrame {
+                    background-color: #1e3a5f;
+                    border: 2px solid #3b82f6;
+                    border-radius: 5px;
+                    padding: 10px;
+                }
+            """)
+        elif iso_count == 2:
+            self.dual_iso_frame.setVisible(True)
+            iso1_name = Path(self.loaded_isos[0]['name']).stem
+            iso2_name = Path(self.loaded_isos[1]['name']).stem
+            self.merge_status_label.setText(f"🔀 MERGE MODE ACTIVE: {iso1_name} + {iso2_name}")
+            self.dual_iso_frame.setStyleSheet("""
+                QFrame {
+                    background-color: #1a4d2e;
+                    border: 2px solid #4ade80;
+                    border-radius: 5px;
+                    padding: 10px;
+                }
+            """)
+            self.merge_status_label.setStyleSheet("color: #4ade80; font-weight: bold; font-size: 12pt;")
             
     def analyze_current_iso(self):
         """Re-analyze currently selected ISO"""
