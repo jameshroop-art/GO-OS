@@ -163,7 +163,7 @@ deb http://deb.debian.org/debian bookworm-backports main contrib non-free non-fr
             'Node.js & NPM': 'nodejs npm',
             'Git & Version Control': 'git',
             'Network Analysis': 'wireshark nmap',
-            'Forensics Tools': 'sleuthkit autopsy testdisk',
+            'Forensics Tools': 'sleuthkit testdisk',
         }
         
         return component_map.get(component_name, None)
