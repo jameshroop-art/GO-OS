@@ -28,6 +28,34 @@ from ui.touchscreen_keyboard import TouchscreenKeyboard
 from ui.keyboard_designer import KeyboardLayoutDesigner
 from ui.driver_manager import DriverManagerWidget
 
+# Import ISO builder backend
+from iso_builder_backend import ISOBuilder
+
+
+class BuildThread(QThread):
+    """Background thread for ISO building"""
+    progress_update = pyqtSignal(int, str)
+    build_complete = pyqtSignal(str)
+    build_error = pyqtSignal(str)
+    
+    def __init__(self, config):
+        super().__init__()
+        self.config = config
+    
+    def run(self):
+        """Run the build process"""
+        try:
+            builder = ISOBuilder(self.config)
+            
+            def progress_callback(percent, message):
+                self.progress_update.emit(percent, message)
+            
+            output_path = builder.build(progress_callback=progress_callback)
+            self.build_complete.emit(str(output_path))
+            
+        except Exception as e:
+            self.build_error.emit(str(e))
+
 
 class GhostOSBuilderGUI(QMainWindow):
     """Main application window for GhostOS ISO Builder"""
@@ -247,8 +275,20 @@ class GhostOSBuilderGUI(QMainWindow):
             )
             return
         
+        # Check if running as root
+        if os.geteuid() != 0:
+            QMessageBox.warning(
+                self,
+                "Root Required",
+                "ISO building requires root privileges.\n\n"
+                "Please run the builder with sudo:\n"
+                "sudo python3 main.py"
+            )
+            return
+        
         # Get all configuration
         build_config = {
+            'version': 'custom',
             'iso_sources': [iso['path'] for iso in self.iso_loader.loaded_isos],
             'selected_components': self.iso_loader.selected_components,
             'custom_files': self.iso_loader.get_custom_files(),
@@ -256,29 +296,41 @@ class GhostOSBuilderGUI(QMainWindow):
             'theme': self.current_theme,
             'self_install': self.preview_pane.get_self_install_config(),
             'integrations': [],  # Would be populated from repo browser
+            'packages': [],  # Would be populated from selections
         }
         
         # Show build dialog
         from PyQt6.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QProgressBar
         
         build_dialog = QDialog(self)
-        build_dialog.setWindowTitle("Building ISO")
-        build_dialog.setMinimumWidth(700)
-        build_dialog.setMinimumHeight(500)
+        build_dialog.setWindowTitle("Building GhostOS ISO")
+        build_dialog.setMinimumWidth(800)
+        build_dialog.setMinimumHeight(600)
+        build_dialog.setModal(True)
         
         dialog_layout = QVBoxLayout(build_dialog)
         
         # Build log
         build_log = QTextEdit()
         build_log.setReadOnly(True)
+        build_log.setFont(QFont("Monospace", 10))
         dialog_layout.addWidget(build_log)
         
         # Progress bar
         progress = QProgressBar()
+        progress.setMinimum(0)
+        progress.setMaximum(100)
         dialog_layout.addWidget(progress)
         
+        # Status label
+        status_label = QLabel("Preparing build...")
+        dialog_layout.addWidget(status_label)
+        
         # Start build info
-        build_log.append("=== GhostOS ISO Build Started ===\n")
+        build_log.append("╔════════════════════════════════════════════════════════╗")
+        build_log.append("║     GhostOS ISO Builder - Pre-Installation Build      ║")
+        build_log.append("╚════════════════════════════════════════════════════════╝\n")
+        build_log.append(f"Base: Debian 12 (Bookworm)")
         build_log.append(f"ISO Sources: {len(build_config['iso_sources'])}")
         build_log.append(f"Components: {sum(len(c) for c in build_config['selected_components'].values())}")
         build_log.append(f"Custom Files: {len(build_config['custom_files'])}")
@@ -296,41 +348,65 @@ class GhostOSBuilderGUI(QMainWindow):
             build_log.append("   + Keyboard calibration tools")
             build_log.append("   + Custom layout designer")
         
-        build_log.append("\n" + "="*50)
-        build_log.append("\nThis is a preview of the build process.")
-        build_log.append("Actual ISO building would:")
-        build_log.append("1. Extract base system from source ISOs")
-        build_log.append("2. Install selected components")
-        build_log.append("3. Apply theme customizations")
-        build_log.append("4. Include custom files in /opt/custom")
-        build_log.append("5. Add custom files to recovery partition")
-        build_log.append("6. Install repository integrations")
-        if build_config['self_install']['enabled']:
-            build_log.append("7. Install ISO Builder to /opt/ghostos-builder")
-            build_log.append("8. Install touchscreen keyboard with calibration")
-            build_log.append("9. Create desktop entries and CLI launchers")
-            build_log.append("10. Include keyboard layout designer")
-            build_log.append("11. Generate ISO with GRUB bootloader")
-            build_log.append("12. Create checksums and verify")
-        else:
-            build_log.append("7. Generate ISO with GRUB bootloader")
-            build_log.append("8. Create checksums and verify")
-        build_log.append("\nOutput: $HOME/ghostos-ultimate/GhostOS-custom-<timestamp>.iso")
+        build_log.append("\n" + "="*60)
+        build_log.append("\n🚀 Starting actual ISO build process...")
+        build_log.append("All changes will be pre-applied to the ISO!\n")
         
-        # Simulate progress
-        for i in range(0, 101, 10):
-            progress.setValue(i)
+        # Create build thread
+        self.build_thread = BuildThread(build_config)
+        
+        # Connect signals
+        def on_progress(percent, message):
+            progress.setValue(percent)
+            status_label.setText(message)
+            build_log.append(f"[{percent}%] {message}")
             QApplication.processEvents()
-            import time
-            time.sleep(0.1)
         
-        build_log.append("\n✓ Build simulation complete!")
+        def on_complete(output_path):
+            progress.setValue(100)
+            status_label.setText("Build complete!")
+            build_log.append("\n" + "="*60)
+            build_log.append("✅ BUILD COMPLETE!")
+            build_log.append("="*60)
+            build_log.append(f"\nOutput: {output_path}")
+            build_log.append("\nThe ISO has been created with all your customizations")
+            build_log.append("pre-applied. You can now:")
+            build_log.append("  1. Write it to a USB drive")
+            build_log.append("  2. Boot from it (all settings already configured)")
+            build_log.append("  3. Install to disk (with your custom configuration)")
+            
+            # Add close button
+            close_btn = QPushButton("Close")
+            close_btn.clicked.connect(build_dialog.accept)
+            dialog_layout.addWidget(close_btn)
         
-        close_btn = QPushButton("Close")
-        close_btn.clicked.connect(build_dialog.accept)
-        dialog_layout.addWidget(close_btn)
+        def on_error(error_msg):
+            progress.setValue(0)
+            status_label.setText("Build failed!")
+            build_log.append("\n" + "="*60)
+            build_log.append("❌ BUILD FAILED!")
+            build_log.append("="*60)
+            build_log.append(f"\nError: {error_msg}")
+            build_log.append("\nPlease check the error message and try again.")
+            build_log.append("Make sure you have all required tools installed:")
+            build_log.append("  sudo apt-get install squashfs-tools xorriso \\")
+            build_log.append("    grub-pc-bin grub-efi-amd64-bin syslinux \\")
+            build_log.append("    syslinux-utils debootstrap isolinux")
+            
+            # Add close button
+            close_btn = QPushButton("Close")
+            close_btn.clicked.connect(build_dialog.accept)
+            dialog_layout.addWidget(close_btn)
+        
+        self.build_thread.progress_update.connect(on_progress)
+        self.build_thread.build_complete.connect(on_complete)
+        self.build_thread.build_error.connect(on_error)
+        
+        # Start building
+        self.build_thread.start()
         
         build_dialog.exec()
+
         
 
     def setup_menu_bar(self):
