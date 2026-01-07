@@ -4,27 +4,20 @@ This document lists all third-party software, libraries, and components used in 
 
 ## Base Operating Systems
 
-### Parrot OS 7 Security Edition
-- **License:** GPL (various versions), and other open-source licenses
-- **Copyright:** Parrot Security and Contributors
-- **Website:** https://www.parrotsec.org
-- **Description:** Security-focused Debian-based Linux distribution
-- **Note:** GhostOS is a derivative work that adds custom configurations and packages to Parrot OS
-- **Trademark:** Parrot OS™ is a trademark of Parrot Security
-
-### Debian GNU/Linux
+### Debian 12 (Bookworm)
 - **License:** DFSG-compliant (GPL, LGPL, BSD, MIT, Apache, etc.)
 - **Copyright:** Software in the Public Interest, Inc. and individual package maintainers
 - **Website:** https://www.debian.org
-- **Description:** Universal Operating System
-- **Note:** Parrot OS is based on Debian
+- **Description:** Universal Operating System - Stable Linux distribution
+- **Note:** GhostOS is a derivative work that adds custom configurations, security tools, and packages to Debian 12
+- **Trademark:** Debian® is a registered trademark of Software in the Public Interest, Inc.
 
 ## Build Tools and System Utilities
 
 ### debootstrap
 - **License:** GPL
 - **Description:** Tool for installing a Debian base system
-- **Used for:** Bootstrapping Parrot OS in the build process
+- **Used for:** Bootstrapping Debian 12 in the build process
 
 ### squashfs-tools
 - **License:** GPL
@@ -68,7 +61,7 @@ This document lists all third-party software, libraries, and components used in 
 - **Website:** https://proot-me.github.io/
 - **Repository:** https://github.com/proot-me/proot
 - **Description:** User-space implementation of chroot, mount --bind, and binfmt_misc
-- **Used for:** Running Debian/Parrot environment on Android without root
+- **Used for:** Running Debian environment on Android without root
 
 ## Desktop Environments and GUI
 
@@ -314,8 +307,7 @@ When using or redistributing this software:
 ## Upstream Project Credits
 
 Special thanks to:
-- **Parrot Security Team** - For Parrot OS
-- **Debian Project** - For the base system
+- **Debian Project** - For Debian 12 (Bookworm) base system
 - **Termux Contributors** - For Android environment
 - **All package maintainers** - For individual packages
 - **Open-source community** - For making this possible
@@ -325,7 +317,7 @@ Special thanks to:
 For any package in the built system:
 
 ```bash
-# On Debian/Parrot systems
+# On Debian systems
 dpkg -L <package-name> | grep -i license
 cat /usr/share/doc/<package-name>/copyright
 

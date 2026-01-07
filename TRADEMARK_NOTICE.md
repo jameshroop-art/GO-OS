@@ -22,27 +22,27 @@ The name **"GhostOS"** is used for this independent, community-driven project.
 - Is not intended to cause confusion with Ghost® or any other Ghost-branded products
 - May be changed if requested by legitimate trademark holders
 
-## Parrot OS Trademark
+## Debian Trademark
 
-**Parrot OS™** and **Parrot Security™** are trademarks of Parrot Security (ParrotSec).
+**Debian®** is a registered trademark of Software in the Public Interest, Inc.
 
 **This project:**
-- Is a **derivative work** based on Parrot OS 7 Security Edition
-- Is **NOT an official Parrot OS release**
-- Is **NOT endorsed by Parrot Security**
-- Does **NOT use Parrot OS logos or official branding**
-- Clearly states it is "based on" Parrot OS
+- Is a **derivative work** based on Debian 12 (Bookworm)
+- Is **NOT an official Debian release**
+- Is **NOT endorsed by the Debian Project**
+- Does **NOT use Debian logos or official branding without permission**
+- Clearly states it is "based on" Debian 12
 
 **Compliance:**
-- We acknowledge Parrot OS as a trademark
-- We provide clear attribution to Parrot Security
+- We acknowledge Debian as a trademark
+- We provide clear attribution to the Debian Project
 - We do not imply official status or endorsement
-- We comply with open-source license requirements (GPL, etc.)
-- We respect the Parrot Free License (PFL) terms
+- We comply with open-source license requirements (DFSG-compliant licenses)
+- We respect the Debian trademark policy
 
 **References:**
-- Official Parrot OS: https://www.parrotsec.org
-- Parrot Free License: https://www.parrothat.com/pfl.html
+- Official Debian: https://www.debian.org
+- Debian Trademark Policy: https://www.debian.org/trademark
 
 ## Other Trademarks
 
@@ -79,7 +79,7 @@ This project mentions various trademarked names for the following legitimate pur
 2. **Technical Descriptions:**
    - "Based on Debian GNU/Linux"
    - "Uses GRUB bootloader"
-   - "Built on Parrot OS 7 Security Edition"
+   - "Built on Debian 12 (Bookworm)"
 
 3. **Attribution:**
    - Acknowledging upstream projects
@@ -91,7 +91,7 @@ These uses are purely descriptive and factual. They do not imply endorsement, af
 ## No Trademark License Granted
 
 **Important:** Nothing in this project grants you any rights to use:
-- Parrot OS trademarks, names, or logos
+- Debian trademarks, names, or logos
 - Ghost Foundation trademarks or branding
 - Any other third-party trademarks
 
@@ -100,7 +100,7 @@ If you wish to use these trademarks, you must obtain permission directly from th
 ## Logo and Visual Assets
 
 This project:
-- Does **NOT** use the Parrot OS logo
+- Does **NOT** use the Debian logo without permission
 - Does **NOT** use the Ghost® logo
 - Does **NOT** use any proprietary visual assets without permission
 - May include screenshots or references for documentation purposes (fair use)
@@ -117,7 +117,7 @@ This project is hosted at:
 
 We do **NOT** own or use domains that could cause confusion with:
 - ghost.org (Ghost Foundation)
-- parrotsec.org (Parrot Security)
+- debian.org (Debian Project)
 - Any other trademark holder's domains
 
 ## Changes and Rebranding
@@ -138,9 +138,8 @@ For trademark concerns or questions:
 - Tag the issue with "legal" or "trademark"
 
 For questions about specific trademarks, contact the trademark owners directly:
-- Parrot OS: https://www.parrotsec.org
-- Ghost Foundation: https://ghost.org/trademark/
 - Debian: https://www.debian.org/trademark
+- Ghost Foundation: https://ghost.org/trademark/
 
 ## Summary
 
@@ -153,7 +152,7 @@ This project:
 ✅ Complies with open-source licenses
 
 ❌ Is NOT affiliated with Ghost Foundation
-❌ Is NOT an official Parrot OS release
+❌ Is NOT an official Debian release
 ❌ Does NOT use proprietary logos without permission
 ❌ Does NOT imply endorsement by trademark owners
 

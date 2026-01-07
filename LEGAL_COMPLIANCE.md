@@ -11,30 +11,30 @@ This document addresses legal compliance, trademark usage, copyright attribution
 **"GhostOS"** is the name of this project and is not affiliated with, endorsed by, or associated with:
 - Ghost Foundation or Ghost® (the publishing platform)
 - Any other "Ghost" branded software or services
-- Parrot Security or Parrot OS™ project
+- Debian Project
 
 The name "GhostOS" is used to describe this independent project and does not imply any trademark rights or official status.
 
-### Parrot OS Attribution
+### Debian Attribution
 
-This project builds upon and redistributes **Parrot OS 7 Security Edition** (also known as Parrot Security). 
+This project builds upon and redistributes **Debian 12 (Bookworm)**. 
 
 **Important:**
-- **Parrot OS™** is a trademark of Parrot Security
-- This project is a **derivative work** based on Parrot OS
-- This is **NOT an official Parrot OS release**
-- This project is **NOT endorsed by or affiliated with** Parrot Security
-- Parrot OS is distributed under GNU GPL and other open-source licenses
+- **Debian®** is a registered trademark of Software in the Public Interest, Inc.
+- This project is a **derivative work** based on Debian 12
+- This is **NOT an official Debian release**
+- This project is **NOT endorsed by or affiliated with** the Debian Project
+- Debian is distributed under various open-source licenses (DFSG-compliant)
 
 **Attribution:**
-- Base Operating System: Parrot OS 7 Security Edition (Debian-based)
-- Official Parrot OS Website: https://www.parrotsec.org
-- Parrot OS is developed and maintained by Parrot Security
+- Base Operating System: Debian 12 (Bookworm)
+- Official Debian Website: https://www.debian.org
+- Debian is developed and maintained by the Debian Project
 
 **Modifications:**
-- This project adds custom configurations, GUI elements, and additional packages
+- This project adds custom configurations, GUI elements, security tools, and additional packages
 - All modifications are clearly documented in the build scripts
-- Users can verify the base Parrot OS installation via official repositories
+- Users can verify the base Debian installation via official repositories
 
 ### Other Third-Party Components
 
@@ -65,7 +65,7 @@ The build scripts, configuration files, and documentation created specifically f
 
 ### Base Operating System and Packages
 
-All packages and software from Parrot OS, Debian, and other upstream projects retain their original licenses. These include but are not limited to:
+All packages and software from Debian and other upstream projects retain their original licenses. These include but are not limited to:
 - GNU General Public License (GPL) v2 and v3
 - GNU Lesser General Public License (LGPL)
 - BSD License
@@ -86,8 +86,8 @@ If you redistribute, modify, or create derivatives of this project, you must:
    - Include this LEGAL_COMPLIANCE.md file
 
 2. **Respect Trademarks:**
-   - Do NOT claim endorsement by Parrot Security, Debian, or other projects
-   - Do NOT use Parrot OS logos or trademarks without permission
+   - Do NOT claim endorsement by Debian or other projects
+   - Do NOT use Debian logos or trademarks without permission
    - Consider using a different project name to avoid confusion
    - Do NOT use "GhostOS" in a way that implies official status
 
@@ -102,28 +102,24 @@ If you redistribute, modify, or create derivatives of this project, you must:
    - Do NOT misrepresent your version as official
    - Provide clear documentation of changes
 
-### Parrot OS Specific Requirements
+### Debian Specific Requirements
 
-Per Parrot OS trademark policy:
-- The Parrot OS name and logo are trademarks
-- Modified versions should NOT use Parrot branding unless approved
-- You must indicate that your distribution is based on Parrot OS
-- You must not imply official endorsement by Parrot Security
+Per Debian trademark policy:
+- The Debian name and logo are trademarks
+- Modified versions should NOT use Debian branding unless approved
+- You must indicate that your distribution is based on Debian 12
+- You must not imply official endorsement by the Debian Project
 
-Reference: https://www.parrothat.com/pfl.html
+Reference: https://www.debian.org/trademark
 
 ## Copyright Notices
 
 ### GhostOS Project
 Copyright (c) 2026 GhostOS Contributors
 
-### Parrot OS
-Copyright (c) Parrot Security and Contributors
-Licensed under GPL and other open-source licenses
-
 ### Debian GNU/Linux
 Copyright (c) Software in the Public Interest, Inc. and others
-Licensed under various open-source licenses
+Licensed under various open-source licenses (DFSG-compliant)
 
 ## Warranty Disclaimer
 
@@ -132,9 +128,8 @@ THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPL
 ## No Trademark License
 
 Nothing in this project grants you rights to use any trademark, service mark, or logo of:
-- Parrot Security or Parrot OS
+- Debian Project
 - Ghost Foundation
-- Debian
 - Any other third-party trademarks
 
 If you want to use these trademarks, you must obtain separate permission from the trademark owners.
@@ -146,7 +141,6 @@ For legal questions about this project:
 - Tag issues with "legal" or "license"
 
 For questions about upstream projects:
-- Parrot OS: Contact via https://www.parrotsec.org
 - Debian: Contact via https://www.debian.org
 - Ghost Foundation: Contact via https://ghost.org
 
