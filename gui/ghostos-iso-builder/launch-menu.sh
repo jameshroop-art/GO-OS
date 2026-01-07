@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# GhostOS Component Launcher Menu
+# Heck-CheckOS Component Launcher Menu
 # Run individual components on an as-needed basis
 
 set -e
@@ -16,7 +16,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 clear
 echo -e "${CYAN}╔════════════════════════════════════════════════════════╗${NC}"
-echo -e "${CYAN}║        GhostOS - Component Launcher Menu             ║${NC}"
+echo -e "${CYAN}║        Heck-CheckOS - Component Launcher Menu             ║${NC}"
 echo -e "${CYAN}║        Run components independently as needed         ║${NC}"
 echo -e "${CYAN}╚════════════════════════════════════════════════════════╝${NC}"
 echo ""
@@ -131,7 +131,7 @@ configure_windows_ports() {
     echo ""
     echo -e "${YELLOW}Windows VM Port Configuration:${NC}"
     
-    CONFIG_FILE="$HOME/.config/ghostos-builder/windows_vm_ports.conf"
+    CONFIG_FILE="$HOME/.config/heckcheckos-builder/windows_vm_ports.conf"
     if [ -f "$CONFIG_FILE" ]; then
         echo ""
         cat "$CONFIG_FILE"

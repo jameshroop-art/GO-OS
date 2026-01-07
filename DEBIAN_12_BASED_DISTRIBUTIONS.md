@@ -244,13 +244,13 @@ Distributions choose Debian 12 (Bookworm) as their base because:
 - **DistroWatch**: https://distrowatch.com (search for Debian-based)
 - **Debian Derivatives Census**: https://wiki.debian.org/Derivatives/Census
 
-## 🎯 GhostOS and Debian 12
+## 🎯 Heck-CheckOS and Debian 12
 
-**GhostOS** is built on Debian 12 (Bookworm) to provide:
+**Heck-CheckOS** is built on Debian 12 (Bookworm) to provide:
 - Stable, reliable Linux foundation
 - Security-focused base system
 - Compatibility with vast Debian package ecosystem
-- Custom GhostOS GUI and desktop environment
+- Custom Heck-CheckOS GUI and desktop environment
 - Integration with security tools (Kali Linux repositories)
 
 ---

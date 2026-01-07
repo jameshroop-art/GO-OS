@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# GhostOS Touchscreen Keyboard - Standalone Launcher
+# Heck-CheckOS Touchscreen Keyboard - Standalone Launcher
 # Run keyboard independently without full GUI
 
 set -e
@@ -12,7 +12,7 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 echo -e "${BLUE}=========================================="
-echo "  GhostOS Touchscreen Keyboard (Standalone)"
+echo "  Heck-CheckOS Touchscreen Keyboard (Standalone)"
 echo -e "==========================================${NC}"
 echo ""
 
@@ -66,7 +66,7 @@ try:
     from ui.touchscreen_keyboard import TouchscreenKeyboard
     
     app = QApplication(sys.argv)
-    app.setApplicationName("GhostOS Touchscreen Keyboard")
+    app.setApplicationName("Heck-CheckOS Touchscreen Keyboard")
     
     keyboard = TouchscreenKeyboard()
     keyboard.show_keyboard()

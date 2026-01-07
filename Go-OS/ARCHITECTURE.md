@@ -1,6 +1,6 @@
-# GhostOS Architecture Overview
+# Heck-CheckOS Architecture Overview
 
-Visual and technical overview of GhostOS architecture for both Desktop and Android platforms.
+Visual and technical overview of Heck-CheckOS architecture for both Desktop and Android platforms.
 
 ## Desktop/Server Architecture
 
@@ -8,7 +8,7 @@ Visual and technical overview of GhostOS architecture for both Desktop and Andro
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  ghostos-build.sh (Build Script)                        │
+│  heckcheckos-build.sh (Build Script)                        │
 │  - Version selection (1.0, 1.1, 2.0, or all)           │
 │  - USB detection and bootable creation option           │
 └────────────────┬────────────────────────────────────────┘
@@ -39,7 +39,7 @@ Visual and technical overview of GhostOS architecture for both Desktop and Andro
 │  Execute Installation Scripts (chroot)                  │
 │  - Configure Debian 12 (Bookworm) repositories          │
 │  - Install version-specific packages                    │
-│  - Apply GhostOS GUI and customizations                 │
+│  - Apply Heck-CheckOS GUI and customizations                 │
 │  - Configure system                                     │
 │  - Setup drivers and firmware                           │
 │  - Apply privacy/security settings                      │
@@ -76,9 +76,9 @@ Visual and technical overview of GhostOS architecture for both Desktop and Andro
 │  User Applications                                      │
 │  - Firefox, Steam, VS Code, LibreOffice, etc.         │
 ├────────────────────────────────────────────────────────┤
-│  GhostOS Custom GUI Layer                              │
+│  Heck-CheckOS Custom GUI Layer                              │
 │  - Custom desktop environment and themes               │
-│  - GhostOS-specific tools and utilities                │
+│  - Heck-CheckOS-specific tools and utilities                │
 ├────────────────────────────────────────────────────────┤
 │  Desktop Environment                                    │
 │  - XFCE (default) or Wayland/Sway (v2.0)              │
@@ -113,7 +113,7 @@ Visual and technical overview of GhostOS architecture for both Desktop and Andro
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  User Downloads ghostos-android.sh                      │
+│  User Downloads heckcheckos-android.sh                      │
 │  - From GitHub or wget                                  │
 └────────────────┬────────────────────────────────────────┘
                  │
@@ -146,11 +146,11 @@ Visual and technical overview of GhostOS architecture for both Desktop and Andro
                  │
                  ▼
 ┌─────────────────────────────────────────────────────────┐
-│  Create GhostOS Directory Structure                      │
-│  - ~/ghostos-android/bin (commands)                     │
-│  - ~/ghostos-android/config (configuration)             │
-│  - ~/ghostos-android/drivers (driver info)              │
-│  - ~/ghostos-android/logs (log files)                   │
+│  Create Heck-CheckOS Directory Structure                      │
+│  - ~/heckcheckos-android/bin (commands)                     │
+│  - ~/heckcheckos-android/config (configuration)             │
+│  - ~/heckcheckos-android/drivers (driver info)              │
+│  - ~/heckcheckos-android/logs (log files)                   │
 └────────────────┬────────────────────────────────────────┘
                  │
                  ▼
@@ -158,7 +158,7 @@ Visual and technical overview of GhostOS architecture for both Desktop and Andro
 │  Generate Management Scripts                             │
 │  - ghostos-wifi (WiFi management)                       │
 │  - ghostos-bluetooth (Bluetooth management)             │
-│  - ghostos-driver-optimizer (optimization)              │
+│  - heckcheckos-driver-optimizer (optimization)              │
 │  - ghostos-debian (environment launcher)                │
 │  - ghostos-system (system info)                         │
 │  - ghostos-help (help system)                           │
@@ -184,9 +184,9 @@ Visual and technical overview of GhostOS architecture for both Desktop and Andro
 
 ```
 ┌────────────────────────────────────────────────────────┐
-│  Layer 7: GhostOS Commands (User Interface)            │
+│  Layer 7: Heck-CheckOS Commands (User Interface)            │
 │  - ghostos-wifi, ghostos-bluetooth, ghostos-*          │
-│  - Shell scripts in ~/ghostos-android/bin/             │
+│  - Shell scripts in ~/heckcheckos-android/bin/             │
 └────────────────┬───────────────────────────────────────┘
                  │
                  ▼
@@ -252,7 +252,7 @@ Visual and technical overview of GhostOS architecture for both Desktop and Andro
 User Command: ghostos-wifi scan
         │
         ▼
-GhostOS Script (~/ghostos-android/bin/ghostos-wifi)
+Heck-CheckOS Script (~/heckcheckos-android/bin/ghostos-wifi)
         │
         ▼
 Calls: termux-wifi-scaninfo
@@ -297,7 +297,7 @@ JSON Output to User
 User Command: ghostos-bluetooth scan
         │
         ▼
-GhostOS Script (~/ghostos-android/bin/ghostos-bluetooth)
+Heck-CheckOS Script (~/heckcheckos-android/bin/ghostos-bluetooth)
         │
         ▼
 Calls: termux-bluetooth-scaninfo
@@ -358,7 +358,7 @@ JSON Output to User
 └────────────────────────────────────────┘
 ```
 
-### Android Security Model (GhostOS Context)
+### Android Security Model (Heck-CheckOS Context)
 
 ```
 ┌────────────────────────────────────────┐  ◄─ Cannot Access
@@ -374,7 +374,7 @@ JSON Output to User
 │  - User UID (10xxx)                    │
 │  - Standard app permissions            │
 ├────────────────────────────────────────┤
-│  GhostOS Scripts (Userspace)           │  ◄─ GhostOS Operates Here
+│  Heck-CheckOS Scripts (Userspace)           │  ◄─ Heck-CheckOS Operates Here
 │  - Same UID as Termux                  │     (No Special Access)
 │  - Sandboxed environment               │
 └────────────────────────────────────────┘
@@ -398,7 +398,7 @@ Downloaded Packages ──┘                                             │
 ### Android Installation Data Flow
 
 ```
-GitHub Repo ──► wget ──► ghostos-android.sh ──► Execution
+GitHub Repo ──► wget ──► heckcheckos-android.sh ──► Execution
                                                      │
                                                      ▼
 F-Droid/Termux ──────────────────► Package Installation
@@ -448,7 +448,7 @@ Display to User
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                GhostOS Desktop ISO                   │
+│                Heck-CheckOS Desktop ISO                   │
 │  ┌─────────────────────────────────────────────┐   │
 │  │  Bootloader (GRUB)                          │   │
 │  │  - BIOS boot                                │   │
@@ -484,7 +484,7 @@ Display to User
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│         GhostOS for Android Installation            │
+│         Heck-CheckOS for Android Installation            │
 │  ┌─────────────────────────────────────────────┐   │
 │  │  Termux Environment                         │   │
 │  │  - Base packages (bash, coreutils)          │   │
@@ -506,8 +506,8 @@ Display to User
 │  │  - Python, Node.js, compilers               │   │
 │  └─────────────────────────────────────────────┘   │
 │  ┌─────────────────────────────────────────────┐   │
-│  │  GhostOS Scripts                            │   │
-│  │  - ~/ghostos-android/bin/                   │   │
+│  │  Heck-CheckOS Scripts                            │   │
+│  │  - ~/heckcheckos-android/bin/                   │   │
 │  │  - WiFi/Bluetooth management                │   │
 │  │  - Driver optimization                      │   │
 │  │  - System utilities                         │   │
@@ -561,12 +561,12 @@ Future Android Versions
 
 ## Conclusion
 
-This architecture overview provides a visual representation of how GhostOS works on both Desktop and Android platforms. Key takeaways:
+This architecture overview provides a visual representation of how Heck-CheckOS works on both Desktop and Android platforms. Key takeaways:
 
 **Desktop**: Traditional Linux distribution build system creating bootable ISOs
 **Android**: Clever use of userspace tools to provide Linux environment and hardware control without root
 
-Both platforms share the GhostOS philosophy:
+Both platforms share the Heck-CheckOS philosophy:
 - Privacy-focused
 - Security-conscious
 - User-friendly

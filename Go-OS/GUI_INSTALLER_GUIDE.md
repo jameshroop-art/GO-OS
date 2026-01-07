@@ -1,18 +1,18 @@
-# GhostOS GUI Installer & USB Creator
+# Heck-CheckOS GUI Installer & USB Creator
 
 ## Overview
 
-The GhostOS GUI Installer is a comprehensive graphical tool for creating bootable USB drives and managing disk partitions for PC installation. It provides an intuitive interface for preparing GhostOS installations on any computer.
+The Heck-CheckOS GUI Installer is a comprehensive graphical tool for creating bootable USB drives and managing disk partitions for PC installation. It provides an intuitive interface for preparing Heck-CheckOS installations on any computer.
 
 ## Features
 
 ### 📀 Bootable USB Creator
-- **Automatic ISO Detection** - Browse and select GhostOS ISO files
+- **Automatic ISO Detection** - Browse and select Heck-CheckOS ISO files
 - **Drive Detection** - Automatically detects all connected USB and hard drives
 - **Multiple Boot Modes**:
   - Standard USB (BIOS/UEFI compatible)
   - Persistent USB (saves changes between boots)
-  - Full Installation (installs GhostOS to drive)
+  - Full Installation (installs Heck-CheckOS to drive)
 - **Safety Features**:
   - Confirmation dialogs before destructive operations
   - Drive information display (size, model, type)
@@ -79,7 +79,7 @@ sudo pacman -Sy btrfs-progs xfsprogs f2fs-tools jfsutils reiserfsprogs exfat-uti
 
 **Method 1: Using the Launcher Script (Recommended)**
 ```bash
-sudo bash ghostos-installer-gui.sh
+sudo bash heckcheckos-installer-gui.sh
 ```
 
 The launcher script will:
@@ -89,7 +89,7 @@ The launcher script will:
 
 **Method 2: Direct Python Launch**
 ```bash
-sudo python3 ghostos-installer-gui.py
+sudo python3 heckcheckos-installer-gui.py
 ```
 
 **Note:** Root/administrator privileges are required for:
@@ -103,12 +103,12 @@ sudo python3 ghostos-installer-gui.py
 
 1. **Launch the Installer**
    ```bash
-   sudo bash ghostos-installer-gui.sh
+   sudo bash heckcheckos-installer-gui.sh
    ```
 
 2. **Select ISO File**
    - Click "Browse..." button
-   - Navigate to your GhostOS ISO file
+   - Navigate to your Heck-CheckOS ISO file
    - Select the ISO and click Open
 
 3. **Select Target Drive**
@@ -119,7 +119,7 @@ sudo python3 ghostos-installer-gui.py
 4. **Choose Boot Mode**
    - **Standard USB**: Creates a basic bootable USB (recommended)
    - **Persistent USB**: Allows saving changes between boots
-   - **Full Installation**: Installs GhostOS directly to the drive
+   - **Full Installation**: Installs Heck-CheckOS directly to the drive
 
 5. **Create USB**
    - Click "🚀 Create Bootable USB"
@@ -319,7 +319,7 @@ sudo python3 ghostos-installer-gui.py
 **"Permission Denied" Error**
 - **Solution**: Run with sudo/administrator privileges
 ```bash
-sudo bash ghostos-installer-gui.sh
+sudo bash heckcheckos-installer-gui.sh
 ```
 
 **"Device is Busy" Error**
@@ -347,12 +347,12 @@ sudo umount /dev/sdX1
 - Root/administrator privileges
 - X11 or Wayland display server (graphical environment)
 
-### To Create GhostOS USB
+### To Create Heck-CheckOS USB
 - USB drive with minimum 8GB capacity
-- GhostOS ISO file (download from official sources)
+- Heck-CheckOS ISO file (download from official sources)
 - USB 3.0 port (recommended for faster writes)
 
-### For GhostOS Installation
+### For Heck-CheckOS Installation
 - 64-bit x86_64 processor
 - 8GB RAM minimum (16GB recommended)
 - 32GB storage minimum (64GB+ recommended)
@@ -445,17 +445,17 @@ For issues with the GUI Installer:
 - Ensure running with proper privileges
 - Review this documentation for common issues
 
-For GhostOS-specific issues:
-- Refer to main GhostOS documentation
+For Heck-CheckOS-specific issues:
+- Refer to main Heck-CheckOS documentation
 - Check FAQ and troubleshooting guides
 - Review installation logs
 
 ## License
 
-This tool is part of the GhostOS Security Edition project.
-Distributed under the same license as GhostOS.
+This tool is part of the Heck-CheckOS Security Edition project.
+Distributed under the same license as Heck-CheckOS.
 
 ## Credits
 
-GhostOS GUI Installer - Automated USB creation and disk partitioning tool
-Part of the GhostOS Security Edition ecosystem
+Heck-CheckOS GUI Installer - Automated USB creation and disk partitioning tool
+Part of the Heck-CheckOS Security Edition ecosystem

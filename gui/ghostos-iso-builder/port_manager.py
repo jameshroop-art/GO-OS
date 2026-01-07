@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-GhostOS Port Manager
+Heck-CheckOS Port Manager
 Detects used ports on Debian 12 and allocates free ports for Windows integration
 """
 
@@ -53,7 +53,7 @@ class PortManager:
     }
     
     def __init__(self):
-        self.config_dir = Path.home() / ".config" / "ghostos-builder"
+        self.config_dir = Path.home() / ".config" / "heckcheckos-builder"
         self.config_dir.mkdir(parents=True, exist_ok=True)
         self.port_config_file = self.config_dir / "port_allocations.json"
         
@@ -241,7 +241,7 @@ HTTPS_PORT={windows_ports['https']}
     def check_and_report(self):
         """Full port check and report"""
         print("\n" + "=" * 60)
-        print("  GhostOS Port Manager - System Analysis")
+        print("  Heck-CheckOS Port Manager - System Analysis")
         print("=" * 60)
         
         # Get Debian 12 ports
@@ -282,7 +282,7 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(
-        description='GhostOS Port Manager - Allocate ports for Windows VM'
+        description='Heck-CheckOS Port Manager - Allocate ports for Windows VM'
     )
     parser.add_argument(
         '--scan-only',

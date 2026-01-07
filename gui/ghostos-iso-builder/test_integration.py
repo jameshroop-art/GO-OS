@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-GhostOS ISO Builder - Integration Test
+Heck-CheckOS ISO Builder - Integration Test
 Tests keyboard and GUI integration
 """
 
@@ -143,14 +143,14 @@ def test_main_gui_integration():
     
     try:
         from PyQt6.QtWidgets import QApplication
-        from main import GhostOSBuilderGUI
+        from main import HeckCheckOSBuilderGUI
         
         app = QApplication.instance()
         if app is None:
             app = QApplication([])
         
         # Create main window (won't show in headless mode)
-        window = GhostOSBuilderGUI()
+        window = HeckCheckOSBuilderGUI()
         print("✓ Main GUI created")
         
         # Test keyboard integration
@@ -169,7 +169,7 @@ def test_main_gui_integration():
 def run_all_tests():
     """Run all integration tests"""
     print("="*60)
-    print("GhostOS ISO Builder - Integration Test Suite")
+    print("Heck-CheckOS ISO Builder - Integration Test Suite")
     print("="*60)
     
     results = []

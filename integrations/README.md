@@ -1,6 +1,6 @@
-# GhostOS Integrations
+# Heck-CheckOS Integrations
 
-This directory contains curated external repository integrations for the GhostOS ISO Builder.
+This directory contains curated external repository integrations for the Heck-CheckOS ISO Builder.
 
 ## Included Integrations
 
@@ -76,7 +76,7 @@ The `scripts/` directory contains installation scripts for each integration:
 
 ## Credits
 
-GhostOS ISO Builder integrates these amazing open-source projects.
+Heck-CheckOS ISO Builder integrates these amazing open-source projects.
 All credit goes to the original authors and maintainers.
 
 Thank you to the open-source community! 🎉

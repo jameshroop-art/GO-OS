@@ -1,14 +1,14 @@
 # Trademark Notice
 
-## Project Name: GhostOS
+## Project Name: Heck-CheckOS
 
 ### Important Trademark Disclaimers
 
 This document clarifies the use of names, trademarks, and branding in this project.
 
-## "GhostOS" Name
+## "Heck-CheckOS" Name
 
-The name **"GhostOS"** is used for this independent, community-driven project. 
+The name **"Heck-CheckOS"** is used for this independent, community-driven project. 
 
 **This project is NOT:**
 - Affiliated with Ghost Foundation or Ghost® (the publishing platform at ghost.org)
@@ -16,7 +16,7 @@ The name **"GhostOS"** is used for this independent, community-driven project.
 - A derivative of Ghost® software
 - Using any Ghost Foundation trademarks, logos, or branding
 
-**The name "GhostOS":**
+**The name "Heck-CheckOS":**
 - Is used descriptively for this operating system project
 - Does not imply any trademark rights
 - Is not intended to cause confusion with Ghost® or any other Ghost-branded products
@@ -122,7 +122,7 @@ We do **NOT** own or use domains that could cause confusion with:
 
 ## Changes and Rebranding
 
-If any legitimate trademark holder objects to our use of the name "GhostOS" or any other naming in this project:
+If any legitimate trademark holder objects to our use of the name "Heck-CheckOS" or any other naming in this project:
 
 1. We will promptly review the claim
 2. We will work to resolve the issue amicably

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-GhostOS ISO Builder Backend
+Heck-CheckOS ISO Builder Backend
 Actual ISO creation with pre-applied configurations
 """
 
@@ -15,7 +15,7 @@ from datetime import datetime
 
 
 class ISOBuilder:
-    """Builds custom GhostOS ISO with pre-applied configurations"""
+    """Builds custom Heck-CheckOS ISO with pre-applied configurations"""
     
     def __init__(self, config: dict, output_dir: str = None):
         """
@@ -23,10 +23,10 @@ class ISOBuilder:
         
         Args:
             config: Build configuration dictionary
-            output_dir: Output directory for ISO (default: ~/ghostos-ultimate)
+            output_dir: Output directory for ISO (default: ~/heckcheckos-ultimate)
         """
         self.config = config
-        self.output_dir = Path(output_dir or Path.home() / "ghostos-ultimate")
+        self.output_dir = Path(output_dir or Path.home() / "heckcheckos-ultimate")
         self.work_dir = None
         self.iso_dir = None
         self.rootfs_dir = None
@@ -40,6 +40,12 @@ class ISOBuilder:
             'grub-mkstandalone',
             'isohybrid',
             'chroot'
+        ]
+        
+        # Optional but recommended for TPM support
+        recommended_tools = [
+            'tpm2-tools',  # TPM 2.0 support
+            'tpm-tools',   # TPM 1.2 support
         ]
         
         missing = []
@@ -57,7 +63,7 @@ class ISOBuilder:
     
     def create_work_dirs(self):
         """Create working directories"""
-        self.work_dir = Path(tempfile.mkdtemp(prefix="ghostos-build-"))
+        self.work_dir = Path(tempfile.mkdtemp(prefix="heckcheckos-build-"))
         self.iso_dir = self.work_dir / "iso"
         self.rootfs_dir = self.work_dir / "rootfs"
         
@@ -79,7 +85,7 @@ class ISOBuilder:
         cmd = [
             'debootstrap',
             '--arch=amd64',
-            '--include=wget,curl,ca-certificates,gnupg,sudo,systemd,network-manager',
+            '--include=wget,curl,ca-certificates,gnupg,sudo,systemd,network-manager,tpm2-tools,tpm-tools,libtss2-esys0,libtss2-tcti-device0,cpufrequtils,linux-cpupower,amd64-microcode',
             'bookworm',
             str(self.rootfs_dir),
             'http://deb.debian.org/debian'
@@ -127,7 +133,7 @@ deb http://deb.debian.org/debian bookworm-backports main contrib non-free non-fr
         }
         
         # Save merge manifest
-        manifest_dir = self.rootfs_dir / "usr" / "share" / "ghostos" / "merge-info"
+        manifest_dir = self.rootfs_dir / "usr" / "share" / "heckcheckos" / "merge-info"
         manifest_dir.mkdir(parents=True, exist_ok=True)
         manifest_file = manifest_dir / "merge-manifest.json"
         manifest_file.write_text(json.dumps(merge_manifest, indent=2))
@@ -271,7 +277,7 @@ ff02::2         ip6-allrouters
                 pass  # Service might not exist
         
         # 3. Create privacy configuration file
-        privacy_dir = self.rootfs_dir / "etc" / "ghostos"
+        privacy_dir = self.rootfs_dir / "etc" / "heckcheckos"
         privacy_dir.mkdir(parents=True, exist_ok=True)
         
         privacy_config = {
@@ -288,9 +294,9 @@ ff02::2         ip6-allrouters
         privacy_file.write_text(json.dumps(privacy_config, indent=2))
         
         # 4. Configure Firefox/Chromium privacy settings
-        firefox_prefs = self.rootfs_dir / "etc" / "firefox" / "ghostos-privacy.js"
+        firefox_prefs = self.rootfs_dir / "etc" / "firefox" / "heckcheckos-privacy.js"
         firefox_prefs.parent.mkdir(parents=True, exist_ok=True)
-        firefox_prefs.write_text("""// GhostOS Privacy Configuration for Firefox
+        firefox_prefs.write_text("""// Heck-CheckOS Privacy Configuration for Firefox
 pref("datareporting.healthreport.uploadEnabled", false);
 pref("datareporting.policy.dataSubmissionEnabled", false);
 pref("toolkit.telemetry.enabled", false);
@@ -310,7 +316,7 @@ pref("privacy.trackingprotection.socialtracking.enabled", true);
         print("  ✓ Configured browser privacy settings")
         
         # 5. Block network analytics packages
-        apt_preferences = self.rootfs_dir / "etc" / "apt" / "preferences.d" / "ghostos-no-telemetry"
+        apt_preferences = self.rootfs_dir / "etc" / "apt" / "preferences.d" / "heckcheckos-no-telemetry"
         apt_preferences.parent.mkdir(parents=True, exist_ok=True)
         apt_preferences.write_text("""# Block telemetry packages
 Package: popularity-contest
@@ -332,10 +338,10 @@ Pin-Priority: -1
         print("  ✓ Blocked telemetry packages from installation")
         
         # 6. Create firewall rules to block telemetry
-        firewall_script = self.rootfs_dir / "usr" / "local" / "bin" / "ghostos-block-telemetry"
+        firewall_script = self.rootfs_dir / "usr" / "local" / "bin" / "heckcheckos-block-telemetry"
         firewall_script.parent.mkdir(parents=True, exist_ok=True)
         firewall_script.write_text("""#!/bin/bash
-# GhostOS Telemetry Blocker - Firewall Rules
+# Heck-CheckOS Telemetry Blocker - Firewall Rules
 # Blocks outbound connections to known telemetry servers
 
 # Microsoft
@@ -349,7 +355,7 @@ iptables -A OUTPUT -d 172.217.0.0/16 -j DROP
 
 # Note: Be cautious with aggressive blocking
 # Some legitimate services may be affected
-echo "GhostOS telemetry blocker active"
+echo "Heck-CheckOS telemetry blocker active"
 """)
         firewall_script.chmod(0o755)
         
@@ -392,7 +398,7 @@ enable=false
         print("  ✓ Disabled geolocation and location services")
         
         # 9. Block location APIs in browser
-        firefox_location_prefs = self.rootfs_dir / "etc" / "firefox" / "ghostos-location-block.js"
+        firefox_location_prefs = self.rootfs_dir / "etc" / "firefox" / "heckcheckos-location-block.js"
         firefox_location_prefs.parent.mkdir(parents=True, exist_ok=True)
         firefox_location_prefs.write_text("""// Disable location verification and geolocation
 pref("geo.enabled", false);
@@ -405,7 +411,7 @@ pref("geo.provider.use_geoclue", false);
 """)
         
         # 10. Disable location-based time zone detection
-        timedatectl_conf = self.rootfs_dir / "etc" / "systemd" / "timesyncd.conf.d" / "ghostos.conf"
+        timedatectl_conf = self.rootfs_dir / "etc" / "systemd" / "timesyncd.conf.d" / "heckcheckos.conf"
         timedatectl_conf.parent.mkdir(parents=True, exist_ok=True)
         timedatectl_conf.write_text("""[Time]
 # Disable NTP location services
@@ -429,8 +435,8 @@ pref("geo.provider.use_geoclue", false);
                 pass
         
         # 12. Create location privacy README
-        privacy_readme = self.rootfs_dir / "etc" / "ghostos" / "PRIVACY-README.txt"
-        privacy_readme.write_text("""GhostOS Privacy Configuration
+        privacy_readme = self.rootfs_dir / "etc" / "heckcheckos" / "PRIVACY-README.txt"
+        privacy_readme.write_text("""Heck-CheckOS Privacy Configuration
 ================================
 
 This system has been configured for maximum privacy:
@@ -453,15 +459,15 @@ This system has been configured for maximum privacy:
 
 Configuration Files:
   - /etc/hosts - Domain blocking
-  - /etc/ghostos/privacy-config.json - Privacy settings
+  - /etc/heckcheckos/privacy-config.json - Privacy settings
   - /etc/geoclue/geoclue.conf - Location services
-  - /etc/firefox/ghostos-privacy.js - Browser privacy
+  - /etc/firefox/heckcheckos-privacy.js - Browser privacy
 
 To enable location services (if needed):
   sudo systemctl unmask geoclue.service
   sudo systemctl start geoclue.service
 
-For support: See /usr/share/doc/ghostos/
+For support: See /usr/share/doc/heckcheckos/
 """)
         
         print("✓ Location verification disabled - No location checks required")
@@ -486,7 +492,7 @@ enabled=0
 """)
         
         # 2. Disable automatic error reporting to vendors
-        sysctl_privacy = self.rootfs_dir / "etc" / "sysctl.d" / "99-ghostos-privacy.conf"
+        sysctl_privacy = self.rootfs_dir / "etc" / "sysctl.d" / "99-heckcheckos-privacy.conf"
         sysctl_privacy.parent.mkdir(parents=True, exist_ok=True)
         sysctl_privacy.write_text("""# Privacy Over Privilege: Kernel privacy settings
 # Restrict kernel logs visibility
@@ -521,7 +527,7 @@ kernel.yama.ptrace_scope=2
         print("  ✓ Disabled cloud sync services for privacy")
         
         # 4. Disable network discovery (convenience vs privacy)
-        network_conf = self.rootfs_dir / "etc" / "NetworkManager" / "conf.d" / "ghostos-privacy.conf"
+        network_conf = self.rootfs_dir / "etc" / "NetworkManager" / "conf.d" / "heckcheckos-privacy.conf"
         network_conf.parent.mkdir(parents=True, exist_ok=True)
         network_conf.write_text("""[main]
 # Privacy Over Privilege: Disable network discovery
@@ -533,7 +539,7 @@ enabled=false
 """)
         
         # 5. Disable CUPS remote printing (convenient but privacy risk)
-        cups_conf = self.rootfs_dir / "etc" / "cups" / "cupsd.conf.d" / "ghostos-privacy.conf"
+        cups_conf = self.rootfs_dir / "etc" / "cups" / "cupsd.conf.d" / "heckcheckos-privacy.conf"
         cups_conf.parent.mkdir(parents=True, exist_ok=True)
         cups_conf.write_text("""# Privacy Over Privilege: Restrict CUPS
 Browsing Off
@@ -542,7 +548,7 @@ BrowseWebIF No
 """)
         
         # 6. Disable Bluetooth by default (convenience vs security)
-        bluetooth_conf = self.rootfs_dir / "etc" / "bluetooth" / "main.conf.d" / "ghostos-privacy.conf"
+        bluetooth_conf = self.rootfs_dir / "etc" / "bluetooth" / "main.conf.d" / "heckcheckos-privacy.conf"
         bluetooth_conf.parent.mkdir(parents=True, exist_ok=True)
         bluetooth_conf.write_text("""[Policy]
 # Privacy Over Privilege: Bluetooth disabled by default
@@ -550,7 +556,7 @@ AutoEnable=false
 """)
         
         # 7. Restrict camera and microphone access
-        camera_udev = self.rootfs_dir / "etc" / "udev" / "rules.d" / "99-ghostos-privacy.rules"
+        camera_udev = self.rootfs_dir / "etc" / "udev" / "rules.d" / "99-heckcheckos-privacy.rules"
         camera_udev.parent.mkdir(parents=True, exist_ok=True)
         camera_udev.write_text("""# Privacy Over Privilege: Require explicit permission for camera/mic
 # Camera devices
@@ -585,7 +591,7 @@ user-switch-enabled=false
 """)
         
         # 9. DNS privacy: Use encrypted DNS by default
-        resolved_conf = self.rootfs_dir / "etc" / "systemd" / "resolved.conf.d" / "ghostos-privacy.conf"
+        resolved_conf = self.rootfs_dir / "etc" / "systemd" / "resolved.conf.d" / "heckcheckos-privacy.conf"
         resolved_conf.parent.mkdir(parents=True, exist_ok=True)
         resolved_conf.write_text("""[Resolve]
 # Privacy Over Privilege: Encrypted DNS
@@ -598,7 +604,7 @@ MulticastDNS=no
 """)
         
         # 10. Disable sudo lecture (reduces fingerprinting)
-        sudoers_privacy = self.rootfs_dir / "etc" / "sudoers.d" / "ghostos-privacy"
+        sudoers_privacy = self.rootfs_dir / "etc" / "sudoers.d" / "heckcheckos-privacy"
         sudoers_privacy.parent.mkdir(parents=True, exist_ok=True)
         sudoers_privacy.write_text("""# Privacy Over Privilege
 Defaults lecture=never
@@ -609,7 +615,7 @@ Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
         sudoers_privacy.chmod(0o440)
         
         # 11. Create Privacy Over Privilege manifest
-        privacy_manifest = self.rootfs_dir / "etc" / "ghostos" / "privacy-over-privilege.json"
+        privacy_manifest = self.rootfs_dir / "etc" / "heckcheckos" / "privacy-over-privilege.json"
         privacy_manifest.parent.mkdir(parents=True, exist_ok=True)
         
         manifest_data = {
@@ -640,7 +646,7 @@ Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
             "how_to_relax": {
                 "enable_bluetooth": "sudo systemctl unmask bluetooth.service && sudo systemctl start bluetooth.service",
                 "enable_cloud_sync": "Remove /etc/systemd/system/gnome-online-accounts.service symlink",
-                "enable_network_discovery": "Edit /etc/NetworkManager/conf.d/ghostos-privacy.conf",
+                "enable_network_discovery": "Edit /etc/NetworkManager/conf.d/heckcheckos-privacy.conf",
                 "enable_captive_portal": "Set enabled=true in NetworkManager connectivity section"
             },
             "timestamp": datetime.now().isoformat()
@@ -649,7 +655,7 @@ Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
         privacy_manifest.write_text(json.dumps(manifest_data, indent=2))
         
         # 12. Create user notice on first boot
-        motd_privacy = self.rootfs_dir / "etc" / "update-motd.d" / "00-ghostos-privacy"
+        motd_privacy = self.rootfs_dir / "etc" / "update-motd.d" / "00-heckcheckos-privacy"
         motd_privacy.parent.mkdir(parents=True, exist_ok=True)
         motd_privacy.write_text("""#!/bin/bash
 cat << 'EOF'
@@ -657,7 +663,7 @@ cat << 'EOF'
 ║                   PRIVACY OVER PRIVILEGE                    ║
 ╚════════════════════════════════════════════════════════════╝
 
-This GhostOS installation follows "Privacy Over Privilege":
+This Heck-CheckOS installation follows "Privacy Over Privilege":
 
 ✓ All telemetry DISABLED      ✓ Encrypted DNS enforced
 ✓ No location tracking         ✓ Minimal data collection
@@ -665,7 +671,7 @@ This GhostOS installation follows "Privacy Over Privilege":
 ✓ Network privacy maximized    ✓ Crash reports disabled
 
 Some convenient features are disabled for your privacy.
-See: /etc/ghostos/privacy-over-privilege.json for details
+See: /etc/heckcheckos/privacy-over-privilege.json for details
 
 To enable specific features: See how_to_relax section in manifest
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -675,7 +681,7 @@ EOF
         
         print("  ✓ Privacy Over Privilege enacted - Privacy maximized")
         print("  ✓ Convenient features restricted for security")
-        print("  ✓ See /etc/ghostos/privacy-over-privilege.json for details")
+        print("  ✓ See /etc/heckcheckos/privacy-over-privilege.json for details")
     
     def configure_program_autonomy(self, progress_callback=None):
         """
@@ -693,9 +699,9 @@ EOF
         apparmor_dir.mkdir(parents=True, exist_ok=True)
         
         # Set AppArmor to complain mode globally
-        apparmor_tune = self.rootfs_dir / "etc" / "apparmor.d" / "tunables" / "ghostos-autonomy"
+        apparmor_tune = self.rootfs_dir / "etc" / "apparmor.d" / "tunables" / "heckcheckos-autonomy"
         apparmor_tune.parent.mkdir(parents=True, exist_ok=True)
-        apparmor_tune.write_text("""# GhostOS Program Autonomy
+        apparmor_tune.write_text("""# Heck-CheckOS Program Autonomy
 # Allow programs to operate naturally - don't enforce strict confinement
 # Profiles in complain mode: log but don't deny operations
 """)
@@ -709,7 +715,7 @@ SELINUXTYPE=targeted
 """)
         
         # 3. Allow programs their own network access without global DNS override
-        networkmanager_apps = self.rootfs_dir / "etc" / "NetworkManager" / "conf.d" / "ghostos-app-autonomy.conf"
+        networkmanager_apps = self.rootfs_dir / "etc" / "NetworkManager" / "conf.d" / "heckcheckos-app-autonomy.conf"
         networkmanager_apps.parent.mkdir(parents=True, exist_ok=True)
         networkmanager_apps.write_text("""[main]
 # Allow applications to use their own DNS if configured
@@ -721,7 +727,7 @@ dns=default
 """)
         
         # 4. Disable restrictive seccomp filters that might block legitimate syscalls
-        sysctl_autonomy = self.rootfs_dir / "etc" / "sysctl.d" / "98-ghostos-autonomy.conf"
+        sysctl_autonomy = self.rootfs_dir / "etc" / "sysctl.d" / "98-heckcheckos-autonomy.conf"
         sysctl_autonomy.parent.mkdir(parents=True, exist_ok=True)
         sysctl_autonomy.write_text("""# Program Autonomy - Allow standard operations
 # Don't block legitimate program operations
@@ -737,7 +743,7 @@ kernel.core_pattern=core
 """)
         
         # 5. Configure sudo to not interfere with program environment variables
-        sudoers_env = self.rootfs_dir / "etc" / "sudoers.d" / "ghostos-program-env"
+        sudoers_env = self.rootfs_dir / "etc" / "sudoers.d" / "heckcheckos-program-env"
         sudoers_env.parent.mkdir(parents=True, exist_ok=True)
         sudoers_env.write_text("""# Allow programs to preserve their environment
 Defaults env_keep += "HOME PATH LANG LC_* DISPLAY XAUTHORITY"
@@ -746,7 +752,7 @@ Defaults !env_reset
         sudoers_env.chmod(0o440)
         
         # 6. Don't block inter-process communication
-        ipc_conf = self.rootfs_dir / "etc" / "sysctl.d" / "97-ghostos-ipc.conf"
+        ipc_conf = self.rootfs_dir / "etc" / "sysctl.d" / "97-heckcheckos-ipc.conf"
         ipc_conf.parent.mkdir(parents=True, exist_ok=True)
         ipc_conf.write_text("""# Allow standard IPC mechanisms
 # Programs need these for normal operation
@@ -756,7 +762,7 @@ kernel.shmmni=4096
 """)
         
         # 7. Allow programs to use standard system resources
-        limits_conf = self.rootfs_dir / "etc" / "security" / "limits.d" / "ghostos-autonomy.conf"
+        limits_conf = self.rootfs_dir / "etc" / "security" / "limits.d" / "heckcheckos-autonomy.conf"
         limits_conf.parent.mkdir(parents=True, exist_ok=True)
         limits_conf.write_text("""# Resource limits that allow programs to operate naturally
 *    soft    nofile    65536
@@ -768,7 +774,7 @@ kernel.shmmni=4096
 """)
         
         # 8. Configure systemd to not kill background processes
-        systemd_login = self.rootfs_dir / "etc" / "systemd" / "logind.conf.d" / "ghostos-autonomy.conf"
+        systemd_login = self.rootfs_dir / "etc" / "systemd" / "logind.conf.d" / "heckcheckos-autonomy.conf"
         systemd_login.parent.mkdir(parents=True, exist_ok=True)
         systemd_login.write_text("""[Login]
 # Allow programs to continue running
@@ -778,7 +784,7 @@ KillOnlyUsers=
         
         # 9. Allow programs to create listening sockets
         # Remove restrictive firewall rules for localhost
-        firewall_allow = self.rootfs_dir / "etc" / "ghostos" / "firewall-allow-localhost.sh"
+        firewall_allow = self.rootfs_dir / "etc" / "heckcheckos" / "firewall-allow-localhost.sh"
         firewall_allow.parent.mkdir(parents=True, exist_ok=True)
         firewall_allow.write_text("""#!/bin/bash
 # Allow localhost communication - programs need this
@@ -792,7 +798,7 @@ iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
         firewall_allow.chmod(0o755)
         
         # 10. Configure dbus to allow program communication
-        dbus_conf = self.rootfs_dir / "etc" / "dbus-1" / "system.d" / "ghostos-autonomy.conf"
+        dbus_conf = self.rootfs_dir / "etc" / "dbus-1" / "system.d" / "heckcheckos-autonomy.conf"
         dbus_conf.parent.mkdir(parents=True, exist_ok=True)
         dbus_conf.write_text("""<!DOCTYPE busconfig PUBLIC
  "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
@@ -807,7 +813,7 @@ iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 """)
         
         # 11. Create exceptions for legitimate program operations
-        privacy_exceptions = self.rootfs_dir / "etc" / "ghostos" / "privacy-exceptions.conf"
+        privacy_exceptions = self.rootfs_dir / "etc" / "heckcheckos" / "privacy-exceptions.conf"
         privacy_exceptions.parent.mkdir(parents=True, exist_ok=True)
         privacy_exceptions.write_text("""# Privacy Exceptions for Legitimate Program Operations
 # These allow programs to function normally while maintaining privacy
@@ -853,7 +859,7 @@ allow_localhost_apis=yes
 """)
         
         # 12. Create program autonomy manifest
-        autonomy_manifest = self.rootfs_dir / "etc" / "ghostos" / "program-autonomy.json"
+        autonomy_manifest = self.rootfs_dir / "etc" / "heckcheckos" / "program-autonomy.json"
         autonomy_manifest.parent.mkdir(parents=True, exist_ok=True)
         
         manifest_data = {
@@ -905,14 +911,14 @@ allow_localhost_apis=yes
         autonomy_manifest.write_text(json.dumps(manifest_data, indent=2))
         
         # 13. Update privacy manifest to clarify program autonomy
-        privacy_manifest_path = self.rootfs_dir / "etc" / "ghostos" / "privacy-over-privilege.json"
+        privacy_manifest_path = self.rootfs_dir / "etc" / "heckcheckos" / "privacy-over-privilege.json"
         if privacy_manifest_path.exists():
             import json
             privacy_data = json.loads(privacy_manifest_path.read_text())
             privacy_data["program_autonomy"] = {
                 "note": "Privacy restrictions apply to OS and vendors, NOT your programs",
                 "programs_can_operate_normally": True,
-                "see_details": "/etc/ghostos/program-autonomy.json"
+                "see_details": "/etc/heckcheckos/program-autonomy.json"
             }
             privacy_manifest_path.write_text(json.dumps(privacy_data, indent=2))
         
@@ -928,7 +934,7 @@ allow_localhost_apis=yes
         print(f"[*] Applying theme: {theme_config.get('mode', 'default')}")
         
         # Create theme directory
-        theme_dir = self.rootfs_dir / "usr" / "share" / "ghostos" / "themes"
+        theme_dir = self.rootfs_dir / "usr" / "share" / "heckcheckos" / "themes"
         theme_dir.mkdir(parents=True, exist_ok=True)
         
         # Write theme configuration
@@ -957,6 +963,131 @@ gtk-enable-animations=0
 """)
         
         print("✓ Theme applied")
+    
+    def configure_amd_am5_support(self, progress_callback=None):
+        """Configure AMD AM5 platform with 3D V-Cache support"""
+        if progress_callback:
+            progress_callback(33, "Configuring AMD AM5 3D V-Cache support...")
+        
+        print("[*] Configuring AMD AM5 platform with 3D V-Cache support...")
+        
+        # 1. Enable AMD P-state driver and CPPC (Collaborative Processor Performance Control)
+        # This is critical for AM5 Ryzen 7000 series and X3D processors
+        modprobe_conf = self.rootfs_dir / "etc" / "modprobe.d" / "amd-pstate.conf"
+        modprobe_conf.parent.mkdir(parents=True, exist_ok=True)
+        modprobe_conf.write_text("""# AMD AM5 Platform Configuration
+# Enable AMD P-state driver for Ryzen 7000 series
+# This provides better frequency scaling and power management for 3D V-Cache CPUs
+
+# Load AMD P-state driver
+options amd_pstate shared_mem=1
+
+# AMD Preferred Core (for X3D CPUs with asymmetric cores)
+# Ensures the OS knows which cores have 3D V-Cache
+options amd_pstate prefcore=enable
+""")
+        
+        # 2. Configure CPU frequency scaling governor for AM5
+        cpufreq_conf = self.rootfs_dir / "etc" / "default" / "cpufrequtils"
+        cpufreq_conf.parent.mkdir(parents=True, exist_ok=True)
+        cpufreq_conf.write_text("""# CPU Frequency Scaling for AMD AM5
+# Use schedutil governor for best performance with 3D V-Cache
+GOVERNOR="schedutil"
+MIN_SPEED="400MHz"
+MAX_SPEED="0"  # Use CPU maximum
+""")
+        
+        # 3. Create systemd service to enable AMD P-state on boot
+        amd_service = self.rootfs_dir / "etc" / "systemd" / "system" / "amd-pstate-enable.service"
+        amd_service.parent.mkdir(parents=True, exist_ok=True)
+        amd_service.write_text("""[Unit]
+Description=Enable AMD P-state Driver for AM5 Platform
+After=sysinit.target
+Before=basic.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'echo active > /sys/devices/system/cpu/amd_pstate/status 2>/dev/null || true'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+""")
+        
+        # Enable the service
+        systemd_link = self.rootfs_dir / "etc" / "systemd" / "system" / "multi-user.target.wants" / "amd-pstate-enable.service"
+        systemd_link.parent.mkdir(parents=True, exist_ok=True)
+        if not systemd_link.exists():
+            systemd_link.symlink_to("../amd-pstate-enable.service")
+        
+        # 4. Configure kernel parameters for optimal 3D V-Cache performance
+        sysctl_amd = self.rootfs_dir / "etc" / "sysctl.d" / "90-amd-am5.conf"
+        sysctl_amd.parent.mkdir(parents=True, exist_ok=True)
+        sysctl_amd.write_text("""# AMD AM5 3D V-Cache Optimization
+# Optimize for large L3 cache (96MB+ on X3D processors)
+
+# Increase CPU cache pressure threshold (more aggressive caching)
+vm.vfs_cache_pressure=50
+
+# Allow more memory to be used for file cache (leverages large L3)
+vm.swappiness=10
+
+# Optimize scheduler for heterogeneous CPU topologies (X3D + non-X3D cores)
+kernel.sched_migration_cost_ns=500000
+kernel.sched_min_granularity_ns=1000000
+kernel.sched_wakeup_granularity_ns=1500000
+""")
+        
+        # 5. Create documentation for AMD AM5 features
+        amd_doc = self.rootfs_dir / "etc" / "heckcheckos" / "amd-am5-info.txt"
+        amd_doc.parent.mkdir(parents=True, exist_ok=True)
+        amd_doc.write_text("""AMD AM5 Platform with 3D V-Cache Support
+==========================================
+
+This system is optimized for AMD Ryzen 7000 series processors, including
+X3D variants with 3D V-Cache technology.
+
+ENABLED FEATURES:
+✓ AMD P-state driver (active mode)
+✓ AMD Preferred Core (CPPC) support
+✓ Schedutil CPU frequency governor
+✓ Optimized cache management for large L3
+✓ Heterogeneous core topology support
+
+SUPPORTED PROCESSORS:
+• Ryzen 9 7950X3D (16 cores, 144MB cache)
+• Ryzen 9 7900X3D (12 cores, 140MB cache)
+• Ryzen 7 7800X3D (8 cores, 104MB cache)
+• Ryzen 9 7950X / 7900X / 7700X / 7600X
+• And all other AM5 processors
+
+BOOT OPTIONS:
+• Default: AMD P-state active + Preferred Core enabled
+• Optimized: Additional cache and scheduler optimizations
+  (Use "AM5 3D V-Cache Optimized" boot option)
+
+VERIFY SUPPORT:
+Check if AMD P-state is active:
+  cat /sys/devices/system/cpu/amd_pstate/status
+
+Check preferred core support:
+  cat /sys/devices/system/cpu/cpu*/acpi_cppc/highest_perf
+
+PERFORMANCE TIPS:
+1. Use schedutil governor (enabled by default)
+2. Enable PBO (Precision Boost Overdrive) in BIOS if desired
+3. Ensure good cooling for sustained boost clocks
+4. Update BIOS for latest AGESA microcode
+
+For more information:
+https://www.kernel.org/doc/html/latest/admin-guide/pm/amd-pstate.html
+""")
+        
+        print("  ✓ AMD P-state driver configured")
+        print("  ✓ CPPC (Preferred Core) support enabled")
+        print("  ✓ Schedutil governor configured")
+        print("  ✓ 3D V-Cache optimizations applied")
+        print("  ✓ AM5 platform fully supported")
     
     def install_custom_packages(self, packages: list, progress_callback=None):
         """Install custom packages in the chroot"""
@@ -998,18 +1129,18 @@ gtk-enable-animations=0
         
         print("✓ Custom files added")
     
-    def install_ghostos_builder(self, self_install_config: dict, progress_callback=None):
-        """Install GhostOS Builder to the ISO"""
+    def install_heckcheckos_builder(self, self_install_config: dict, progress_callback=None):
+        """Install Heck-CheckOS Builder to the ISO"""
         if not self_install_config.get('enabled', False):
             return
         
         if progress_callback:
-            progress_callback(60, "Installing GhostOS Builder...")
+            progress_callback(60, "Installing Heck-CheckOS Builder...")
         
-        print("[*] Installing GhostOS Builder to ISO...")
+        print("[*] Installing Heck-CheckOS Builder to ISO...")
         
         # Copy builder files
-        builder_dir = self.rootfs_dir / "opt" / "ghostos-builder"
+        builder_dir = self.rootfs_dir / "opt" / "heckcheckos-builder"
         builder_dir.mkdir(parents=True, exist_ok=True)
         
         # Copy GUI builder files
@@ -1018,13 +1149,13 @@ gtk-enable-animations=0
         
         # Create desktop entry
         if self_install_config.get('desktop_entry', True):
-            desktop_file = self.rootfs_dir / "usr" / "share" / "applications" / "ghostos-builder.desktop"
+            desktop_file = self.rootfs_dir / "usr" / "share" / "applications" / "heckcheckos-builder.desktop"
             desktop_file.parent.mkdir(parents=True, exist_ok=True)
             desktop_file.write_text("""[Desktop Entry]
 Type=Application
-Name=GhostOS Builder
-Comment=Build and customize GhostOS ISOs
-Exec=/opt/ghostos-builder/gui/start-gui.sh
+Name=Heck-CheckOS Builder
+Comment=Build and customize Heck-CheckOS ISOs
+Exec=/opt/heckcheckos-builder/gui/start-gui.sh
 Icon=applications-system
 Terminal=false
 Categories=System;Settings;
@@ -1032,47 +1163,70 @@ Categories=System;Settings;
         
         # Create CLI launcher
         if self_install_config.get('cli_launcher', True):
-            launcher = self.rootfs_dir / "usr" / "local" / "bin" / "ghostos-builder"
+            launcher = self.rootfs_dir / "usr" / "local" / "bin" / "heckcheckos-builder"
             launcher.parent.mkdir(parents=True, exist_ok=True)
             launcher.write_text("""#!/bin/bash
-cd /opt/ghostos-builder/gui
+cd /opt/heckcheckos-builder/gui
 python3 main.py "$@"
 """)
             launcher.chmod(0o755)
         
-        print("✓ GhostOS Builder installed")
+        print("✓ Heck-CheckOS Builder installed")
     
     def create_grub_config(self, version: str):
-        """Create GRUB bootloader configuration"""
-        print("[*] Creating GRUB configuration...")
+        """Create GRUB bootloader configuration with TPM and AMD AM5 3D V-Cache support"""
+        print("[*] Creating GRUB configuration with TPM and AMD AM5 support...")
         
         grub_cfg = self.iso_dir / "boot" / "grub" / "grub.cfg"
         grub_cfg.write_text(f"""set timeout=30
 set default=0
 
+# TPM Support - Load TPM modules for all versions
+insmod tpm
+insmod tpm2
+
+# Graphics and display
 insmod all_video
 insmod gfxterm
 terminal_output gfxterm
 set gfxmode=1920x1080
 set gfxpayload=keep
 
-menuentry "👻 GhostOS {version} - Install (Pre-configured)" {{
-    linux /live/vmlinuz boot=live quiet splash installer-mode
+# Enable TPM measurement (optional, for secure boot)
+# This ensures compatibility with TPM 1.2 and TPM 2.0
+if [ -d (hd0,gpt1)/EFI ]; then
+    # UEFI mode - TPM 2.0 preferred
+    insmod efi_gop
+    insmod efi_uga
+fi
+
+menuentry "👻 Heck-CheckOS {version} - Install (Pre-configured)" {{
+    linux /live/vmlinuz boot=live quiet splash installer-mode tpm_tis.force=1 amd_pstate=active amd_prefcore=enable
     initrd /live/initrd.img
 }}
 
-menuentry "👻 GhostOS {version} - Live Mode (Pre-configured)" {{
-    linux /live/vmlinuz boot=live quiet splash
+menuentry "👻 Heck-CheckOS {version} - Live Mode (Pre-configured)" {{
+    linux /live/vmlinuz boot=live quiet splash tpm_tis.force=1 amd_pstate=active amd_prefcore=enable
     initrd /live/initrd.img
 }}
 
-menuentry "👻 GhostOS {version} - Safe Mode" {{
-    linux /live/vmlinuz boot=live nomodeset
+menuentry "👻 Heck-CheckOS {version} - AM5 3D V-Cache Optimized" {{
+    linux /live/vmlinuz boot=live quiet splash tpm_tis.force=1 amd_pstate=active amd_prefcore=enable processor.max_cstate=1 idle=poll
+    initrd /live/initrd.img
+}}
+
+menuentry "👻 Heck-CheckOS {version} - Safe Mode" {{
+    linux /live/vmlinuz boot=live nomodeset tpm_tis.force=1
+    initrd /live/initrd.img
+}}
+
+menuentry "👻 Heck-CheckOS {version} - No TPM Mode" {{
+    linux /live/vmlinuz boot=live quiet splash amd_pstate=active amd_prefcore=enable
     initrd /live/initrd.img
 }}
 """)
         
-        print("✓ GRUB configuration created")
+        print("✓ GRUB configuration created with TPM and AMD AM5 support")
     
     def create_squashfs(self, progress_callback=None):
         """Create squashfs filesystem"""
@@ -1160,7 +1314,7 @@ menuentry "👻 GhostOS {version} - Safe Mode" {{
             '-iso-level', '3',
             '-full-iso9660-filenames',
             '-volid', 'GHOSTOS-CUSTOM',
-            '-appid', 'GhostOS Custom Build',
+            '-appid', 'Heck-CheckOS Custom Build',
             '-publisher', 'jameshroop-art',
             '-eltorito-boot', 'boot/grub/bios.img',
             '-no-emul-boot',
@@ -1240,6 +1394,9 @@ menuentry "👻 GhostOS {version} - Safe Mode" {{
             # Configure Program Autonomy (allow programs to operate naturally)
             self.configure_program_autonomy(progress_callback)
             
+            # Configure AMD AM5 3D V-Cache support
+            self.configure_amd_am5_support(progress_callback)
+            
             # Merge ISO components if multiple sources provided
             merged_packages = []
             if 'iso_sources' in self.config and len(self.config['iso_sources']) > 1:
@@ -1266,9 +1423,9 @@ menuentry "👻 GhostOS {version} - Safe Mode" {{
             if 'custom_files' in self.config:
                 self.add_custom_files(self.config['custom_files'], progress_callback)
             
-            # Install GhostOS Builder if enabled
+            # Install Heck-CheckOS Builder if enabled
             if 'self_install' in self.config:
-                self.install_ghostos_builder(self.config['self_install'], progress_callback)
+                self.install_heckcheckos_builder(self.config['self_install'], progress_callback)
             
             # Create GRUB config
             version = self.config.get('version', 'custom')
@@ -1284,9 +1441,9 @@ menuentry "👻 GhostOS {version} - Safe Mode" {{
             timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
             # Include merge indicator in filename if multiple ISOs
             if 'iso_sources' in self.config and len(self.config['iso_sources']) > 1:
-                filename = f"GhostOS-merged-{timestamp}.iso"
+                filename = f"Heck-CheckOS-merged-{timestamp}.iso"
             else:
-                filename = f"GhostOS-custom-{timestamp}.iso"
+                filename = f"Heck-CheckOS-custom-{timestamp}.iso"
             output_path = self.build_iso(filename, progress_callback)
             
             if progress_callback:

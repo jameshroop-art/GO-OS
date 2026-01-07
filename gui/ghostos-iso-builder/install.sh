@@ -1,11 +1,11 @@
 #!/bin/bash
-# GhostOS ISO Builder - Self-Installation Script
+# Heck-CheckOS ISO Builder - Self-Installation Script
 # Installs the GUI builder into the target OS
 
 set -e
 
 echo "=========================================="
-echo "  GhostOS ISO Builder - Installation"
+echo "  Heck-CheckOS ISO Builder - Installation"
 echo "=========================================="
 echo ""
 
@@ -17,12 +17,22 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Installation directory
-INSTALL_DIR="/opt/ghostos-builder"
+INSTALL_DIR="/opt/heckcheckos-builder"
 BIN_DIR="/usr/local/bin"
 DESKTOP_DIR="/usr/share/applications"
 ICON_DIR="/usr/share/icons/hicolor/256x256/apps"
 
-echo "[*] Installing GhostOS ISO Builder to $INSTALL_DIR..."
+echo "[*] Installing Heck-CheckOS ISO Builder to $INSTALL_DIR..."
+
+# Verify we're in the correct directory
+# Accept both old and new directory names during transition
+CURRENT_DIR=$(basename "$(dirname "$(pwd)")")/$(basename "$(pwd)")
+if [ ! -f "main.py" ] || [ ! -f "iso_builder_backend.py" ] || [ ! -d "ui" ]; then
+    echo "❌ Error: This script must be run from the gui/ghostos-iso-builder or gui/heckcheckos-iso-builder directory"
+    echo "   Current directory: $(pwd)"
+    echo "   Missing required files (main.py, iso_builder_backend.py, ui/)"
+    exit 1
+fi
 
 # Create directories
 mkdir -p "$INSTALL_DIR"
@@ -33,6 +43,14 @@ mkdir -p "$ICON_DIR"
 # Copy application files
 echo "[*] Copying application files..."
 cp -r . "$INSTALL_DIR/"
+
+# Verify critical files were copied
+if [ ! -f "$INSTALL_DIR/main.py" ]; then
+    echo "❌ Error: Failed to copy main.py to $INSTALL_DIR"
+    echo "   Installation incomplete. Please check permissions and disk space."
+    exit 1
+fi
+
 chmod +x "$INSTALL_DIR/main.py"
 
 # Install Python dependencies
@@ -44,45 +62,38 @@ pip3 install -r "$INSTALL_DIR/requirements.txt" || {
 
 # Create launcher script
 echo "[*] Creating launcher script..."
-cat > "$BIN_DIR/ghostos-builder" << 'EOF'
+cat > "$BIN_DIR/heckcheckos-builder" << 'EOF'
 #!/bin/bash
-# GhostOS ISO Builder Launcher
+# Heck-CheckOS ISO Builder Launcher
+# Runs as normal user - will prompt for privileges when building ISOs
 
-# Check if running with required privileges
-if [ "$EUID" -ne 0 ]; then
-    # Try to elevate with pkexec (GUI) or sudo (terminal)
-    if command -v pkexec &> /dev/null; then
-        pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY /opt/ghostos-builder/main.py "$@"
-    else
-        sudo /opt/ghostos-builder/main.py "$@"
-    fi
-else
-    /opt/ghostos-builder/main.py "$@"
-fi
+# Simply launch the application as the current user
+# The application will request elevation only when needed for ISO building
+exec /opt/heckcheckos-builder/main.py "$@"
 EOF
 
-chmod +x "$BIN_DIR/ghostos-builder"
+chmod +x "$BIN_DIR/heckcheckos-builder"
 
 # Create desktop entry
 echo "[*] Creating desktop entry..."
-cat > "$DESKTOP_DIR/ghostos-builder.desktop" << EOF
+cat > "$DESKTOP_DIR/heckcheckos-builder.desktop" << EOF
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=GhostOS ISO Builder
+Name=Heck-CheckOS ISO Builder
 GenericName=ISO Builder and Customizer
-Comment=Build custom GhostOS ISOs with multi-source support and theme customization
-Exec=ghostos-builder
-Icon=ghostos-builder
+Comment=Build custom Heck-CheckOS ISOs - GUI runs as user, prompts for privileges when building
+Exec=heckcheckos-builder
+Icon=heckcheckos-builder
 Terminal=false
 Categories=System;Development;Utility;
-Keywords=iso;builder;ghostos;debian;linux;customization;
+Keywords=iso;builder;heckcheckos;debian;linux;customization;
 StartupNotify=true
 EOF
 
 # Create icon (placeholder - would use actual icon in production)
 echo "[*] Creating application icon..."
-cat > "$ICON_DIR/ghostos-builder.svg" << 'EOF'
+cat > "$ICON_DIR/heckcheckos-builder.svg" << 'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="256" height="256" xmlns="http://www.w3.org/2000/svg">
   <rect width="256" height="256" fill="#1e1e1e"/>
@@ -97,18 +108,18 @@ update-desktop-database "$DESKTOP_DIR" 2>/dev/null || true
 
 # Create standalone keyboard launcher
 echo "[*] Creating standalone keyboard launcher..."
-cat > "$BIN_DIR/ghostos-keyboard" << 'KEYBOARD_EOF'
+cat > "$BIN_DIR/heckcheckos-keyboard" << 'KEYBOARD_EOF'
 #!/usr/bin/env python3
 """Standalone Touchscreen Keyboard Launcher"""
 import sys
-sys.path.insert(0, '/opt/ghostos-builder')
+sys.path.insert(0, '/opt/heckcheckos-builder')
 
 from PyQt6.QtWidgets import QApplication
 from ui.touchscreen_keyboard import TouchscreenKeyboard
 
 def main():
     app = QApplication(sys.argv)
-    app.setApplicationName("GhostOS Touchscreen Keyboard")
+    app.setApplicationName("Heck-CheckOS Touchscreen Keyboard")
     
     keyboard = TouchscreenKeyboard()
     keyboard.show_keyboard()
@@ -119,18 +130,18 @@ if __name__ == "__main__":
     main()
 KEYBOARD_EOF
 
-chmod +x "$BIN_DIR/ghostos-keyboard"
+chmod +x "$BIN_DIR/heckcheckos-keyboard"
 
 # Create keyboard desktop entry
 echo "[*] Creating keyboard desktop entry..."
-cat > "$DESKTOP_DIR/ghostos-keyboard.desktop" << EOF
+cat > "$DESKTOP_DIR/heckcheckos-keyboard.desktop" << EOF
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=GhostOS Touchscreen Keyboard
+Name=Heck-CheckOS Touchscreen Keyboard
 GenericName=Virtual Keyboard
 Comment=Touchscreen keyboard with calibration support
-Exec=ghostos-keyboard
+Exec=heckcheckos-keyboard
 Icon=input-keyboard
 Terminal=false
 Categories=Utility;Accessibility;
@@ -144,25 +155,25 @@ update-desktop-database "$DESKTOP_DIR" 2>/dev/null || true
 echo "[*] Creating uninstaller..."
 cat > "$INSTALL_DIR/uninstall.sh" << 'UNINSTALL_EOF'
 #!/bin/bash
-# GhostOS ISO Builder - Uninstaller
+# Heck-CheckOS ISO Builder - Uninstaller
 
 if [ "$EUID" -ne 0 ]; then 
     echo "Must run as root: sudo $0"
     exit 1
 fi
 
-echo "Removing GhostOS ISO Builder..."
+echo "Removing Heck-CheckOS ISO Builder..."
 
-rm -rf /opt/ghostos-builder
-rm -f /usr/local/bin/ghostos-builder
-rm -f /usr/local/bin/ghostos-keyboard
-rm -f /usr/share/applications/ghostos-builder.desktop
-rm -f /usr/share/applications/ghostos-keyboard.desktop
-rm -f /usr/share/icons/hicolor/256x256/apps/ghostos-builder.svg
+rm -rf /opt/heckcheckos-builder
+rm -f /usr/local/bin/heckcheckos-builder
+rm -f /usr/local/bin/heckcheckos-keyboard
+rm -f /usr/share/applications/heckcheckos-builder.desktop
+rm -f /usr/share/applications/heckcheckos-keyboard.desktop
+rm -f /usr/share/icons/hicolor/256x256/apps/heckcheckos-builder.svg
 
 update-desktop-database /usr/share/applications 2>/dev/null || true
 
-echo "✓ GhostOS ISO Builder has been uninstalled"
+echo "✓ Heck-CheckOS ISO Builder has been uninstalled"
 UNINSTALL_EOF
 
 chmod +x "$INSTALL_DIR/uninstall.sh"
@@ -172,16 +183,16 @@ echo "=========================================="
 echo "  ✓ Installation Complete!"
 echo "=========================================="
 echo ""
-echo "GhostOS ISO Builder has been installed to:"
+echo "Heck-CheckOS ISO Builder has been installed to:"
 echo "  • Application: $INSTALL_DIR"
-echo "  • Launcher: $BIN_DIR/ghostos-builder"
-echo "  • Keyboard: $BIN_DIR/ghostos-keyboard"
-echo "  • Desktop Entry: $DESKTOP_DIR/ghostos-builder.desktop"
-echo "  • Keyboard Entry: $DESKTOP_DIR/ghostos-keyboard.desktop"
+echo "  • Launcher: $BIN_DIR/heckcheckos-builder"
+echo "  • Keyboard: $BIN_DIR/heckcheckos-keyboard"
+echo "  • Desktop Entry: $DESKTOP_DIR/heckcheckos-builder.desktop"
+echo "  • Keyboard Entry: $DESKTOP_DIR/heckcheckos-keyboard.desktop"
 echo ""
 echo "You can now:"
-echo "  • Run GUI: ghostos-builder"
-echo "  • Run keyboard standalone: ghostos-keyboard"
+echo "  • Run GUI: heckcheckos-builder"
+echo "  • Run keyboard standalone: heckcheckos-keyboard"
 echo "  • Launch from application menu"
 echo ""
 echo "Features:"

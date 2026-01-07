@@ -1,6 +1,6 @@
 # Android Compatibility & Technical Details
 
-Technical documentation for GhostOS Android implementation, driver handling, and platform compatibility.
+Technical documentation for Heck-CheckOS Android implementation, driver handling, and platform compatibility.
 
 ## Architecture Overview
 
@@ -8,7 +8,7 @@ Technical documentation for GhostOS Android implementation, driver handling, and
 
 ```
 ┌─────────────────────────────────────┐
-│   GhostOS Android Commands          │
+│   Heck-CheckOS Android Commands          │
 │   (ghostos-wifi, ghostos-bluetooth) │
 ├─────────────────────────────────────┤
 │   Termux:API Bridge                 │
@@ -29,7 +29,7 @@ Technical documentation for GhostOS Android implementation, driver handling, and
 
 ### Component Details
 
-#### 1. GhostOS Layer
+#### 1. Heck-CheckOS Layer
 - **Location**: Termux userspace
 - **Language**: Bash scripts
 - **Purpose**: User-friendly command interface
@@ -107,7 +107,7 @@ Why Android 9+ is required:
 
 ### WiFi Access Methods
 
-#### Without Root (GhostOS Approach)
+#### Without Root (Heck-CheckOS Approach)
 
 **Available Operations:**
 ```java
@@ -121,7 +121,7 @@ Why Android 9+ is required:
 
 **Implementation:**
 ```bash
-# GhostOS uses Termux-API which calls:
+# Heck-CheckOS uses Termux-API which calls:
 am startservice --user 0 \
   -n com.termux.api/.WifiAPI \
   --es command "scan"
@@ -139,7 +139,7 @@ wifiManager.startScan();
 - ❌ Cannot access raw 802.11 frames
 - ❌ Cannot modify driver parameters
 
-#### With Root (Not GhostOS)
+#### With Root (Not Heck-CheckOS)
 
 **Would Enable:**
 ```bash
@@ -156,12 +156,12 @@ ip link set dev wlan0 up
 echo "options cfg80211 ieee80211_regdom=US" > /etc/modprobe.d/cfg80211.conf
 ```
 
-**GhostOS Does NOT Do This** (no root required).
+**Heck-CheckOS Does NOT Do This** (no root required).
 
 ### WiFi Driver Stack on Android
 
 ```
-Application Layer: GhostOS Scripts
+Application Layer: Heck-CheckOS Scripts
         ↓
 Termux:API Bridge
         ↓
@@ -196,7 +196,7 @@ Hardware: WiFi Chipset
 
 ### Bluetooth Access Methods
 
-#### Without Root (GhostOS Approach)
+#### Without Root (Heck-CheckOS Approach)
 
 **Available Operations:**
 ```java
@@ -211,7 +211,7 @@ Hardware: WiFi Chipset
 
 **Implementation:**
 ```bash
-# GhostOS uses Termux-API:
+# Heck-CheckOS uses Termux-API:
 am startservice --user 0 \
   -n com.termux.api/.BluetoothAPI \
   --es command "scan"
@@ -228,7 +228,7 @@ adapter.startDiscovery();
 - ❌ Cannot modify Bluetooth firmware
 - ❌ Limited low-level control
 
-#### With Root (Not GhostOS)
+#### With Root (Not Heck-CheckOS)
 
 **Would Enable:**
 ```bash
@@ -247,12 +247,12 @@ btfwloader -f firmware.bin
 bluetoothctl
 ```
 
-**GhostOS Does NOT Do This** (no root required).
+**Heck-CheckOS Does NOT Do This** (no root required).
 
 ### Bluetooth Stack on Android
 
 ```
-Application Layer: GhostOS Scripts
+Application Layer: Heck-CheckOS Scripts
         ↓
 Termux:API Bridge
         ↓
@@ -282,9 +282,9 @@ Hardware: Bluetooth Chipset
 
 ## Driver "Patching" Without Root
 
-### What GhostOS Actually Does
+### What Heck-CheckOS Actually Does
 
-Since direct driver modification requires root, GhostOS implements **userspace optimization**:
+Since direct driver modification requires root, Heck-CheckOS implements **userspace optimization**:
 
 #### 1. Signal Strength Analysis
 ```bash
@@ -322,14 +322,14 @@ ping -c 10 8.8.8.8 | grep 'packet loss'
 
 ### What "Patching" Means in Non-Root Context
 
-| Term | Root Meaning | Non-Root Meaning (GhostOS) |
+| Term | Root Meaning | Non-Root Meaning (Heck-CheckOS) |
 |------|--------------|----------------------------|
 | **Driver Patch** | Modify driver code/firmware | Optimize within API limits |
 | **WiFi Optimization** | Change driver parameters | Analyze and recommend |
 | **Bluetooth Tuning** | Modify HCI parameters | Monitor and suggest |
 | **Performance Fix** | Kernel module updates | Userspace improvements |
 
-### Actual Modifications GhostOS Makes
+### Actual Modifications Heck-CheckOS Makes
 
 ✅ **Does Modify:**
 - Termux environment configuration
@@ -366,7 +366,7 @@ ping -c 10 8.8.8.8 | grep 'packet loss'
 
 ### SELinux Context
 
-GhostOS runs in Termux's SELinux context:
+Heck-CheckOS runs in Termux's SELinux context:
 ```bash
 # Check context
 getenforce  # Usually: Enforcing
@@ -395,13 +395,13 @@ id -Z       # Shows: u:r:untrusted_app:s0:c...
 │  - Standard app permissions           │
 │  - User UID (10xxx)                   │
 ├───────────────────────────────────────┤
-│  GhostOS Scripts (Userspace)          │
+│  Heck-CheckOS Scripts (Userspace)          │
 │  - No special privileges              │
 │  - Sandboxed environment              │
 └───────────────────────────────────────┘
 ```
 
-**GhostOS operates entirely in the bottom layer.**
+**Heck-CheckOS operates entirely in the bottom layer.**
 
 ## Performance Considerations
 
@@ -483,7 +483,7 @@ id -Z       # Shows: u:r:untrusted_app:s0:c...
 ### Enable Debug Logging
 
 ```bash
-# In GhostOS scripts, add:
+# In Heck-CheckOS scripts, add:
 set -x  # Enable bash debug mode
 
 # View Android logs:
@@ -505,7 +505,7 @@ ghostos-bluetooth scan
 ghostos-bluetooth devices
 
 # Full diagnostic
-ghostos-driver-optimizer
+heckcheckos-driver-optimizer
 ghostos-system
 ```
 
@@ -551,24 +551,24 @@ termux-bluetooth-connectioninfo
 - [ ] Firmware updates
 - [ ] Custom kernel modules
 
-**Note:** Root features will never be part of GhostOS as they compromise Android security and void warranties.
+**Note:** Root features will never be part of Heck-CheckOS as they compromise Android security and void warranties.
 
 ## Conclusion
 
-GhostOS for Android provides powerful WiFi and Bluetooth management without root by:
+Heck-CheckOS for Android provides powerful WiFi and Bluetooth management without root by:
 
 1. **Using Android's Official APIs**: Works within security model
 2. **Leveraging Termux:API**: Bridges userspace to Android framework
 3. **Optimizing Userspace**: Performance tuning without kernel access
 4. **Providing Linux Environment**: Full Debian via proot
 
-While not as powerful as root solutions, GhostOS offers:
+While not as powerful as root solutions, Heck-CheckOS offers:
 - ✅ Security (no system modifications)
 - ✅ Reversibility (easy uninstall)
 - ✅ Warranty-safe (no bootloader unlock)
 - ✅ Practical features (covers 90% of use cases)
 
-For advanced driver modification, root access would be required, but GhostOS demonstrates that most practical WiFi and Bluetooth management can be accomplished without it.
+For advanced driver modification, root access would be required, but Heck-CheckOS demonstrates that most practical WiFi and Bluetooth management can be accomplished without it.
 
 ---
 

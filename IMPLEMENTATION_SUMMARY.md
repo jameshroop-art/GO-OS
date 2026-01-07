@@ -2,7 +2,7 @@
 
 ## Overview
 
-Successfully implemented a lightweight Windows driver emulator for GhostOS as requested in the problem statement: "Going to have to temporarily patch this with a light weight emulator for Supporting Windows Drivers for the host OS."
+Successfully implemented a lightweight Windows driver emulator for Heck-CheckOS as requested in the problem statement: "Going to have to temporarily patch this with a light weight emulator for Supporting Windows Drivers for the host OS."
 
 ## What Was Implemented
 
@@ -37,16 +37,16 @@ Specialized handlers for different device types:
 ### 3. Command-Line Interface
 
 Four CLI utilities for driver management:
-- `ghostos-driver-load` - Load Windows drivers
-- `ghostos-driver-list` - List loaded drivers
-- `ghostos-driver-unload` - Unload drivers
-- `ghostos-driver-check` - Check driver compatibility
+- `heckcheckos-driver-load` - Load Windows drivers
+- `heckcheckos-driver-list` - List loaded drivers
+- `heckcheckos-driver-unload` - Unload drivers
+- `heckcheckos-driver-check` - Check driver compatibility
 
 All utilities properly handle permissions and input validation.
 
 ### 4. GUI Integration
 
-Complete GUI management interface in GhostOS ISO Builder:
+Complete GUI management interface in Heck-CheckOS ISO Builder:
 - **Driver Manager Widget** - Full-featured driver management
 - **Tabbed Interface** - Management, Device Info, Configuration, Help
 - **Real-time Operations** - Loading/unloading with progress bars
@@ -54,13 +54,13 @@ Complete GUI management interface in GhostOS ISO Builder:
 - **Device Enumeration** - View connected devices by type
 
 **Files Modified:**
-- `gui/ghostos-iso-builder/main.py` - Added driver manager tab
-- `gui/ghostos-iso-builder/ui/driver_manager.py` - New widget (543 lines)
+- `gui/heckcheckos-iso-builder/main.py` - Added driver manager tab
+- `gui/heckcheckos-iso-builder/ui/driver_manager.py` - New widget (543 lines)
 
 ### 5. Build System Integration
 
-Integrated into GhostOS build process:
-- Modified `Go-OS/ghostos-build.sh` - Added installation section
+Integrated into Heck-CheckOS build process:
+- Modified `Go-OS/heckcheckos-build.sh` - Added installation section
 - Automatically installed during ISO build
 - Creates necessary directories and sets permissions
 - Installs CLI utilities to `/usr/local/bin/`
@@ -146,29 +146,29 @@ Complete test suite:
 
 ```bash
 # Check if driver is compatible
-ghostos-driver-check /path/to/driver.sys
+heckcheckos-driver-check /path/to/driver.sys
 
 # Load a driver
-sudo ghostos-driver-load /path/to/driver.sys
+sudo heckcheckos-driver-load /path/to/driver.sys
 
 # List loaded drivers
-ghostos-driver-list
+heckcheckos-driver-list
 
 # Unload a driver
-sudo ghostos-driver-unload driver.sys
+sudo heckcheckos-driver-unload driver.sys
 ```
 
 ### GUI
 
-1. Launch GhostOS ISO Builder
+1. Launch Heck-CheckOS ISO Builder
 2. Click "🔧 Driver Manager" tab
 3. Use buttons to load/unload/check drivers
 4. View device information
 5. Configure emulator settings
 
-## Integration with GhostOS Build
+## Integration with Heck-CheckOS Build
 
-The emulator is automatically installed during GhostOS ISO build:
+The emulator is automatically installed during Heck-CheckOS ISO build:
 
 1. Build script detects `windows_driver_emulator/` directory
 2. Creates system directories (`/opt/ghostos/`, `/etc/ghostos/`, etc.)
@@ -182,10 +182,10 @@ Build output includes:
 [*] Installing Windows Driver Emulator...
     Lightweight driver compatibility layer
     Commands:
-    - ghostos-driver-load <driver.sys>
-    - ghostos-driver-list
-    - ghostos-driver-unload <driver>
-    - ghostos-driver-check <driver.sys>
+    - heckcheckos-driver-load <driver.sys>
+    - heckcheckos-driver-list
+    - heckcheckos-driver-unload <driver>
+    - heckcheckos-driver-check <driver.sys>
     
     Features:
     ✓ USB device driver support
@@ -286,20 +286,20 @@ Successfully implemented a lightweight Windows driver emulator that:
 2. ✅ Works on host OS without Wine or VM
 3. ✅ Supports common device types (USB, HID, Storage)
 4. ✅ Includes both CLI and GUI interfaces
-5. ✅ Integrates with GhostOS build system
+5. ✅ Integrates with Heck-CheckOS build system
 6. ✅ Passes all tests and security checks
 7. ✅ Includes comprehensive documentation
 
 The implementation addresses the problem statement: "Going to have to temporarily patch this with a light weight emulator for Supporting Windows Drivers for the host OS."
 
-This provides a practical solution for using Windows device drivers on GhostOS/Debian 12 while maintaining security and avoiding the complexity of full Wine or VM solutions.
+This provides a practical solution for using Windows device drivers on Heck-CheckOS/Debian 12 while maintaining security and avoiding the complexity of full Wine or VM solutions.
 
 ## Files Changed
 
 ```
-Go-OS/ghostos-build.sh                                     |  62 +++
-gui/ghostos-iso-builder/main.py                            |  10 +
-gui/ghostos-iso-builder/ui/driver_manager.py               | 543 ++++++++++
+Go-OS/heckcheckos-build.sh                                     |  62 +++
+gui/heckcheckos-iso-builder/main.py                            |  10 +
+gui/heckcheckos-iso-builder/ui/driver_manager.py               | 543 ++++++++++
 windows_driver_emulator/README.md                          | 161 +++++
 windows_driver_emulator/USAGE_GUIDE.md                     | 503 ++++++++++
 windows_driver_emulator/device_handlers/__init__.py        |   7 +
@@ -309,10 +309,10 @@ windows_driver_emulator/device_handlers/storage_handler.py | 151 ++++
 windows_driver_emulator/device_handlers/usb_handler.py     | 175 ++++
 windows_driver_emulator/driver-emulator.conf               |  23 +
 windows_driver_emulator/emulator.py                        | 330 +++++++
-windows_driver_emulator/ghostos-driver-check               |  22 +
-windows_driver_emulator/ghostos-driver-list                |   5 +
-windows_driver_emulator/ghostos-driver-load                |  29 +
-windows_driver_emulator/ghostos-driver-unload              |  23 +
+windows_driver_emulator/heckcheckos-driver-check               |  22 +
+windows_driver_emulator/heckcheckos-driver-list                |   5 +
+windows_driver_emulator/heckcheckos-driver-load                |  29 +
+windows_driver_emulator/heckcheckos-driver-unload              |  23 +
 windows_driver_emulator/install.py                         | 115 +++
 windows_driver_emulator/tests/test_emulator.py             | 138 +++
 

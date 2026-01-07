@@ -1,13 +1,13 @@
-# GhostOS Build System - Quick Reference
+# Heck-CheckOS Build System - Quick Reference
 
 ## Quick Start
 
 ```bash
 # 1. Make script executable
-chmod +x ghostos-build.sh
+chmod +x heckcheckos-build.sh
 
 # 2. Run as root
-sudo ./ghostos-build.sh
+sudo ./heckcheckos-build.sh
 
 # 3. Select version (1-4)
 # 4. Choose whether to create bootable USB
@@ -28,34 +28,34 @@ sudo ./ghostos-build.sh
 ### Build Specific Version
 ```bash
 # v1.0 only
-sudo ./ghostos-build.sh
+sudo ./heckcheckos-build.sh
 # Then select option 1
 
 # v1.1 only
-sudo ./ghostos-build.sh
+sudo ./heckcheckos-build.sh
 # Then select option 2
 
 # v2.0 only
-sudo ./ghostos-build.sh
+sudo ./heckcheckos-build.sh
 # Then select option 3
 
 # All versions
-sudo ./ghostos-build.sh
+sudo ./heckcheckos-build.sh
 # Then select option 4
 ```
 
 ### Create Bootable USB
 ```bash
 # Manual method (after ISO is built)
-sudo dd if=$HOME/ghostos-ultimate/GhostOS-v2.0.iso of=/dev/sdX bs=4M status=progress conv=fsync
+sudo dd if=$HOME/ghostos-ultimate/Heck-CheckOS-v2.0.iso of=/dev/sdX bs=4M status=progress conv=fsync
 sudo sync
 ```
 
 ### Verify ISO
 ```bash
 cd $HOME/ghostos-ultimate
-md5sum -c GhostOS-v2.0.iso.md5
-sha256sum -c GhostOS-v2.0.iso.sha256
+md5sum -c Heck-CheckOS-v2.0.iso.md5
+sha256sum -c Heck-CheckOS-v2.0.iso.sha256
 ```
 
 ### Clean Build Directory
@@ -69,9 +69,9 @@ sudo rm -rf $HOME/ghostos-ultimate
 
 ## Output Locations
 
-- **ISOs**: `$HOME/ghostos-ultimate/GhostOS-v*.iso`
+- **ISOs**: `$HOME/ghostos-ultimate/Heck-CheckOS-v*.iso`
 - **Logs**: `$HOME/ghostos-ultimate/logs/install_v*.log`
-- **Checksums**: `$HOME/ghostos-ultimate/GhostOS-v*.iso.{md5,sha256}`
+- **Checksums**: `$HOME/ghostos-ultimate/Heck-CheckOS-v*.iso.{md5,sha256}`
 
 ## USB Device Detection
 
@@ -112,7 +112,7 @@ lsblk /dev/sdX
 
 ### Error: "Must run as root"
 ```bash
-sudo ./ghostos-build.sh
+sudo ./heckcheckos-build.sh
 ```
 
 ### Error: Insufficient disk space
@@ -127,13 +127,13 @@ df -h $HOME
 ping -c 4 deb.debian.org
 
 # Try again - network issues are often temporary
-sudo ./ghostos-build.sh
+sudo ./heckcheckos-build.sh
 ```
 
 ### Error: GRUB installation fails
 ```bash
 sudo apt-get install grub-pc-bin grub-efi-amd64-bin
-sudo ./ghostos-build.sh
+sudo ./heckcheckos-build.sh
 ```
 
 ### Script hangs or freezes
@@ -142,8 +142,8 @@ sudo ./ghostos-build.sh
 tail -f $HOME/ghostos-ultimate/logs/install_v*.log
 
 # If necessary, stop and restart
-sudo pkill -f ghostos-build.sh
-sudo ./ghostos-build.sh
+sudo pkill -f heckcheckos-build.sh
+sudo ./heckcheckos-build.sh
 ```
 
 ## Feature Comparison Matrix
@@ -192,7 +192,7 @@ sudo ./ghostos-build.sh
 
 Edit the script line:
 ```bash
-ISO_OUTPUT="$PROJECT_DIR/GhostOS-v${VERSION}.iso"
+ISO_OUTPUT="$PROJECT_DIR/Heck-CheckOS-v${VERSION}.iso"
 ```
 
 To:
@@ -216,37 +216,37 @@ PROJECT_DIR="/path/to/your/build/directory"
 
 ### QEMU (Quick Test)
 ```bash
-qemu-system-x86_64 -enable-kvm -m 4096 -cdrom GhostOS-v2.0.iso
+qemu-system-x86_64 -enable-kvm -m 4096 -cdrom Heck-CheckOS-v2.0.iso
 ```
 
 ### VirtualBox (Full Test)
 ```bash
-VBoxManage createvm --name "GhostOS-Test" --ostype "Debian_64" --register
-VBoxManage modifyvm "GhostOS-Test" --memory 4096 --vram 128
-VBoxManage storagectl "GhostOS-Test" --name "IDE" --add ide
-VBoxManage storageattach "GhostOS-Test" --storagectl "IDE" --port 0 --device 0 --type dvddrive --medium GhostOS-v2.0.iso
-VBoxManage startvm "GhostOS-Test"
+VBoxManage createvm --name "Heck-CheckOS-Test" --ostype "Debian_64" --register
+VBoxManage modifyvm "Heck-CheckOS-Test" --memory 4096 --vram 128
+VBoxManage storagectl "Heck-CheckOS-Test" --name "IDE" --add ide
+VBoxManage storageattach "Heck-CheckOS-Test" --storagectl "IDE" --port 0 --device 0 --type dvddrive --medium Heck-CheckOS-v2.0.iso
+VBoxManage startvm "Heck-CheckOS-Test"
 ```
 
 ## Common Use Cases
 
 ### Build for Daily Use (Recommended: v1.1)
 ```bash
-sudo ./ghostos-build.sh
+sudo ./heckcheckos-build.sh
 # Select: 2 (v1.1)
 # USB: yes (if available)
 ```
 
 ### Build for Development (Recommended: v2.0)
 ```bash
-sudo ./ghostos-build.sh
+sudo ./heckcheckos-build.sh
 # Select: 3 (v2.0)
 # USB: yes (if available)
 ```
 
 ### Build for Testing/Comparison (All versions)
 ```bash
-sudo ./ghostos-build.sh
+sudo ./heckcheckos-build.sh
 # Select: 4 (All versions)
 # USB: yes (for last built version)
 ```
@@ -254,13 +254,13 @@ sudo ./ghostos-build.sh
 ### Build for Offline Distribution
 ```bash
 # Build the ISO
-sudo ./ghostos-build.sh
+sudo ./heckcheckos-build.sh
 
 # Create multiple USB drives
 for i in 1 2 3; do
     echo "Insert USB drive $i and press Enter"
     read
-    sudo dd if=$HOME/ghostos-ultimate/GhostOS-v2.0.iso of=/dev/sdX bs=4M status=progress
+    sudo dd if=$HOME/ghostos-ultimate/Heck-CheckOS-v2.0.iso of=/dev/sdX bs=4M status=progress
     sudo sync
     echo "USB $i complete"
 done
@@ -284,7 +284,7 @@ Before creating USB:
 ## Additional Resources
 
 - Full documentation: `GHOSTOS_BUILD_README.md`
-- Script source: `ghostos-build.sh`
+- Script source: `heckcheckos-build.sh`
 - Project repository: https://github.com/jameshroop-art/Experimental-UI
 
 ---

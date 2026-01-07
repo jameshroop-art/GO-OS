@@ -1,14 +1,14 @@
 #!/bin/bash
-# GhostOS Windows Driver Emulator - Check Driver Compatibility
-# Usage: ghostos-driver-check <driver_path>
+# Heck-CheckOS Windows Driver Emulator - Check Driver Compatibility
+# Usage: heckcheckos-driver-check <driver_path>
 
 if [ $# -lt 1 ]; then
-    echo "Usage: ghostos-driver-check <driver_path>"
+    echo "Usage: heckcheckos-driver-check <driver_path>"
     echo ""
     echo "Check if a Windows driver is compatible with the emulator"
     echo ""
     echo "Example:"
-    echo "  ghostos-driver-check /path/to/driver.sys"
+    echo "  heckcheckos-driver-check /path/to/driver.sys"
     exit 1
 fi
 
@@ -19,4 +19,4 @@ if [ ! -f "$DRIVER_PATH" ]; then
     exit 1
 fi
 
-python3 /opt/ghostos/windows_driver_emulator/emulator.py check "$DRIVER_PATH"
+python3 /opt/heckcheckos/windows_driver_emulator/emulator.py check "$DRIVER_PATH"

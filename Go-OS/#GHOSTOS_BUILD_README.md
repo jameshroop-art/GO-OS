@@ -1,12 +1,12 @@
-# GhostOS Build System
+# Heck-CheckOS Build System
 
-A complete build system for creating GhostOS Linux distribution ISOs built on Debian 12 (Bookworm) with custom GhostOS GUI and settings, featuring multiple version support and bootable USB creation.
+A complete build system for creating Heck-CheckOS Linux distribution ISOs built on Debian 12 (Bookworm) with custom Heck-CheckOS GUI and settings, featuring multiple version support and bootable USB creation.
 
 ## Overview
 
-The GhostOS Build System allows you to build custom Linux distributions with advanced features including:
+The Heck-CheckOS Build System allows you to build custom Linux distributions with advanced features including:
 
-- **Version 1.0 (Stable Release)**: Debian 12 (Bookworm) base with GhostOS GUI and core features (~10GB ISO)
+- **Version 1.0 (Stable Release)**: Debian 12 (Bookworm) base with Heck-CheckOS GUI and core features (~10GB ISO)
 - **Version 1.1 (Enhanced Edition)**: Improved UI with smooth animations, enhanced privacy controls, Malwarebytes-style security scanner, and system consolidation (~11GB ISO)
 - **Version 2.0 (Next Generation)**: Modern Wayland support, AI assistant integration, advanced UI with blur effects, encrypted cloud backup, plugin system, and ARM architecture support (~12GB ISO)
 
@@ -14,7 +14,7 @@ The GhostOS Build System allows you to build custom Linux distributions with adv
 
 ### All Versions Include:
 - **Debian 12 (Bookworm) base** (Bookworm codename)
-- **GhostOS Custom GUI** and desktop environment
+- **Heck-CheckOS Custom GUI** and desktop environment
 - Kali Security tools (penetration testing, forensics, etc.)
 - Complete offline installation capability
 - BIOS and UEFI boot support
@@ -25,13 +25,13 @@ The GhostOS Build System allows you to build custom Linux distributions with adv
 
 #### v1.0 - Stable Release
 - Debian 12 (Bookworm) base system
-- GhostOS custom GUI and settings
+- Heck-CheckOS custom GUI and settings
 - Complete base system
 - All core features
 - Kernel and drivers (AMD, NVIDIA)
 - Gaming support
 - AI/ML tools
-- Security tools (Kali + GhostOS)
+- Security tools (Kali + Heck-CheckOS)
 
 #### v1.1 - Enhanced Edition
 All v1.0 features plus:
@@ -53,7 +53,7 @@ All v1.1 features plus:
 - **Plugin System**: Extensible plugin manager
 - **ARM Support**: Cross-compilation tools and QEMU emulation
 - **Advanced Privacy**: Kernel hardening, AppArmor enforcement
-- **Modern GTK Theme**: Custom GhostOS v2.0 theme with gradients and effects
+- **Modern GTK Theme**: Custom Heck-CheckOS v2.0 theme with gradients and effects
 
 ## Requirements
 
@@ -86,13 +86,13 @@ All v1.1 features plus:
 
 1. **Download the script**:
    ```bash
-   wget https://raw.githubusercontent.com/jameshroop-art/Experimental-UI/main/ghostos-build.sh
-   chmod +x ghostos-build.sh
+   wget https://raw.githubusercontent.com/jameshroop-art/Experimental-UI/main/heckcheckos-build.sh
+   chmod +x heckcheckos-build.sh
    ```
 
 2. **Run as root**:
    ```bash
-   sudo ./ghostos-build.sh
+   sudo ./heckcheckos-build.sh
    ```
 
 3. **Select version**:
@@ -109,28 +109,28 @@ All v1.1 features plus:
 ### Example Session
 
 ```bash
-$ sudo ./ghostos-build.sh
+$ sudo ./heckcheckos-build.sh
 
 ========================================
-  👻 GhostOS Build System
+  👻 Heck-CheckOS Build System
   Multi-Version Builder
 ========================================
 
-Select GhostOS version to build:
+Select Heck-CheckOS version to build:
 
-  1) GhostOS v1.0 - Stable Release
+  1) Heck-CheckOS v1.0 - Stable Release
      • Complete base system
      • All core features
      • ~10GB ISO
 
-  2) GhostOS v1.1 - Enhanced Edition
+  2) Heck-CheckOS v1.1 - Enhanced Edition
      • Improved UI (smooth animations)
      • Enhanced privacy controls
      • Malwarebytes Premium
      • System consolidation
      • ~11GB ISO
 
-  3) GhostOS v2.0 - Next Generation
+  3) Heck-CheckOS v2.0 - Next Generation
      • Modern Wayland support
      • AI assistant integration
      • Advanced UI (blur effects, transitions)
@@ -166,9 +166,9 @@ Type 'YES' to confirm: YES
 
 ### ISO Files
 ISOs are created in `$HOME/ghostos-ultimate/`:
-- `GhostOS-v1.0.iso` (≈10GB)
-- `GhostOS-v1.1.iso` (≈11GB)
-- `GhostOS-v2.0.iso` (≈12GB)
+- `Heck-CheckOS-v1.0.iso` (≈10GB)
+- `Heck-CheckOS-v1.1.iso` (≈11GB)
+- `Heck-CheckOS-v2.0.iso` (≈12GB)
 
 Each ISO includes:
 - `.md5` checksum file
@@ -194,15 +194,15 @@ $HOME/ghostos-ultimate/
 │   └── install_v2.0.sh        # v2.0 installation script
 ├── downloads/                 # Downloaded packages
 ├── logs/                      # Build logs
-├── GhostOS-v1.0.iso
-├── GhostOS-v1.0.iso.md5
-├── GhostOS-v1.0.iso.sha256
-├── GhostOS-v1.1.iso
-├── GhostOS-v1.1.iso.md5
-├── GhostOS-v1.1.iso.sha256
-├── GhostOS-v2.0.iso
-├── GhostOS-v2.0.iso.md5
-└── GhostOS-v2.0.iso.sha256
+├── Heck-CheckOS-v1.0.iso
+├── Heck-CheckOS-v1.0.iso.md5
+├── Heck-CheckOS-v1.0.iso.sha256
+├── Heck-CheckOS-v1.1.iso
+├── Heck-CheckOS-v1.1.iso.md5
+├── Heck-CheckOS-v1.1.iso.sha256
+├── Heck-CheckOS-v2.0.iso
+├── Heck-CheckOS-v2.0.iso.md5
+└── Heck-CheckOS-v2.0.iso.sha256
 ```
 
 ## Bootable USB Creation
@@ -218,7 +218,7 @@ If you want to create a bootable USB manually:
 lsblk
 
 # Write ISO to USB (replace sdX with your device)
-sudo dd if=$HOME/ghostos-ultimate/GhostOS-v2.0.iso of=/dev/sdX bs=4M status=progress conv=fsync
+sudo dd if=$HOME/ghostos-ultimate/Heck-CheckOS-v2.0.iso of=/dev/sdX bs=4M status=progress conv=fsync
 sudo sync
 ```
 
@@ -230,10 +230,10 @@ sudo sync
 
 ```bash
 # MD5 checksum
-md5sum -c GhostOS-v2.0.iso.md5
+md5sum -c Heck-CheckOS-v2.0.iso.md5
 
 # SHA256 checksum
-sha256sum -c GhostOS-v2.0.iso.sha256
+sha256sum -c Heck-CheckOS-v2.0.iso.sha256
 ```
 
 ### Test ISO in Virtual Machine
@@ -242,14 +242,14 @@ Before burning to USB, test the ISO in a virtual machine:
 
 ```bash
 # Using QEMU
-qemu-system-x86_64 -enable-kvm -m 4096 -cdrom GhostOS-v2.0.iso
+qemu-system-x86_64 -enable-kvm -m 4096 -cdrom Heck-CheckOS-v2.0.iso
 
 # Using VirtualBox
-VBoxManage createvm --name "GhostOS-Test" --ostype "Debian_64" --register
-VBoxManage modifyvm "GhostOS-Test" --memory 4096 --vram 128
-VBoxManage storagectl "GhostOS-Test" --name "IDE" --add ide
-VBoxManage storageattach "GhostOS-Test" --storagectl "IDE" --port 0 --device 0 --type dvddrive --medium GhostOS-v2.0.iso
-VBoxManage startvm "GhostOS-Test"
+VBoxManage createvm --name "Heck-CheckOS-Test" --ostype "Debian_64" --register
+VBoxManage modifyvm "Heck-CheckOS-Test" --memory 4096 --vram 128
+VBoxManage storagectl "Heck-CheckOS-Test" --name "IDE" --add ide
+VBoxManage storageattach "Heck-CheckOS-Test" --storagectl "IDE" --port 0 --device 0 --type dvddrive --medium Heck-CheckOS-v2.0.iso
+VBoxManage startvm "Heck-CheckOS-Test"
 ```
 
 ## Troubleshooting
@@ -257,7 +257,7 @@ VBoxManage startvm "GhostOS-Test"
 ### Common Issues
 
 1. **"Must run as root" error**
-   - Solution: Run with `sudo ./ghostos-build.sh`
+   - Solution: Run with `sudo ./heckcheckos-build.sh`
 
 2. **Insufficient disk space**
    - Check available space: `df -h $HOME`
@@ -273,7 +273,7 @@ VBoxManage startvm "GhostOS-Test"
    - Solution: `sudo apt-get install grub-pc-bin grub-efi-amd64-bin`
 
 5. **ISO too large for DVD**
-   - GhostOS ISOs are designed for USB, not DVD
+   - Heck-CheckOS ISOs are designed for USB, not DVD
    - Solution: Use USB drive (16GB+ for v1.0, 32GB+ for v2.0)
 
 ### Debug Mode
@@ -315,7 +315,7 @@ All versions include privacy-focused configurations:
 
 ### Offline Operation
 
-GhostOS is designed for offline operation after build:
+Heck-CheckOS is designed for offline operation after build:
 - No telemetry or phone-home features
 - Local AI models (v2.0+)
 - Encrypted local backups (v2.0+)
@@ -361,7 +361,7 @@ https://github.com/jameshroop-art/Experimental-UI
 
 This build system is provided as-is for educational and development purposes.
 
-GhostOS and its components are based on Debian GNU/Linux and include numerous open-source packages, each with their own licenses. Please respect all applicable licenses.
+Heck-CheckOS and its components are based on Debian GNU/Linux and include numerous open-source packages, each with their own licenses. Please respect all applicable licenses.
 
 ## Credits
 

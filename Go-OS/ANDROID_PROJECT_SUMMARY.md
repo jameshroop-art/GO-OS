@@ -1,8 +1,8 @@
-# GhostOS Android Implementation - Project Summary
+# Heck-CheckOS Android Implementation - Project Summary
 
 ## What Was Delivered
 
-This document summarizes the complete Android 9+ support implementation for GhostOS, including non-root WiFi and Bluetooth driver management.
+This document summarizes the complete Android 9+ support implementation for Heck-CheckOS, including non-root WiFi and Bluetooth driver management.
 
 ## 🎯 Requirements Fulfilled
 
@@ -14,7 +14,7 @@ This document summarizes the complete Android 9+ support implementation for Ghos
 
 ## 📦 Deliverables
 
-### 1. Installation Script (ghostos-android.sh)
+### 1. Installation Script (heckcheckos-android.sh)
 **Lines of Code:** 650+  
 **Features:**
 - Automated Android version checking (API 28+)
@@ -29,7 +29,7 @@ This document summarizes the complete Android 9+ support implementation for Ghos
 **Key Functions:**
 - `ghostos-wifi` - Complete WiFi control without root
 - `ghostos-bluetooth` - Complete Bluetooth control without root
-- `ghostos-driver-optimizer` - Performance optimization
+- `heckcheckos-driver-optimizer` - Performance optimization
 - `ghostos-debian` - Full Linux environment
 - `ghostos-system` - System information
 - `ghostos-help` - Built-in help system
@@ -98,7 +98,7 @@ This document summarizes the complete Android 9+ support implementation for Ghos
    - Requirements
    - Links to all documentation
 
-8. **Update to ghostos-build.sh**
+8. **Update to heckcheckos-build.sh**
    - Made executable
    - Verified compatibility
 
@@ -110,7 +110,7 @@ This document summarizes the complete Android 9+ support implementation for Ghos
 ```
 User Command (ghostos-wifi scan)
         ↓
-GhostOS Script
+Heck-CheckOS Script
         ↓
 Termux:API Bridge (termux-wifi-scaninfo)
         ↓
@@ -146,7 +146,7 @@ Hardware Scan
 ```
 User Command (ghostos-bluetooth scan)
         ↓
-GhostOS Script
+Heck-CheckOS Script
         ↓
 Termux:API Bridge (termux-bluetooth-scaninfo)
         ↓
@@ -179,7 +179,7 @@ Hardware Scan
 ### Driver "Patching" (Optimization)
 
 **What It Actually Does:**
-Since direct driver modification requires root access, GhostOS implements **userspace optimization**:
+Since direct driver modification requires root access, Heck-CheckOS implements **userspace optimization**:
 
 1. **Signal Analysis**
    - Monitors WiFi signal strength (RSSI)
@@ -261,7 +261,7 @@ Since direct driver modification requires root access, GhostOS implements **user
 **Benefits:**
 1. **Stable:** Well-tested packages
 2. **Popular:** Large package repository
-3. **Compatible:** Desktop GhostOS is also Debian-based
+3. **Compatible:** Desktop Heck-CheckOS is also Debian-based
 4. **Documentation:** Extensive documentation available
 5. **Support:** Large community
 
@@ -269,7 +269,7 @@ Since direct driver modification requires root access, GhostOS implements **user
 
 ## 🔐 Security Considerations
 
-### GhostOS Android is Safe
+### Heck-CheckOS Android is Safe
 
 **What It Does:**
 - ✅ Uses only standard Android APIs
@@ -291,10 +291,10 @@ Since direct driver modification requires root access, GhostOS implements **user
 ### Permissions Required
 
 1. **Storage** - Access Termux home directory and user files
-2. **Location** - Required by Android for WiFi/Bluetooth scanning (Android limitation, not GhostOS)
+2. **Location** - Required by Android for WiFi/Bluetooth scanning (Android limitation, not Heck-CheckOS)
 3. **Network** - Standard network access (automatic)
 
-**Note:** Location permission is an Android requirement for WiFi/Bluetooth scanning due to privacy regulations. GhostOS never accesses your actual location.
+**Note:** Location permission is an Android requirement for WiFi/Bluetooth scanning due to privacy regulations. Heck-CheckOS never accesses your actual location.
 
 ## 🚀 Usage Examples
 
@@ -328,7 +328,7 @@ ghostos-bluetooth devices
 ### Driver Optimization
 ```bash
 # Run complete optimization
-ghostos-driver-optimizer
+heckcheckos-driver-optimizer
 
 # Output includes:
 # - WiFi signal analysis
@@ -457,11 +457,11 @@ This project demonstrates:
 - Linux Deploy (Android Linux environments)
 - Andronix (Android Linux distributions)
 - Termux community
-- GhostOS desktop project
+- Heck-CheckOS desktop project
 
 ## 📝 Conclusion
 
-This implementation successfully brings GhostOS to Android 9+ devices with full WiFi and Bluetooth management capabilities, all without requiring root access. The solution is:
+This implementation successfully brings Heck-CheckOS to Android 9+ devices with full WiFi and Bluetooth management capabilities, all without requiring root access. The solution is:
 
 - **Safe:** No system modifications
 - **Reversible:** Easy to uninstall

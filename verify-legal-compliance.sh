@@ -3,7 +3,7 @@
 # Verifies that all legal documentation is in place
 
 echo "=========================================="
-echo "  GhostOS Legal Compliance Verification"
+echo "  Heck-CheckOS Legal Compliance Verification"
 echo "=========================================="
 echo ""
 
@@ -41,10 +41,10 @@ fi
 echo ""
 echo "Checking for legal headers in scripts..."
 SCRIPTS=(
-    "Go-OS/ghostos-build.sh"
-    "Go-OS/ghostos-android.sh"
+    "Go-OS/heckcheckos-build.sh"
+    "Go-OS/heckcheckos-android.sh"
     "Go-OS/verify-iso.sh"
-    "Go-OS/ghostos-installer-gui.sh"
+    "Go-OS/heckcheckos-installer-gui.sh"
 )
 
 for script in "${SCRIPTS[@]}"; do
@@ -63,8 +63,8 @@ done
 echo ""
 echo "Checking Python files..."
 PYTHON_FILES=(
-    "Go-OS/ghostos-installer-gui.py"
-    "gui/ghostos-iso-builder/main.py"
+    "Go-OS/heckcheckos-installer-gui.py"
+    "gui/heckcheckos-iso-builder/main.py"
     "windows_driver_emulator/emulator.py"
 )
 

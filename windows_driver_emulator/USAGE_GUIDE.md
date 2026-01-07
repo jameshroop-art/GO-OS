@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Windows Driver Emulator is a lightweight compatibility layer that allows Windows device drivers to work on GhostOS/Debian 12 without Wine or virtualization. It translates Windows driver API calls to their Linux kernel equivalents.
+The Windows Driver Emulator is a lightweight compatibility layer that allows Windows device drivers to work on Heck-CheckOS/Debian 12 without Wine or virtualization. It translates Windows driver API calls to their Linux kernel equivalents.
 
 ## What It Does
 
@@ -13,10 +13,10 @@ The Windows Driver Emulator is a lightweight compatibility layer that allows Win
 
 ## Installation
 
-The driver emulator is automatically installed with GhostOS. If you need to install it manually:
+The driver emulator is automatically installed with Heck-CheckOS. If you need to install it manually:
 
 ```bash
-cd /opt/ghostos/windows_driver_emulator
+cd /opt/heckcheckos/windows_driver_emulator
 sudo python3 install.py
 ```
 
@@ -25,18 +25,18 @@ sudo python3 install.py
 ### Load a Driver
 
 ```bash
-sudo ghostos-driver-load /path/to/driver.sys
+sudo heckcheckos-driver-load /path/to/driver.sys
 ```
 
 Example:
 ```bash
-sudo ghostos-driver-load ~/Downloads/usb_device_driver.sys
+sudo heckcheckos-driver-load ~/Downloads/usb_device_driver.sys
 ```
 
 ### List Loaded Drivers
 
 ```bash
-ghostos-driver-list
+heckcheckos-driver-list
 ```
 
 Output:
@@ -49,12 +49,12 @@ Loaded drivers: 2
 ### Unload a Driver
 
 ```bash
-sudo ghostos-driver-unload driver.sys
+sudo heckcheckos-driver-unload driver.sys
 ```
 
 Example:
 ```bash
-sudo ghostos-driver-unload usb_device_driver.sys
+sudo heckcheckos-driver-unload usb_device_driver.sys
 ```
 
 ### Check Driver Compatibility
@@ -62,7 +62,7 @@ sudo ghostos-driver-unload usb_device_driver.sys
 Before loading a driver, check if it's compatible:
 
 ```bash
-ghostos-driver-check /path/to/driver.sys
+heckcheckos-driver-check /path/to/driver.sys
 ```
 
 Output:
@@ -74,13 +74,13 @@ Device type: usb
 
 ## GUI Usage
 
-The GhostOS ISO Builder includes a graphical driver manager.
+The Heck-CheckOS ISO Builder includes a graphical driver manager.
 
 ### Accessing the Driver Manager
 
-1. Launch the GhostOS ISO Builder:
+1. Launch the Heck-CheckOS ISO Builder:
    ```bash
-   cd gui/ghostos-iso-builder
+   cd gui/heckcheckos-iso-builder
    ./start-gui.sh
    ```
 
@@ -185,14 +185,14 @@ Complete reference documentation built into the GUI.
 
 ## Configuration
 
-Edit `/etc/ghostos/driver-emulator.conf`:
+Edit `/etc/heckcheckos/driver-emulator.conf`:
 
 ```json
 {
   "driver_search_paths": [
-    "/opt/ghostos/drivers",
-    "/usr/local/share/ghostos/drivers",
-    "~/.ghostos/drivers"
+    "/opt/heckcheckos/drivers",
+    "/usr/local/share/heckcheckos/drivers",
+    "~/.heckcheckos/drivers"
   ],
   "supported_device_types": [
     "usb",
@@ -208,7 +208,7 @@ Edit `/etc/ghostos/driver-emulator.conf`:
   },
   "logging": {
     "level": "INFO",
-    "file": "/var/log/ghostos/driver-emulator.log"
+    "file": "/var/log/heckcheckos/driver-emulator.log"
   }
 }
 ```
@@ -231,7 +231,7 @@ Edit `/etc/ghostos/driver-emulator.conf`:
 - ✅ Sandboxed execution environment
 - ✅ Network isolation available
 - ✅ Limited system access
-- ✅ Integrated with GhostOS security policies
+- ✅ Integrated with Heck-CheckOS security policies
 
 ### What to Watch Out For
 
@@ -242,8 +242,8 @@ Edit `/etc/ghostos/driver-emulator.conf`:
 
 ### Best Practices
 
-1. **Check compatibility first**: Use `ghostos-driver-check` before loading
-2. **Monitor logs**: Check `/var/log/ghostos/driver-emulator.log` for issues
+1. **Check compatibility first**: Use `heckcheckos-driver-check` before loading
+2. **Monitor logs**: Check `/var/log/heckcheckos/driver-emulator.log` for issues
 3. **Test incrementally**: Load one driver at a time
 4. **Keep sandboxing enabled**: Don't disable security features
 5. **Unload unused drivers**: Free resources when drivers aren't needed
@@ -257,7 +257,7 @@ Edit `/etc/ghostos/driver-emulator.conf`:
 **Solutions**:
 1. Check driver compatibility:
    ```bash
-   ghostos-driver-check /path/to/driver.sys
+   heckcheckos-driver-check /path/to/driver.sys
    ```
 
 2. Verify the driver is a valid `.sys` file:
@@ -272,7 +272,7 @@ Edit `/etc/ghostos/driver-emulator.conf`:
 
 4. Check logs:
    ```bash
-   sudo tail -f /var/log/ghostos/driver-emulator.log
+   sudo tail -f /var/log/heckcheckos/driver-emulator.log
    ```
 
 ### Device Not Recognized
@@ -300,8 +300,8 @@ Edit `/etc/ghostos/driver-emulator.conf`:
 
 4. Restart the emulator:
    ```bash
-   sudo ghostos-driver-unload driver.sys
-   sudo ghostos-driver-load /path/to/driver.sys
+   sudo heckcheckos-driver-unload driver.sys
+   sudo heckcheckos-driver-load /path/to/driver.sys
    ```
 
 ### Performance Issues
@@ -314,7 +314,7 @@ Edit `/etc/ghostos/driver-emulator.conf`:
    top
    ```
 
-2. Reduce logging level in `/etc/ghostos/driver-emulator.conf`:
+2. Reduce logging level in `/etc/heckcheckos/driver-emulator.conf`:
    ```json
    "logging": {
      "level": "WARNING"
@@ -323,8 +323,8 @@ Edit `/etc/ghostos/driver-emulator.conf`:
 
 3. Unload unused drivers:
    ```bash
-   ghostos-driver-list
-   sudo ghostos-driver-unload unused_driver.sys
+   heckcheckos-driver-list
+   sudo heckcheckos-driver-unload unused_driver.sys
    ```
 
 ### Can't Find Emulator
@@ -334,7 +334,7 @@ Edit `/etc/ghostos/driver-emulator.conf`:
 **Solutions**:
 1. Verify installation:
    ```bash
-   ls -l /opt/ghostos/windows_driver_emulator/
+   ls -l /opt/heckcheckos/windows_driver_emulator/
    ```
 
 2. Check PATH:
@@ -344,7 +344,7 @@ Edit `/etc/ghostos/driver-emulator.conf`:
 
 3. Reinstall if needed:
    ```bash
-   cd /opt/ghostos/windows_driver_emulator
+   cd /opt/heckcheckos/windows_driver_emulator
    sudo python3 install.py
    ```
 
@@ -357,31 +357,31 @@ Edit `/etc/ghostos/driver-emulator.conf`:
 # wget https://example.com/xbox_controller.sys
 
 # Check compatibility
-ghostos-driver-check xbox_controller.sys
+heckcheckos-driver-check xbox_controller.sys
 
 # Output: Compatible: True, Device type: hid
 
 # Load the driver
-sudo ghostos-driver-load xbox_controller.sys
+sudo heckcheckos-driver-load xbox_controller.sys
 
 # Verify it loaded
-ghostos-driver-list
+heckcheckos-driver-list
 
 # Test the controller
 jstest /dev/input/js0
 
 # When done, unload
-sudo ghostos-driver-unload xbox_controller.sys
+sudo heckcheckos-driver-unload xbox_controller.sys
 ```
 
 ### Example 2: USB Storage
 
 ```bash
 # Check USB storage driver
-ghostos-driver-check usb_storage.sys
+heckcheckos-driver-check usb_storage.sys
 
 # Load driver
-sudo ghostos-driver-load usb_storage.sys
+sudo heckcheckos-driver-load usb_storage.sys
 
 # List storage devices
 lsblk
@@ -394,14 +394,14 @@ ls /mnt/usb
 
 # Unmount and unload
 sudo umount /mnt/usb
-sudo ghostos-driver-unload usb_storage.sys
+sudo heckcheckos-driver-unload usb_storage.sys
 ```
 
 ### Example 3: Wireless Keyboard
 
 ```bash
 # Load HID driver for wireless keyboard
-sudo ghostos-driver-load wireless_keyboard_hid.sys
+sudo heckcheckos-driver-load wireless_keyboard_hid.sys
 
 # Check HID devices
 ls -l /dev/input/event*
@@ -410,7 +410,7 @@ ls -l /dev/input/event*
 evtest /dev/input/event5
 
 # View loaded drivers
-ghostos-driver-list
+heckcheckos-driver-list
 ```
 
 ## FAQ
@@ -437,11 +437,11 @@ A: Yes! They work independently. Use Wine for applications and the driver emulat
 
 ### Q: What if my driver isn't supported?
 
-A: Check the compatibility first with `ghostos-driver-check`. If it's not supported, you may need to use the native Linux driver or contact the hardware manufacturer for Linux support.
+A: Check the compatibility first with `heckcheckos-driver-check`. If it's not supported, you may need to use the native Linux driver or contact the hardware manufacturer for Linux support.
 
 ### Q: How do I report bugs?
 
-A: Check the logs at `/var/log/ghostos/driver-emulator.log` and report issues on the GhostOS GitHub repository with the log output.
+A: Check the logs at `/var/log/heckcheckos/driver-emulator.log` and report issues on the Heck-CheckOS GitHub repository with the log output.
 
 ## Advanced Usage
 
@@ -449,7 +449,7 @@ A: Check the logs at `/var/log/ghostos/driver-emulator.log` and report issues on
 
 To add support for a new device type:
 
-1. Create a handler in `/opt/ghostos/windows_driver_emulator/device_handlers/`:
+1. Create a handler in `/opt/heckcheckos/windows_driver_emulator/device_handlers/`:
    ```python
    from .base_handler import DeviceHandler
    
@@ -484,18 +484,18 @@ To add support for a new device type:
 
 ## Further Resources
 
-- **README**: `/opt/ghostos/windows_driver_emulator/README.md`
-- **Configuration**: `/etc/ghostos/driver-emulator.conf`
-- **Logs**: `/var/log/ghostos/driver-emulator.log`
-- **Source Code**: `/opt/ghostos/windows_driver_emulator/`
-- **GhostOS Documentation**: Main repository documentation
+- **README**: `/opt/heckcheckos/windows_driver_emulator/README.md`
+- **Configuration**: `/etc/heckcheckos/driver-emulator.conf`
+- **Logs**: `/var/log/heckcheckos/driver-emulator.log`
+- **Source Code**: `/opt/heckcheckos/windows_driver_emulator/`
+- **Heck-CheckOS Documentation**: Main repository documentation
 
 ## Support
 
 For help:
 1. Check this guide
 2. Check the logs
-3. Visit the GhostOS GitHub repository
+3. Visit the Heck-CheckOS GitHub repository
 4. Open an issue with log output and driver information
 
 ---

@@ -116,11 +116,11 @@ class PreviewPaneWidget(QWidget):
         self_install_layout.addWidget(self_install_info)
         
         self.include_builder_check = QCheckBox(
-            "Install GhostOS ISO Builder in the target OS"
+            "Install Heck-CheckOS ISO Builder in the target OS"
         )
         self.include_builder_check.setChecked(False)
         self.include_builder_check.setToolTip(
-            "The ISO Builder will be available in the built OS at /opt/ghostos-builder"
+            "The ISO Builder will be available in the built OS at /opt/heckcheckos-builder"
         )
         self_install_layout.addWidget(self.include_builder_check)
         
@@ -242,13 +242,13 @@ class PreviewPaneWidget(QWidget):
                 
         # Add self-installation info if enabled
         if hasattr(self, 'include_builder_check') and self.include_builder_check.isChecked():
-            summary += "\n🔧 GhostOS ISO Builder:\n"
+            summary += "\n🔧 Heck-CheckOS ISO Builder:\n"
             summary += "  • Included in target OS\n"
             if self.builder_desktop_entry.isChecked():
                 summary += "  • Desktop menu entry\n"
             if self.builder_cli_launcher.isChecked():
-                summary += "  • CLI launcher (ghostos-builder)\n"
-            summary += "  • Installation path: /opt/ghostos-builder\n"
+                summary += "  • CLI launcher (heckcheckos-builder)\n"
+            summary += "  • Installation path: /opt/heckcheckos-builder\n"
                 
         self.summary_text.setPlainText(summary)
     

@@ -458,7 +458,7 @@ class TouchscreenKeyboard(QWidget):
             
     def save_calibration(self):
         """Save calibration data"""
-        config_dir = Path.home() / ".config" / "ghostos-builder"
+        config_dir = Path.home() / ".config" / "heckcheckos-builder"
         config_dir.mkdir(parents=True, exist_ok=True)
         
         calibration_file = config_dir / "keyboard_calibration.json"
@@ -472,7 +472,7 @@ class TouchscreenKeyboard(QWidget):
             
     def load_calibration(self):
         """Load calibration data"""
-        config_dir = Path.home() / ".config" / "ghostos-builder"
+        config_dir = Path.home() / ".config" / "heckcheckos-builder"
         calibration_file = config_dir / "keyboard_calibration.json"
         
         if calibration_file.exists():
@@ -492,7 +492,7 @@ class TouchscreenKeyboard(QWidget):
         from pathlib import Path
         import json
         
-        config_dir = Path.home() / ".config" / "ghostos-builder" / "keyboard_layouts"
+        config_dir = Path.home() / ".config" / "heckcheckos-builder" / "keyboard_layouts"
         config_dir.mkdir(parents=True, exist_ok=True)
         
         file_path, _ = QFileDialog.getSaveFileName(
@@ -518,7 +518,7 @@ class TouchscreenKeyboard(QWidget):
         from pathlib import Path
         import json
         
-        config_dir = Path.home() / ".config" / "ghostos-builder" / "keyboard_layouts"
+        config_dir = Path.home() / ".config" / "heckcheckos-builder" / "keyboard_layouts"
         
         file_path, _ = QFileDialog.getOpenFileName(
             self,

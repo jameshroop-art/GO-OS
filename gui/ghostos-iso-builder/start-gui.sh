@@ -1,5 +1,5 @@
 #!/bin/bash
-# GhostOS ISO Builder GUI Launcher
+# Heck-CheckOS ISO Builder GUI Launcher
 # Easy startup script with all integrations
 
 set -e
@@ -12,7 +12,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 echo -e "${BLUE}=========================================="
-echo "  GhostOS ISO Builder - GUI Launcher"
+echo "  Heck-CheckOS ISO Builder - GUI Launcher"
 echo -e "==========================================${NC}"
 echo ""
 
@@ -24,7 +24,7 @@ GUI_DIR="$SCRIPT_DIR"
 if [ ! -f "$GUI_DIR/main.py" ]; then
     echo -e "${RED}❌ Error: main.py not found${NC}"
     echo "Expected location: $GUI_DIR/main.py"
-    echo "Please run this script from the gui/ghostos-iso-builder directory"
+    echo "Please run this script from the gui/heckcheckos-iso-builder directory"
     exit 1
 fi
 
@@ -107,7 +107,7 @@ fi
 echo -e "${GREEN}✓${NC} Display available"
 
 # Create config directory if it doesn't exist
-CONFIG_DIR="$HOME/.config/ghostos-builder"
+CONFIG_DIR="$HOME/.config/heckcheckos-builder"
 mkdir -p "$CONFIG_DIR"
 echo -e "${GREEN}✓${NC} Config directory: $CONFIG_DIR"
 
@@ -125,7 +125,7 @@ fi
 
 echo ""
 echo -e "${BLUE}=========================================="
-echo "  Starting GhostOS ISO Builder GUI"
+echo "  Starting Heck-CheckOS ISO Builder GUI"
 echo -e "==========================================${NC}"
 echo ""
 echo -e "${GREEN}Features available:${NC}"
@@ -156,10 +156,10 @@ python3 main.py "$@" || {
     echo "Troubleshooting:"
     echo "  • Check that all dependencies are installed"
     echo "  • Verify Python version is 3.8+"
-    echo "  • Check $CONFIG_DIR/ghostos-builder.log for details"
+    echo "  • Check $CONFIG_DIR/heckcheckos-builder.log for details"
     echo "  • Try: pip3 install --upgrade -r requirements.txt"
     exit $EXIT_CODE
 }
 
 echo ""
-echo -e "${GREEN}✓ GhostOS ISO Builder closed${NC}"
+echo -e "${GREEN}✓ Heck-CheckOS ISO Builder closed${NC}"

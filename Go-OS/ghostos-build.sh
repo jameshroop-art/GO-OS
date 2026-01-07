@@ -1,11 +1,11 @@
-#ghostos-build.sh
+#heckcheckos-build.sh
 #!/bin/bash
 
 # ============================================
-# GhostOS Complete Build System
+# Heck-CheckOS Complete Build System
 # Versions: 1.0, 1.1, 2.0
 # Base: Debian 12 (Bookworm)
-# GUI: GhostOS Custom Desktop Environment
+# GUI: Heck-CheckOS Custom Desktop Environment
 # With USB Bootloader Creation
 # ============================================
 # 
@@ -32,7 +32,7 @@ ROOTFS_DIR="$BUILD_DIR/rootfs"
 ISO_DIR="$BUILD_DIR/iso"
 
 echo "========================================"
-echo "  👻 GhostOS Build System"
+echo "  👻 Heck-CheckOS Build System"
 echo "  🐧 Debian 12 (Bookworm) Base"
 echo "  Multi-Version Builder"
 echo "========================================"
@@ -48,18 +48,18 @@ fi
 # ============================================
 # Version Selection Menu
 # ============================================
-echo "Select GhostOS version to build:"
+echo "Select Heck-CheckOS version to build:"
 echo ""
 echo "  🐧 Base: Debian 12 (Bookworm)"
-echo "  👻 GUI: GhostOS Custom Desktop"
+echo "  👻 GUI: Heck-CheckOS Custom Desktop"
 echo ""
-echo "  1) GhostOS v1.0 - Stable Release"
+echo "  1) Heck-CheckOS v1.0 - Stable Release"
 echo "     • Debian 12 (Bookworm) base"
 echo "     • Complete base system"
 echo "     • All core features"
 echo "     • ~10GB ISO"
 echo ""
-echo "  2) GhostOS v1.1 - Enhanced Edition"
+echo "  2) Heck-CheckOS v1.1 - Enhanced Edition"
 echo "     • Debian 12 (Bookworm) base"
 echo "     • Improved UI (smooth animations)"
 echo "     • Enhanced privacy controls"
@@ -67,7 +67,7 @@ echo "     • Malwarebytes Premium"
 echo "     • System consolidation"
 echo "     • ~11GB ISO"
 echo ""
-echo "  3) GhostOS v2.0 - Next Generation"
+echo "  3) Heck-CheckOS v2.0 - Next Generation"
 echo "     • Debian 12 (Bookworm) base"
 echo "     • Modern Wayland support"
 echo "     • AI assistant integration"
@@ -155,7 +155,7 @@ create_install_script_1.0() {
 set -e
 export DEBIAN_FRONTEND=noninteractive
 
-echo "Installing GhostOS v1.0 on Debian 12 (Bookworm) base..."
+echo "Installing Heck-CheckOS v1.0 on Debian 12 (Bookworm) base..."
 
 # ============================================
 # Configure Debian 12 (Bookworm) Repositories
@@ -500,13 +500,13 @@ echo "[*] Creating NVIDIA mode switcher..."
 
 cat > /usr/local/bin/nvidia-mode << 'NVEOF'
 #!/bin/bash
-# GhostOS NVIDIA Mode Switcher
+# Heck-CheckOS NVIDIA Mode Switcher
 # Switch between Production (power-saving) and Gaming (performance) modes
 
 MODE=$1
 
 show_usage() {
-    echo "GhostOS NVIDIA Mode Switcher"
+    echo "Heck-CheckOS NVIDIA Mode Switcher"
     echo "Usage: nvidia-mode [production|gaming|status]"
     echo ""
     echo "Modes:"
@@ -748,7 +748,7 @@ git checkout $(git describe --tags --abbrev=0)
 # Create Wine privacy configuration script
 cat > /usr/local/bin/wine-privacy-setup << 'WINEPRIV'
 #!/bin/bash
-# GhostOS Wine Privacy Setup
+# Heck-CheckOS Wine Privacy Setup
 # Configure Wine prefix without Microsoft telemetry
 
 PREFIX="${WINEPREFIX:-$HOME/.wine}"
@@ -819,7 +819,7 @@ chmod +x /usr/local/bin/wine-privacy-setup
 # Create Wine launcher with DXVK/VKD3D
 cat > /usr/local/bin/wine-ghostos << 'WINELAUNCH'
 #!/bin/bash
-# GhostOS Wine Launcher with privacy and performance
+# Heck-CheckOS Wine Launcher with privacy and performance
 
 # Enable DXVK for DirectX 9/10/11
 export WINEPREFIX="${WINEPREFIX:-$HOME/.wine}"
@@ -851,7 +851,7 @@ fi
 
 # Run the Windows application
 if [ $# -eq 0 ]; then
-    echo "GhostOS Wine Launcher"
+    echo "Heck-CheckOS Wine Launcher"
     echo "Usage: wine-ghostos <program.exe> [arguments]"
     echo ""
     echo "Features:"
@@ -935,7 +935,7 @@ chmod +x /usr/local/bin/dxvk-install
 # Create desktop entry
 cat > /usr/share/applications/wine-ghostos.desktop << 'EOF'
 [Desktop Entry]
-Name=Wine (GhostOS Privacy Mode)
+Name=Wine (Heck-CheckOS Privacy Mode)
 Comment=Run Windows applications without telemetry
 Exec=xfce4-terminal -e "bash -c 'wine-ghostos; read'"
 Icon=wine
@@ -1001,10 +1001,10 @@ if [ -d "$DRIVER_EMULATOR_SRC" ]; then
     cp -r "$DRIVER_EMULATOR_SRC"/* "$DRIVER_EMULATOR_DST/"
     
     # Install CLI utilities
-    install -m 0755 "$DRIVER_EMULATOR_DST/ghostos-driver-load" /usr/local/bin/
-    install -m 0755 "$DRIVER_EMULATOR_DST/ghostos-driver-list" /usr/local/bin/
-    install -m 0755 "$DRIVER_EMULATOR_DST/ghostos-driver-unload" /usr/local/bin/
-    install -m 0755 "$DRIVER_EMULATOR_DST/ghostos-driver-check" /usr/local/bin/
+    install -m 0755 "$DRIVER_EMULATOR_DST/heckcheckos-driver-load" /usr/local/bin/
+    install -m 0755 "$DRIVER_EMULATOR_DST/heckcheckos-driver-list" /usr/local/bin/
+    install -m 0755 "$DRIVER_EMULATOR_DST/heckcheckos-driver-unload" /usr/local/bin/
+    install -m 0755 "$DRIVER_EMULATOR_DST/heckcheckos-driver-check" /usr/local/bin/
     
     # Install configuration
     if [ ! -f /etc/ghostos/driver-emulator.conf ]; then
@@ -1018,10 +1018,10 @@ if [ -d "$DRIVER_EMULATOR_SRC" ]; then
     echo ""
     echo "[*] Windows Driver Emulator installed!"
     echo "    Commands:"
-    echo "    - ghostos-driver-load <driver.sys>   : Load Windows driver"
-    echo "    - ghostos-driver-list                : List loaded drivers"
-    echo "    - ghostos-driver-unload <driver>     : Unload driver"
-    echo "    - ghostos-driver-check <driver.sys>  : Check compatibility"
+    echo "    - heckcheckos-driver-load <driver.sys>   : Load Windows driver"
+    echo "    - heckcheckos-driver-list                : List loaded drivers"
+    echo "    - heckcheckos-driver-unload <driver>     : Unload driver"
+    echo "    - heckcheckos-driver-check <driver.sys>  : Check compatibility"
     echo ""
     echo "    Features:"
     echo "    ✓ USB device driver support"
@@ -1052,7 +1052,7 @@ bantime = 3600
 findtime = 600
 maxretry = 5
 destemail = root@localhost
-sendername = GhostOS-Security
+sendername = Heck-CheckOS-Security
 action = %(action_mwl)s
 
 # Enable SSH protection
@@ -1086,7 +1086,7 @@ apt-get install -y suricata
 
 # Configure Suricata in low-impact mode
 cat > /etc/suricata/suricata.yaml << 'EOF'
-# GhostOS Suricata - Low Impact Configuration
+# Heck-CheckOS Suricata - Low Impact Configuration
 vars:
   address-groups:
     HOME_NET: "[192.168.0.0/16,10.0.0.0/8,172.16.0.0/12]"
@@ -1125,12 +1125,12 @@ systemctl start suricata || true
 # Create network monitoring dashboard script
 cat > /usr/local/bin/ghostos-netmon << 'NETMON'
 #!/bin/bash
-# GhostOS Network Security Monitor
+# Heck-CheckOS Network Security Monitor
 
 show_menu() {
     clear
     echo "========================================="
-    echo "  GhostOS Network Security Monitor"
+    echo "  Heck-CheckOS Network Security Monitor"
     echo "========================================="
     echo ""
     echo "1) Show active connections"
@@ -1270,7 +1270,7 @@ chmod +x /usr/local/bin/ghostos-netmon
 # Create real-time notification service for security events
 cat > /usr/local/bin/ghostos-security-notify << 'NOTIFY'
 #!/bin/bash
-# GhostOS Security Event Notifier
+# Heck-CheckOS Security Event Notifier
 
 LOG_FILE="/var/log/ghostos-security.log"
 LAST_CHECK="/var/run/ghostos-security-lastcheck"
@@ -1289,7 +1289,7 @@ while true; do
         
         # Send desktop notification if available
         if command -v notify-send &> /dev/null; then
-            notify-send -u critical "GhostOS Security Alert" "$NEW_BANS IP(s) banned for suspicious activity"
+            notify-send -u critical "Heck-CheckOS Security Alert" "$NEW_BANS IP(s) banned for suspicious activity"
         fi
     fi
     
@@ -1301,7 +1301,7 @@ while true; do
             echo "[$(date)] IDS ALERT: $ALERT_MSG" >> $LOG_FILE
             
             if command -v notify-send &> /dev/null; then
-                notify-send -u critical "GhostOS IDS Alert" "Network intrusion attempt detected"
+                notify-send -u critical "Heck-CheckOS IDS Alert" "Network intrusion attempt detected"
             fi
         fi
     fi
@@ -1322,7 +1322,7 @@ chmod +x /usr/local/bin/ghostos-security-notify
 # Create systemd service for security notifications
 cat > /etc/systemd/system/ghostos-security-notify.service << 'EOF'
 [Unit]
-Description=GhostOS Security Notification Service
+Description=Heck-CheckOS Security Notification Service
 After=network.target fail2ban.service suricata.service
 
 [Service]
@@ -1461,10 +1461,10 @@ apt-get install -y \
     steam-installer \
     steam-devices
 
-# Create GhostOS unified gaming launcher
+# Create Heck-CheckOS unified gaming launcher
 cat > /usr/local/bin/ghostos-gaming << 'GAMINGLAUNCHER'
 #!/bin/bash
-# GhostOS Unified Gaming Console UI
+# Heck-CheckOS Unified Gaming Console UI
 
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export GHOSTOS_GAME_DIR="$HOME/Games"
@@ -1573,7 +1573,7 @@ theme_manager() {
     echo "  2) Xbox Style (Green)"
     echo "  3) Nintendo Style (Red)"
     echo "  4) Steam Style (Dark)"
-    echo "  5) GhostOS Style (Cyan/Purple)"
+    echo "  5) Heck-CheckOS Style (Cyan/Purple)"
     echo ""
     read -p "Select theme: " theme
     
@@ -1582,7 +1582,7 @@ theme_manager() {
         2) echo "Xbox theme selected" ;;
         3) echo "Nintendo theme selected" ;;
         4) echo "Steam theme selected" ;;
-        5) echo "GhostOS theme selected (default)" ;;
+        5) echo "Heck-CheckOS theme selected (default)" ;;
     esac
     
     read -p "Press ENTER to continue..."
@@ -1625,7 +1625,7 @@ chmod +x /usr/local/bin/ghostos-gaming
 # Create Pegasus Frontend configuration
 mkdir -p /etc/pegasus-frontend
 cat > /etc/pegasus-frontend/settings.txt << 'EOF'
-# GhostOS Pegasus Configuration
+# Heck-CheckOS Pegasus Configuration
 general.fullscreen: true
 general.mouse-support: false
 providers.steam.enabled: true
@@ -1633,11 +1633,11 @@ providers.lutris.enabled: true
 ui.theme: ghostos-theme
 EOF
 
-# Create custom GhostOS theme for Pegasus
+# Create custom Heck-CheckOS theme for Pegasus
 mkdir -p /usr/share/pegasus-frontend/themes/ghostos-theme
 cat > /usr/share/pegasus-frontend/themes/ghostos-theme/theme.cfg << 'EOF'
-name: GhostOS Theme
-author: GhostOS Team
+name: Heck-CheckOS Theme
+author: Heck-CheckOS Team
 version: 1.0
 
 # Unified console design inspired by PlayStation, Xbox, Nintendo
@@ -1655,7 +1655,7 @@ EOF
 # Create desktop entries
 cat > /usr/share/applications/ghostos-gaming.desktop << 'EOF'
 [Desktop Entry]
-Name=GhostOS Gaming
+Name=Heck-CheckOS Gaming
 Comment=Unified gaming console interface
 Exec=ghostos-gaming
 Icon=applications-games
@@ -1687,7 +1687,7 @@ mkdir -p /etc/skel/.config/autostart
 cat > /etc/skel/.config/autostart/ghostos-gaming-mode.desktop << 'EOF'
 [Desktop Entry]
 Type=Application
-Name=GhostOS Gaming Mode
+Name=Heck-CheckOS Gaming Mode
 Exec=sh -c "sleep 5 && ghostos-gaming"
 Hidden=true
 NoDisplay=false
@@ -1703,7 +1703,7 @@ apt-get install -y \
 # Configure RetroArch for console-style UI
 mkdir -p /etc/retroarch
 cat > /etc/retroarch/retroarch.cfg << 'EOF'
-# GhostOS RetroArch Configuration
+# Heck-CheckOS RetroArch Configuration
 menu_driver = "ozone"
 video_fullscreen = "true"
 video_threaded = "true"
@@ -1835,7 +1835,7 @@ apt-get install -y \
 
 # Create comprehensive udev rules for plug-and-play
 cat > /etc/udev/rules.d/99-ghostos-plugandplay.rules << 'EOF'
-# GhostOS Universal Plug and Play Rules
+# Heck-CheckOS Universal Plug and Play Rules
 
 # USB Storage Auto-mount
 ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", RUN+="/usr/local/bin/ghostos-automount %k"
@@ -1880,7 +1880,7 @@ EOF
 # Create auto-mount script
 cat > /usr/local/bin/ghostos-automount << 'AUTOMOUNT'
 #!/bin/bash
-# GhostOS Auto-mount for USB drives
+# Heck-CheckOS Auto-mount for USB drives
 
 DEVICE=$1
 MOUNT_POINT="/media/$DEVICE"
@@ -1914,7 +1914,7 @@ chmod +x /usr/local/bin/ghostos-automount
 # Create auto-unmount script
 cat > /usr/local/bin/ghostos-autounmount << 'AUTOUNMOUNT'
 #!/bin/bash
-# GhostOS Auto-unmount for USB drives
+# Heck-CheckOS Auto-unmount for USB drives
 
 DEVICE=$1
 MOUNT_POINT="/media/$DEVICE"
@@ -2004,11 +2004,11 @@ udevadm trigger
 # Create device monitor dashboard
 cat > /usr/local/bin/ghostos-devices << 'DEVMON'
 #!/bin/bash
-# GhostOS Device Monitor
+# Heck-CheckOS Device Monitor
 
 clear
 echo "========================================="
-echo "  GhostOS Plug-and-Play Device Monitor"
+echo "  Heck-CheckOS Plug-and-Play Device Monitor"
 echo "========================================="
 echo ""
 
@@ -2523,7 +2523,7 @@ echo "[*] Creating penetration testing menu..."
 
 cat > /usr/local/bin/ghostos-pentest << 'PENTEST'
 #!/bin/bash
-# GhostOS Penetration Testing Menu
+# Heck-CheckOS Penetration Testing Menu
 
 show_menu() {
     clear
@@ -3041,7 +3041,7 @@ echo "[*] Creating virtualization management interface..."
 
 cat > /usr/local/bin/ghostos-virt << 'VIRTMGR'
 #!/bin/bash
-# GhostOS Virtualization Manager
+# Heck-CheckOS Virtualization Manager
 
 show_menu() {
     clear
@@ -3503,7 +3503,7 @@ echo "[*] Creating unified gaming launcher..."
 
 cat > /usr/local/bin/ghostos-gamestore << 'GAMESTORE'
 #!/bin/bash
-# GhostOS Unified Game Store Launcher
+# Heck-CheckOS Unified Game Store Launcher
 
 show_menu() {
     clear
@@ -3730,7 +3730,7 @@ mkdir -p ~/.config/vlc
 
 # Configure VLC settings
 cat > ~/.config/vlc/vlcrc << 'EOF'
-# GhostOS VLC Configuration
+# Heck-CheckOS VLC Configuration
 
 [core]
 # Enable hardware acceleration
@@ -3904,14 +3904,14 @@ echo "i2c-i801" >> /etc/modules
 # Create ASUS Armoury Crate alternative launcher
 cat > /usr/local/bin/armoury-crate << 'ARMOURY'
 #!/bin/bash
-# GhostOS ASUS Armoury Crate Alternative
+# Heck-CheckOS ASUS Armoury Crate Alternative
 
 show_menu() {
     clear
     cat << 'EOF'
 ╔════════════════════════════════════════════════════════════╗
 ║                                                            ║
-║             ASUS ARMOURY CRATE (GhostOS)                  ║
+║             ASUS ARMOURY CRATE (Heck-CheckOS)                  ║
 ║                                                            ║
 ╚════════════════════════════════════════════════════════════╝
 
@@ -4206,14 +4206,14 @@ udevadm trigger
 # Create Corsair iCUE alternative launcher
 cat > /usr/local/bin/icue << 'ICUE'
 #!/bin/bash
-# GhostOS Corsair iCUE Alternative
+# Heck-CheckOS Corsair iCUE Alternative
 
 show_menu() {
     clear
     cat << 'EOF'
 ╔════════════════════════════════════════════════════════════╗
 ║                                                            ║
-║               CORSAIR iCUE (GhostOS)                      ║
+║               CORSAIR iCUE (Heck-CheckOS)                      ║
 ║                                                            ║
 ╚════════════════════════════════════════════════════════════╝
 
@@ -4490,7 +4490,7 @@ EOF
 # Create unified hardware control launcher
 cat > /usr/local/bin/ghostos-hardware << 'HWCTRL'
 #!/bin/bash
-# GhostOS Unified Hardware Control
+# Heck-CheckOS Unified Hardware Control
 
 clear
 cat << 'EOF'
@@ -4620,7 +4620,7 @@ udevadm trigger
 # Create Stream Deck control script
 cat > /usr/local/bin/streamdeck-control << 'SDECK'
 #!/bin/bash
-# GhostOS Elgato Stream Deck Control
+# Heck-CheckOS Elgato Stream Deck Control
 
 show_menu() {
     clear
@@ -4934,7 +4934,7 @@ apt-get install -y \
 # Create Elgato camera control script
 cat > /usr/local/bin/elgato-camera << 'ECAM'
 #!/bin/bash
-# GhostOS Elgato Camera Control
+# Heck-CheckOS Elgato Camera Control
 
 show_menu() {
     clear
@@ -5151,7 +5151,7 @@ EOF
 # Create unified Elgato control launcher
 cat > /usr/local/bin/elgato-control << 'ELGATO'
 #!/bin/bash
-# GhostOS Unified Elgato Control
+# Heck-CheckOS Unified Elgato Control
 
 clear
 cat << 'EOF'
@@ -5217,7 +5217,7 @@ echo "    ✓ Stream Deck MK.2/+/Pedal"
 echo "    ✓ All Elgato capture cards"
 echo "    ✓ All Elgato webcams"
 
-echo "[✓] GhostOS v1.0 installation complete"
+echo "[✓] Heck-CheckOS v1.0 installation complete"
 
 V1_EOF
 chmod +x "$BUILD_DIR/install_v1.0.sh"
@@ -5230,7 +5230,7 @@ set -e
 export DEBIAN_FRONTEND=noninteractive
 
 echo "========================================"
-echo "  Installing GhostOS v1.1"
+echo "  Installing Heck-CheckOS v1.1"
 echo "  Enhanced Edition"
 echo "  on Debian 12 (Bookworm) base"
 echo "========================================"
@@ -5479,7 +5479,7 @@ cat > /usr/local/bin/nvidia-mode << 'NVEOF'
 #!/bin/bash
 MODE=$1
 show_usage() {
-    echo "GhostOS NVIDIA Mode Switcher"
+    echo "Heck-CheckOS NVIDIA Mode Switcher"
     echo "Usage: nvidia-mode [production|gaming|status]"
 }
 check_nvidia() {
@@ -5585,7 +5585,7 @@ echo "[*] Configuring enhanced privacy..."
 # Block more telemetry endpoints
 cat >> /etc/hosts << 'EOF'
 
-# GhostOS v1.1 Enhanced Privacy Blocking
+# Heck-CheckOS v1.1 Enhanced Privacy Blocking
 # Microsoft Telemetry
 0.0.0.0 vortex.data.microsoft.com
 0.0.0.0 vortex-win.data.microsoft.com
@@ -5692,8 +5692,8 @@ freshclam
 # Create Malwarebytes-style wrapper
 cat > /usr/local/bin/malwarebytes << 'MBEOF'
 #!/bin/bash
-# GhostOS Malwarebytes Wrapper
-echo "GhostOS Security Scanner"
+# Heck-CheckOS Malwarebytes Wrapper
+echo "Heck-CheckOS Security Scanner"
 echo "Powered by ClamAV + rkhunter"
 echo ""
 
@@ -5714,7 +5714,7 @@ chmod +x /usr/local/bin/malwarebytes
 # Create desktop entry
 cat > /usr/share/applications/malwarebytes.desktop << 'EOF'
 [Desktop Entry]
-Name=Malwarebytes (GhostOS)
+Name=Malwarebytes (Heck-CheckOS)
 Comment=Security Scanner
 Exec=xfce4-terminal -e malwarebytes
 Icon=security-high
@@ -5733,7 +5733,7 @@ echo "[*] Installing improved UI components..."
 apt-get install -y picom
 
 cat > /etc/xdg/picom.conf << 'EOF'
-# GhostOS v1.1 Compositor Config
+# Heck-CheckOS v1.1 Compositor Config
 # Smooth animations and effects
 
 # Shadows
@@ -5955,7 +5955,7 @@ chmod +x /usr/local/bin/netstatus
 
 echo "[*] Network monitoring active (Commands: ghostos-netmon, netstatus)"
 
-echo "[✓] GhostOS v1.1 installation complete"
+echo "[✓] Heck-CheckOS v1.1 installation complete"
 
 V11_EOF
 chmod +x "$BUILD_DIR/install_v1.1.sh"
@@ -5968,7 +5968,7 @@ set -e
 export DEBIAN_FRONTEND=noninteractive
 
 echo "========================================"
-echo "  Installing GhostOS v2.0"
+echo "  Installing Heck-CheckOS v2.0"
 echo "  Next Generation"
 echo "  on Debian 12 (Bookworm) base"
 echo "========================================"
@@ -6217,7 +6217,7 @@ cat > /usr/local/bin/nvidia-mode << 'NVEOF'
 #!/bin/bash
 MODE=$1
 show_usage() {
-    echo "GhostOS NVIDIA Mode Switcher"
+    echo "Heck-CheckOS NVIDIA Mode Switcher"
     echo "Usage: nvidia-mode [production|gaming|status]"
 }
 check_nvidia() {
@@ -6320,7 +6320,7 @@ echo "[*] Configuring enhanced privacy..."
 
 cat >> /etc/hosts << 'EOF'
 
-# GhostOS Enhanced Privacy Blocking
+# Heck-CheckOS Enhanced Privacy Blocking
 0.0.0.0 vortex.data.microsoft.com
 0.0.0.0 vortex-win.data.microsoft.com
 0.0.0.0 telecommand.telemetry.microsoft.com
@@ -6369,7 +6369,7 @@ freshclam || true
 
 cat > /usr/local/bin/malwarebytes << 'MBEOF'
 #!/bin/bash
-echo "GhostOS Security Scanner"
+echo "Heck-CheckOS Security Scanner"
 echo "Powered by ClamAV + rkhunter"
 sudo freshclam
 sudo clamscan -r -i /home
@@ -6381,7 +6381,7 @@ chmod +x /usr/local/bin/malwarebytes
 
 cat > /usr/share/applications/malwarebytes.desktop << 'EOF'
 [Desktop Entry]
-Name=Malwarebytes (GhostOS)
+Name=Malwarebytes (Heck-CheckOS)
 Comment=Security Scanner
 Exec=xfce4-terminal -e malwarebytes
 Icon=security-high
@@ -6437,7 +6437,7 @@ apt-get install -y \
 # Sway config
 mkdir -p /etc/sway
 cat > /etc/sway/config << 'EOF'
-# GhostOS v2.0 Sway Config
+# Heck-CheckOS v2.0 Sway Config
 # Modern Wayland compositor
 
 # Variables
@@ -6459,7 +6459,7 @@ gaps outer 5
 default_border pixel 2
 default_floating_border pixel 2
 
-# Colors (GhostOS theme)
+# Colors (Heck-CheckOS theme)
 client.focused          #00d9ff #00d9ff #000000 #00d9ff
 client.focused_inactive #333333 #333333 #ffffff #333333
 client.unfocused        #222222 #222222 #888888 #222222
@@ -6483,7 +6483,7 @@ ollama pull mistral:7b-instruct || true
 # Create AI assistant service
 cat > /etc/systemd/system/ghostos-ai.service << 'EOF'
 [Unit]
-Description=GhostOS AI Assistant
+Description=Heck-CheckOS AI Assistant
 After=network.target
 
 [Service]
@@ -6506,7 +6506,7 @@ pip3 install --break-system-packages \
 
 cat > /usr/local/bin/ghostos-ai << 'AIEOF'
 #!/usr/bin/env python3
-"""GhostOS AI Assistant"""
+"""Heck-CheckOS AI Assistant"""
 import subprocess
 import sys
 
@@ -6547,7 +6547,7 @@ apt-get install -y \
 
 # Advanced picom config with blur
 cat > /etc/xdg/picom-v2.conf << 'EOF'
-# GhostOS v2.0 Advanced Compositor
+# Heck-CheckOS v2.0 Advanced Compositor
 
 # Blur
 blur: {
@@ -6611,9 +6611,9 @@ apt-get install -y \
 # Create backup script
 cat > /usr/local/bin/ghostos-backup << 'BACKUPEOF'
 #!/bin/bash
-# GhostOS Encrypted Cloud Backup
+# Heck-CheckOS Encrypted Cloud Backup
 
-BACKUP_DIR="$HOME/GhostOS-Backup"
+BACKUP_DIR="$HOME/Heck-CheckOS-Backup"
 ENCRYPTED_DIR="$HOME/.ghostos-encrypted"
 CLOUD_REMOTE="ghostos-cloud"
 
@@ -6643,7 +6643,7 @@ mkdir -p /opt/ghostos/plugins
 
 cat > /usr/local/bin/ghostos-plugin << 'PLUGINEOF'
 #!/usr/bin/env python3
-"""GhostOS Plugin Manager"""
+"""Heck-CheckOS Plugin Manager"""
 
 import os
 import sys
@@ -6720,7 +6720,7 @@ pip3 install --break-system-packages privapy
 # Kernel hardening
 cat >> /etc/sysctl.conf << 'EOF'
 
-# GhostOS v2.0 Security Hardening
+# Heck-CheckOS v2.0 Security Hardening
 kernel.dmesg_restrict = 1
 kernel.kptr_restrict = 2
 kernel.unprivileged_bpf_disabled = 1
@@ -6744,11 +6744,11 @@ systemctl enable apparmor
 echo ""
 echo "[*] Installing modern UI theme..."
 
-# Create GhostOS v2.0 theme
-mkdir -p /usr/share/themes/GhostOS-2.0/gtk-3.0
+# Create Heck-CheckOS v2.0 theme
+mkdir -p /usr/share/themes/Heck-CheckOS-2.0/gtk-3.0
 
-cat > /usr/share/themes/GhostOS-2.0/gtk-3.0/gtk.css << 'CSSEOF'
-/* GhostOS v2.0 GTK Theme */
+cat > /usr/share/themes/Heck-CheckOS-2.0/gtk-3.0/gtk.css << 'CSSEOF'
+/* Heck-CheckOS v2.0 GTK Theme */
 
 * {
     transition: all 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
@@ -6799,7 +6799,7 @@ CSSEOF
 # Set default theme
 cat > /etc/gtk-3.0/settings.ini << 'EOF'
 [Settings]
-gtk-theme-name=GhostOS-2.0
+gtk-theme-name=Heck-CheckOS-2.0
 gtk-icon-theme-name=Papirus-Dark
 gtk-font-name=Segoe UI 10
 gtk-cursor-theme-name=Breeze
@@ -6832,7 +6832,7 @@ systemctl start fail2ban || true
 cat > /usr/local/bin/ghostos-netmon << 'NETMON'
 #!/bin/bash
 echo "========================================="
-echo "  GhostOS v2.0 Network Security Monitor"
+echo "  Heck-CheckOS v2.0 Network Security Monitor"
 echo "========================================="
 echo "1) Active Connections  2) Firewall Status"
 echo "3) Fail2ban Status     4) Security Alerts"
@@ -6881,7 +6881,7 @@ EOF
 
 echo "[*] Network security monitoring active (low-impact, real-time)"
 
-echo "[✓] GhostOS v2.0 installation complete"
+echo "[✓] Heck-CheckOS v2.0 installation complete"
 
 V2_EOF
 chmod +x "$BUILD_DIR/install_v2.0.sh"
@@ -6917,17 +6917,17 @@ terminal_output gfxterm
 set gfxmode=1920x1080
 set gfxpayload=keep
 
-menuentry "👻 GhostOS v$VERSION - Install" {
+menuentry "👻 Heck-CheckOS v$VERSION - Install" {
     linux /live/vmlinuz boot=live quiet splash installer-mode
     initrd /live/initrd.img
 }
 
-menuentry "👻 GhostOS v$VERSION - Live Mode" {
+menuentry "👻 Heck-CheckOS v$VERSION - Live Mode" {
     linux /live/vmlinuz boot=live quiet splash
     initrd /live/initrd.img
 }
 
-menuentry "👻 GhostOS v$VERSION - Safe Mode" {
+menuentry "👻 Heck-CheckOS v$VERSION - Safe Mode" {
     linux /live/vmlinuz boot=live nomodeset
     initrd /live/initrd.img
 }
@@ -6957,7 +6957,7 @@ GRUBEOF
         -iso-level 3 \
         -full-iso9660-filenames \
         -volid "GHOSTOS-v$VERSION" \
-        -appid "GhostOS v$VERSION" \
+        -appid "Heck-CheckOS v$VERSION" \
         -publisher "jameshroop-art" \
         -eltorito-boot boot/grub/bios.img \
         -no-emul-boot \
@@ -7008,10 +7008,10 @@ create_usb() {
 for VERSION in "${VERSIONS[@]}"; do
     echo ""
     echo "========================================"
-    echo "  Building GhostOS v$VERSION"
+    echo "  Building Heck-CheckOS v$VERSION"
     echo "========================================"
     
-    ISO_OUTPUT="$PROJECT_DIR/GhostOS-v${VERSION}.iso"
+    ISO_OUTPUT="$PROJECT_DIR/Heck-CheckOS-v${VERSION}.iso"
     
     # Create build structure
     mkdir -p "$PROJECT_DIR"/{build,downloads,logs}

@@ -1,6 +1,6 @@
-# GhostOS for Android - Quick Reference
+# Heck-CheckOS for Android - Quick Reference
 
-Fast reference for GhostOS Android commands and features.
+Fast reference for Heck-CheckOS Android commands and features.
 
 ## Installation (One-Time Setup)
 
@@ -12,9 +12,9 @@ Fast reference for GhostOS Android commands and features.
 # In Termux:
 pkg update -y && pkg upgrade -y
 pkg install wget -y
-wget https://raw.githubusercontent.com/jameshroop-art/GO-OS/main/Go-OS/ghostos-android.sh
-chmod +x ghostos-android.sh
-bash ghostos-android.sh
+wget https://raw.githubusercontent.com/jameshroop-art/GO-OS/main/Go-OS/heckcheckos-android.sh
+chmod +x heckcheckos-android.sh
+bash heckcheckos-android.sh
 source ~/.bashrc
 ```
 
@@ -79,7 +79,7 @@ ghostos-bluetooth status
 
 ```bash
 # Run full optimization
-ghostos-driver-optimizer
+heckcheckos-driver-optimizer
 ```
 
 **What it does:**
@@ -128,18 +128,18 @@ ghostos-system
 - Android version and SDK
 - Device model and manufacturer
 - Termux configuration
-- GhostOS installation status
+- Heck-CheckOS installation status
 - Hardware details
 
 ## File Locations
 
 | Path | Contents |
 |------|----------|
-| `~/ghostos-android/` | GhostOS root directory |
-| `~/ghostos-android/bin/` | Command scripts |
-| `~/ghostos-android/config/` | Configuration files |
-| `~/ghostos-android/drivers/` | Driver info/logs |
-| `~/ghostos-android/logs/` | Log files |
+| `~/heckcheckos-android/` | Heck-CheckOS root directory |
+| `~/heckcheckos-android/bin/` | Command scripts |
+| `~/heckcheckos-android/config/` | Configuration files |
+| `~/heckcheckos-android/drivers/` | Driver info/logs |
+| `~/heckcheckos-android/logs/` | Log files |
 
 ## Requirements Checklist
 
@@ -156,7 +156,7 @@ ghostos-system
 ```bash
 source ~/.bashrc
 # Or use full path:
-~/ghostos-android/bin/ghostos
+~/heckcheckos-android/bin/ghostos
 ```
 
 ### WiFi/Bluetooth not working
@@ -166,9 +166,9 @@ source ~/.bashrc
 # Restart Termux
 ```
 
-### Update GhostOS
+### Update Heck-CheckOS
 ```bash
-bash ~/ghostos-android.sh
+bash ~/heckcheckos-android.sh
 # Or:
 ghostos-update
 ```
@@ -188,7 +188,7 @@ pkg update -y && pkg upgrade -y
 | Storage | File access, Debian environment |
 | Location | WiFi/Bluetooth scanning (Android requirement) |
 
-**Note:** Location is required by Android for WiFi/Bluetooth scanning, even though GhostOS doesn't use your location.
+**Note:** Location is required by Android for WiFi/Bluetooth scanning, even though Heck-CheckOS doesn't use your location.
 
 ## Non-Root Limitations
 
@@ -231,7 +231,7 @@ pip3 install jupyter numpy pandas matplotlib scipy
 ### Network Monitoring
 ```bash
 # Check WiFi signal
-ghostos-driver-optimizer
+heckcheckos-driver-optimizer
 
 # Monitor connection
 ghostos-wifi status
@@ -257,7 +257,7 @@ nano ~/.bashrc
 # Add:
 alias wifi='ghostos-wifi'
 alias bt='ghostos-bluetooth'
-alias opt='ghostos-driver-optimizer'
+alias opt='heckcheckos-driver-optimizer'
 alias deb='ghostos-debian'
 
 source ~/.bashrc
@@ -265,9 +265,9 @@ source ~/.bashrc
 
 ### 2. Create Quick Scripts
 ```bash
-nano ~/ghostos-android/bin/my-script
+nano ~/heckcheckos-android/bin/my-script
 # Add your commands
-chmod +x ~/ghostos-android/bin/my-script
+chmod +x ~/heckcheckos-android/bin/my-script
 ```
 
 ### 3. Access Android Storage
@@ -292,7 +292,7 @@ cp file.txt /sdcard/Download/
 ## Performance Tips
 
 ### WiFi Optimization
-1. Run `ghostos-driver-optimizer` regularly
+1. Run `heckcheckos-driver-optimizer` regularly
 2. Move closer to router if signal < -70 dBm
 3. Avoid WiFi congestion (check other networks)
 4. Use 5GHz WiFi if available
@@ -316,7 +316,7 @@ cp file.txt /sdcard/Download/
 ghostos-system && ghostos-wifi status && ghostos-bluetooth status
 
 # Full optimization
-ghostos-driver-optimizer
+heckcheckos-driver-optimizer
 
 # Enable everything
 ghostos-wifi enable && ghostos-bluetooth enable
@@ -336,7 +336,7 @@ pkg update -y && pkg upgrade -y && ghostos-update
 
 ## Version Info
 
-- **GhostOS Version**: 1.0-android
+- **Heck-CheckOS Version**: 1.0-android
 - **Target**: Android 9+ (API 28+)
 - **Architecture**: ARM, ARM64, x86, x86_64
 - **Based on**: Termux + proot-distro + Debian
@@ -360,6 +360,6 @@ ghostos-system        # Check installation
 
 ---
 
-**Remember**: GhostOS runs WITHOUT root access, so some features are limited. For full driver access, root is required (but voids warranty and security).
+**Remember**: Heck-CheckOS runs WITHOUT root access, so some features are limited. For full driver access, root is required (but voids warranty and security).
 
 This quick reference covers 90% of daily use cases. For detailed information, see `ANDROID_INSTALLATION.md` or run `ghostos-help`.

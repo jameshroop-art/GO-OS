@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-GhostOS Advanced ISO Builder GUI
+Heck-CheckOS Advanced ISO Builder GUI
 Comprehensive ISO modification and theme customization tool
 
 LICENSE: MIT (see LICENSE file in repository root)
 
 LEGAL NOTICE:
-This is part of GhostOS, a derivative work based on Debian 12 (Bookworm).
+This is part of Heck-CheckOS, a derivative work based on Debian 12 (Bookworm).
 NOT an official Debian release. NOT endorsed by the Debian Project.
 See LEGAL_COMPLIANCE.md for full legal information.
 """
@@ -64,12 +64,12 @@ class BuildThread(QThread):
             self.build_error.emit(str(e))
 
 
-class GhostOSBuilderGUI(QMainWindow):
-    """Main application window for GhostOS ISO Builder"""
+class HeckCheckOSBuilderGUI(QMainWindow):
+    """Main application window for Heck-CheckOS ISO Builder"""
     
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("GhostOS Advanced ISO Builder")
+        self.setWindowTitle("Heck-CheckOS Advanced ISO Builder")
         self.setGeometry(100, 100, 1400, 900)
         
         # Initialize variables
@@ -158,7 +158,7 @@ class GhostOSBuilderGUI(QMainWindow):
         header_layout.setContentsMargins(0, 0, 0, 10)
         
         # Title
-        title_label = QLabel("👻 GhostOS Advanced ISO Builder")
+        title_label = QLabel("👻 Heck-CheckOS Advanced ISO Builder")
         title_font = QFont()
         title_font.setPointSize(18)
         title_font.setBold(True)
@@ -285,12 +285,21 @@ class GhostOSBuilderGUI(QMainWindow):
         # Check if running as root (Unix/Linux only - ISO building is Linux-specific)
         try:
             if os.geteuid() != 0:
-                QMessageBox.warning(
+                reply = QMessageBox.warning(
                     self,
-                    "Root Required",
-                    "ISO building requires root privileges.\n\n"
-                    "Please run the builder with sudo:\n"
-                    "sudo python3 main.py"
+                    "Root Privileges Required",
+                    "ISO building requires root privileges for operations like:\n"
+                    "• Creating chroot environments\n"
+                    "• Mounting ISO files\n"
+                    "• Modifying system files\n\n"
+                    "To build ISOs, please run with elevated privileges:\n\n"
+                    "From terminal:\n"
+                    "  sudo python3 main.py\n\n"
+                    "Or use the system launcher:\n"
+                    "  pkexec /opt/heckcheckos-builder/main.py\n\n"
+                    "Note: The GUI itself runs normally as a regular user.\n"
+                    "Only ISO building requires elevation.",
+                    QMessageBox.StandardButton.Ok
                 )
                 return
         except AttributeError:
@@ -320,7 +329,7 @@ class GhostOSBuilderGUI(QMainWindow):
         from PyQt6.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QProgressBar
         
         build_dialog = QDialog(self)
-        build_dialog.setWindowTitle("Building GhostOS ISO")
+        build_dialog.setWindowTitle("Building Heck-CheckOS ISO")
         build_dialog.setMinimumWidth(800)
         build_dialog.setMinimumHeight(600)
         build_dialog.setModal(True)
@@ -345,7 +354,7 @@ class GhostOSBuilderGUI(QMainWindow):
         
         # Start build info
         build_log.append("╔════════════════════════════════════════════════════════╗")
-        build_log.append("║     GhostOS ISO Builder - Pre-Installation Build      ║")
+        build_log.append("║  Heck-CheckOS ISO Builder - Pre-Installation Build    ║")
         build_log.append("╚════════════════════════════════════════════════════════╝\n")
         build_log.append(f"Base: Debian 12 (Bookworm)")
         build_log.append(f"ISO Sources: {len(build_config['iso_sources'])}")
@@ -356,12 +365,12 @@ class GhostOSBuilderGUI(QMainWindow):
         
         if build_config['self_install']['enabled']:
             build_log.append("\n🔧 Self-Installation: ENABLED")
-            build_log.append("   Builder will be included at /opt/ghostos-builder")
+            build_log.append("   Builder will be included at /opt/heckcheckos-builder")
             if build_config['self_install']['desktop_entry']:
                 build_log.append("   + Desktop menu entry")
             if build_config['self_install']['cli_launcher']:
-                build_log.append("   + CLI launcher (ghostos-builder)")
-            build_log.append("   + Touchscreen keyboard (ghostos-keyboard)")
+                build_log.append("   + CLI launcher (heckcheckos-builder)")
+            build_log.append("   + Touchscreen keyboard (heckcheckos-keyboard)")
             build_log.append("   + Keyboard calibration tools")
             build_log.append("   + Custom layout designer")
         
@@ -666,7 +675,7 @@ class GhostOSBuilderGUI(QMainWindow):
         file_path, _ = QFileDialog.getSaveFileName(
             self,
             "Save Configuration",
-            str(Path.home() / "ghostos-config.json"),
+            str(Path.home() / "heckcheckos-config.json"),
             "JSON Files (*.json);;All Files (*)"
         )
         
@@ -690,11 +699,11 @@ class GhostOSBuilderGUI(QMainWindow):
     def show_about(self):
         """Show about dialog"""
         about_text = """
-        <h2>GhostOS Advanced ISO Builder</h2>
+        <h2>Heck-CheckOS Advanced ISO Builder</h2>
         <p><b>Version:</b> 1.0.0</p>
         <p><b>Based on:</b> Debian 12 (Bookworm)</p>
         <br>
-        <p>A comprehensive ISO modification and theme customization tool for GhostOS.</p>
+        <p>A comprehensive ISO modification and theme customization tool for Heck-CheckOS.</p>
         <br>
         <p><b>Features:</b></p>
         <ul>
@@ -708,7 +717,7 @@ class GhostOSBuilderGUI(QMainWindow):
         <p><b>Project:</b> <a href="https://github.com/jameshroop-art/GO-OS">github.com/jameshroop-art/GO-OS</a></p>
         """
         
-        QMessageBox.about(self, "About GhostOS Builder", about_text)
+        QMessageBox.about(self, "About Heck-CheckOS Builder", about_text)
         
     def show_documentation(self):
         """Show documentation"""
@@ -726,11 +735,11 @@ class GhostOSBuilderGUI(QMainWindow):
 def main():
     """Main application entry point"""
     app = QApplication(sys.argv)
-    app.setApplicationName("GhostOS ISO Builder")
-    app.setOrganizationName("GhostOS")
+    app.setApplicationName("Heck-CheckOS ISO Builder")
+    app.setOrganizationName("Heck-CheckOS")
     
     # Create and show main window
-    window = GhostOSBuilderGUI()
+    window = HeckCheckOSBuilderGUI()
     window.show()
     
     sys.exit(app.exec())

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the dual-ISO merging capability and comprehensive privacy features added to the GhostOS ISO Builder.
+This document describes the dual-ISO merging capability and comprehensive privacy features added to the Heck-CheckOS ISO Builder.
 
 ## Dual-ISO Merging Feature
 
@@ -62,7 +62,7 @@ Backend merges components:
 
 #### 4. Output
 
-Creates: `GhostOS-merged-YYYYMMDD-HHMMSS.iso`
+Creates: `Heck-CheckOS-merged-YYYYMMDD-HHMMSS.iso`
 
 This ISO contains:
 - Base system from ISO #1
@@ -125,7 +125,7 @@ def _component_to_package(self, component_name):
 
 ### Philosophy: Privacy Over Privilege
 
-GhostOS enacts "Privacy Over Privilege" - privacy is prioritized even when it restricts convenient features.
+Heck-CheckOS enacts "Privacy Over Privilege" - privacy is prioritized even when it restricts convenient features.
 
 ### Telemetry Blocking
 
@@ -233,7 +233,7 @@ pref("browser.region.update.enabled", false);
 
 **Kernel Hardening:**
 ```ini
-# /etc/sysctl.d/99-ghostos-privacy.conf
+# /etc/sysctl.d/99-heckcheckos-privacy.conf
 kernel.dmesg_restrict=1        # Hide kernel logs
 kernel.kptr_restrict=2         # Hide kernel pointers
 kernel.perf_event_paranoid=3   # Disable profiling
@@ -301,7 +301,7 @@ On first boot, users see:
 ║                   PRIVACY OVER PRIVILEGE                    ║
 ╚════════════════════════════════════════════════════════════╝
 
-This GhostOS installation follows "Privacy Over Privilege":
+This Heck-CheckOS installation follows "Privacy Over Privilege":
 
 ✓ All telemetry DISABLED      ✓ Encrypted DNS enforced
 ✓ No location tracking         ✓ Minimal data collection
@@ -349,7 +349,7 @@ sudo systemctl start bluetooth.service
 sudo rm /etc/systemd/system/gnome-online-accounts.service
 
 # Enable network discovery
-sudo nano /etc/NetworkManager/conf.d/ghostos-privacy.conf
+sudo nano /etc/NetworkManager/conf.d/heckcheckos-privacy.conf
 
 # Enable captive portal detection
 # Edit NetworkManager connectivity section
@@ -420,8 +420,8 @@ No configuration needed - **privacy by default**!
 
 ### Files Changed
 
-- `gui/ghostos-iso-builder/ui/iso_loader.py` - Dual-ISO UI
-- `gui/ghostos-iso-builder/iso_builder_backend.py` - Merging + Privacy
+- `gui/heckcheckos-iso-builder/ui/iso_loader.py` - Dual-ISO UI
+- `gui/heckcheckos-iso-builder/iso_builder_backend.py` - Merging + Privacy
 
 ### New System Files Created
 
@@ -431,9 +431,9 @@ ISOs will contain:
 - `/etc/ghostos/privacy-over-privilege.json`
 - `/etc/ghostos/PRIVACY-README.txt`
 - `/etc/geoclue/geoclue.conf`
-- `/etc/firefox/ghostos-privacy.js`
-- `/etc/systemd/resolved.conf.d/ghostos-privacy.conf`
-- `/etc/sysctl.d/99-ghostos-privacy.conf`
+- `/etc/firefox/heckcheckos-privacy.js`
+- `/etc/systemd/resolved.conf.d/heckcheckos-privacy.conf`
+- `/etc/sysctl.d/99-heckcheckos-privacy.conf`
 - And 10+ more privacy configuration files
 
 ---

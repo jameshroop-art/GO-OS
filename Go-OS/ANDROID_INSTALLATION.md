@@ -1,10 +1,10 @@
-# GhostOS for Android - Installation Guide
+# Heck-CheckOS for Android - Installation Guide
 
-Complete guide for installing GhostOS on Android 9+ devices without root access.
+Complete guide for installing Heck-CheckOS on Android 9+ devices without root access.
 
 ## Overview
 
-GhostOS for Android provides a full Linux environment on your Android device using Termux and proot. It includes non-root WiFi and Bluetooth management tools that work with Android 9+ (API 28+).
+Heck-CheckOS for Android provides a full Linux environment on your Android device using Termux and proot. It includes non-root WiFi and Bluetooth management tools that work with Android 9+ (API 28+).
 
 ## Requirements
 
@@ -53,7 +53,7 @@ Grant these permissions to Termux in Android Settings → Apps → Termux:
    - Storage: Allow
    - Location: Allow (for Bluetooth/WiFi scanning)
 
-### Step 4: Download GhostOS Installer
+### Step 4: Download Heck-CheckOS Installer
 
 Open Termux and run:
 
@@ -64,18 +64,18 @@ pkg update -y && pkg upgrade -y
 # Install wget if not present
 pkg install wget -y
 
-# Download GhostOS installer
+# Download Heck-CheckOS installer
 cd ~
-wget https://raw.githubusercontent.com/jameshroop-art/GO-OS/main/Go-OS/ghostos-android.sh
+wget https://raw.githubusercontent.com/jameshroop-art/GO-OS/main/Go-OS/heckcheckos-android.sh
 
 # Make executable
-chmod +x ghostos-android.sh
+chmod +x heckcheckos-android.sh
 ```
 
 ### Step 5: Run Installer
 
 ```bash
-bash ghostos-android.sh
+bash heckcheckos-android.sh
 ```
 
 The installer will:
@@ -83,12 +83,12 @@ The installer will:
 - Install required Termux packages
 - Set up Debian proot environment
 - Install WiFi/Bluetooth management tools
-- Create GhostOS commands
+- Create Heck-CheckOS commands
 - Configure PATH
 
 Installation takes 10-30 minutes depending on internet speed.
 
-### Step 6: Activate GhostOS
+### Step 6: Activate Heck-CheckOS
 
 After installation completes:
 
@@ -96,7 +96,7 @@ After installation completes:
 # Reload shell configuration
 source ~/.bashrc
 
-# Test GhostOS
+# Test Heck-CheckOS
 ghostos
 
 # View help
@@ -107,7 +107,7 @@ ghostos-help
 
 ### Non-Root WiFi Management
 
-GhostOS provides WiFi control without root access using Android's Termux-API:
+Heck-CheckOS provides WiFi control without root access using Android's Termux-API:
 
 ```bash
 # Scan for networks
@@ -148,7 +148,7 @@ ghostos-bluetooth disable
 Optimize WiFi and Bluetooth performance:
 
 ```bash
-ghostos-driver-optimizer
+heckcheckos-driver-optimizer
 ```
 
 This tool:
@@ -179,14 +179,14 @@ ghostos-system
 Shows:
 - Android version and device info
 - Termux configuration
-- GhostOS installation details
+- Heck-CheckOS installation details
 - Hardware information
 
 ## How It Works Without Root
 
 ### WiFi/Bluetooth Control
 
-GhostOS uses Android's official APIs through Termux:API:
+Heck-CheckOS uses Android's official APIs through Termux:API:
 
 1. **Termux:API Bridge**: Provides access to Android APIs
 2. **Android Intent System**: Communicates with system services
@@ -195,7 +195,7 @@ GhostOS uses Android's official APIs through Termux:API:
 
 ### Limitations Without Root
 
-Since GhostOS runs without root access:
+Since Heck-CheckOS runs without root access:
 
 ❌ **Cannot do:**
 - Modify system WiFi/Bluetooth drivers directly
@@ -231,7 +231,7 @@ The term "patching" in non-root context means:
 
 ```bash
 # Run optimizer to see signal strength
-ghostos-driver-optimizer
+heckcheckos-driver-optimizer
 
 # Output shows:
 # - Signal strength (dBm)
@@ -281,7 +281,7 @@ cd project
 ghostos-wifi status
 
 # Run full optimization
-ghostos-driver-optimizer
+heckcheckos-driver-optimizer
 
 # View system details
 ghostos-system
@@ -297,7 +297,7 @@ ghostos-system
 source ~/.bashrc
 
 # Or use full path
-~/ghostos-android/bin/ghostos
+~/heckcheckos-android/bin/ghostos
 ```
 
 ### Issue: WiFi/Bluetooth commands don't work
@@ -313,7 +313,7 @@ source ~/.bashrc
 
 **Solution:**
 - Check Android version: Settings → About Phone
-- GhostOS requires Android 9.0+ (API 28+)
+- Heck-CheckOS requires Android 9.0+ (API 28+)
 - Upgrade Android if possible
 
 ### Issue: Installation fails during package download
@@ -325,7 +325,7 @@ pkg clean
 
 # Try again
 pkg update -y && pkg upgrade -y
-bash ghostos-android.sh
+bash heckcheckos-android.sh
 ```
 
 ### Issue: Debian environment won't start
@@ -355,26 +355,26 @@ proot-distro install debian
 Edit Debian startup script:
 
 ```bash
-nano ~/ghostos-android/config/debian-startup.sh
+nano ~/heckcheckos-android/config/debian-startup.sh
 ```
 
 ### Add Custom Commands
 
 Create scripts in:
 ```bash
-~/ghostos-android/bin/
+~/heckcheckos-android/bin/
 ```
 
 Make executable:
 ```bash
-chmod +x ~/ghostos-android/bin/my-command
+chmod +x ~/heckcheckos-android/bin/my-command
 ```
 
-### Update GhostOS
+### Update Heck-CheckOS
 
 ```bash
 # Re-run installer
-bash ~/ghostos-android.sh
+bash ~/heckcheckos-android.sh
 
 # Or use alias
 ghostos-update
@@ -382,18 +382,18 @@ ghostos-update
 
 ## Uninstallation
 
-To remove GhostOS:
+To remove Heck-CheckOS:
 
 ```bash
 # Remove Debian environment
 proot-distro remove debian
 
-# Remove GhostOS directory
-rm -rf ~/ghostos-android
+# Remove Heck-CheckOS directory
+rm -rf ~/heckcheckos-android
 
 # Remove from PATH (edit ~/.bashrc)
 nano ~/.bashrc
-# Delete GhostOS lines
+# Delete Heck-CheckOS lines
 
 # Reload shell
 source ~/.bashrc
@@ -401,7 +401,7 @@ source ~/.bashrc
 
 ## Comparison: Root vs Non-Root
 
-| Feature | With Root | Without Root (GhostOS) |
+| Feature | With Root | Without Root (Heck-CheckOS) |
 |---------|-----------|------------------------|
 | WiFi On/Off | ✅ | ✅ |
 | WiFi Scanning | ✅ | ✅ |
@@ -418,7 +418,7 @@ source ~/.bashrc
 
 ## Security Considerations
 
-### GhostOS is Safe
+### Heck-CheckOS is Safe
 
 - ✅ No root access required
 - ✅ Uses only standard Android APIs
@@ -433,7 +433,7 @@ source ~/.bashrc
 2. **Location**: Required by Android for WiFi/Bluetooth scanning (hardware limitation)
 3. **Network**: Standard network access
 
-GhostOS does NOT:
+Heck-CheckOS does NOT:
 - ❌ Collect or transmit data
 - ❌ Modify system files
 - ❌ Require root/bootloader unlock
@@ -443,10 +443,10 @@ GhostOS does NOT:
 ## FAQ
 
 **Q: Does this require root?**  
-A: No! GhostOS works entirely without root access.
+A: No! Heck-CheckOS works entirely without root access.
 
 **Q: Will this void my warranty?**  
-A: No. GhostOS doesn't modify system files or unlock bootloader.
+A: No. Heck-CheckOS doesn't modify system files or unlock bootloader.
 
 **Q: Can I use this for WiFi hacking?**  
 A: No. Without root, advanced WiFi features (monitor mode, packet injection) are not available.
@@ -455,7 +455,7 @@ A: No. Without root, advanced WiFi features (monitor mode, packet injection) are
 A: Android's security model prevents non-root apps from accessing kernel drivers directly.
 
 **Q: Is this like Linux Deploy or Andronix?**  
-A: Similar concept (proot-based Linux), but GhostOS adds custom WiFi/Bluetooth management tools.
+A: Similar concept (proot-based Linux), but Heck-CheckOS adds custom WiFi/Bluetooth management tools.
 
 **Q: Can I use this with other Linux distros?**  
 A: Yes! You can install other distros via proot-distro (Ubuntu, Arch, Alpine, etc.)
@@ -492,7 +492,7 @@ Contributions welcome! See repository for guidelines.
 
 ## Resources
 
-- **GhostOS Repository**: https://github.com/jameshroop-art/GO-OS
+- **Heck-CheckOS Repository**: https://github.com/jameshroop-art/GO-OS
 - **Termux**: https://termux.com
 - **Termux Wiki**: https://wiki.termux.com
 - **F-Droid**: https://f-droid.org
@@ -508,6 +508,6 @@ Contributions welcome! See repository for guidelines.
 
 ---
 
-**Note**: GhostOS for Android provides a powerful Linux environment and WiFi/Bluetooth management tools without requiring root access. While some advanced features are limited compared to rooted devices, it offers a secure, reversible, and warranty-safe way to run Linux on Android.
+**Note**: Heck-CheckOS for Android provides a powerful Linux environment and WiFi/Bluetooth management tools without requiring root access. While some advanced features are limited compared to rooted devices, it offers a secure, reversible, and warranty-safe way to run Linux on Android.
 
-For the full desktop GhostOS experience, see `GHOSTOS_BUILD_README.md` for building bootable ISOs.
+For the full desktop Heck-CheckOS experience, see `GHOSTOS_BUILD_README.md` for building bootable ISOs.

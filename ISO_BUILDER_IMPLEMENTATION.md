@@ -1,8 +1,8 @@
-# GhostOS ISO Builder - Pre-Installation Configuration
+# Heck-CheckOS ISO Builder - Pre-Installation Configuration
 
 ## Overview
 
-The GhostOS ISO Builder now creates **fully pre-configured ISOs** with all your customizations applied before installation, eliminating the need to wait for post-boot configuration.
+The Heck-CheckOS ISO Builder now creates **fully pre-configured ISOs** with all your customizations applied before installation, eliminating the need to wait for post-boot configuration.
 
 ## How It Works
 
@@ -33,7 +33,7 @@ The `ISOBuilder` class provides real ISO creation functionality:
 
 ```python
 class ISOBuilder:
-    """Builds custom GhostOS ISO with pre-applied configurations"""
+    """Builds custom Heck-CheckOS ISO with pre-applied configurations"""
     
     def build(self, progress_callback=None):
         """Execute full build process"""
@@ -52,7 +52,7 @@ class ISOBuilder:
         # 5. Add custom files
         self.add_custom_files(custom_files)
         
-        # 6. Install GhostOS Builder (optional)
+        # 6. Install Heck-CheckOS Builder (optional)
         self.install_ghostos_builder(self_install_config)
         
         # 7. Create squashfs filesystem
@@ -105,10 +105,10 @@ All of these are configured **before** you boot the ISO:
    - Documentation
    - Any custom content
 
-4. **GhostOS Builder** (Optional)
-   - Builder included at /opt/ghostos-builder
+4. **Heck-CheckOS Builder** (Optional)
+   - Builder included at /opt/heckcheckos-builder
    - Desktop menu entry
-   - CLI launcher (ghostos-builder command)
+   - CLI launcher (heckcheckos-builder command)
    - Touchscreen keyboard
    - Layout designer
 
@@ -142,17 +142,17 @@ sudo python3 main.py
 The builder creates:
 
 ```
-~/ghostos-ultimate/
-├── GhostOS-custom-20260107-055230.iso      # Bootable ISO
-├── GhostOS-custom-20260107-055230.iso.md5  # MD5 checksum
-└── GhostOS-custom-20260107-055230.iso.sha256  # SHA256 checksum
+~/heckcheckos-ultimate/
+├── Heck-CheckOS-custom-20260107-055230.iso      # Bootable ISO
+├── Heck-CheckOS-custom-20260107-055230.iso.md5  # MD5 checksum
+└── Heck-CheckOS-custom-20260107-055230.iso.sha256  # SHA256 checksum
 ```
 
 ## Usage Flow
 
 1. **Launch Builder**
    ```bash
-   sudo python3 gui/ghostos-iso-builder/main.py
+   sudo python3 gui/heckcheckos-iso-builder/main.py
    ```
 
 2. **Configure in GUI**
@@ -197,7 +197,7 @@ The builder creates:
 
 ```
 ╔════════════════════════════════════════════════════════╗
-║     GhostOS ISO Builder - Pre-Installation Build      ║
+║     Heck-CheckOS ISO Builder - Pre-Installation Build      ║
 ╚════════════════════════════════════════════════════════╝
 
 Base: Debian 12 (Bookworm)
@@ -214,7 +214,7 @@ All changes will be pre-applied to the ISO!
 [30%] Applying theme customizations...
 [40%] Installing 15 custom packages...
 [50%] Adding 5 custom files...
-[60%] Installing GhostOS Builder...
+[60%] Installing Heck-CheckOS Builder...
 [70%] Creating compressed filesystem...
 [90%] Building ISO image...
 [100%] Build complete!
@@ -223,7 +223,7 @@ All changes will be pre-applied to the ISO!
 ✅ BUILD COMPLETE!
 ============================================================
 
-Output: /home/user/ghostos-ultimate/GhostOS-custom-20260107.iso
+Output: /home/user/heckcheckos-ultimate/Heck-CheckOS-custom-20260107.iso
 
 The ISO has been created with all your customizations
 pre-applied. You can now:
@@ -232,7 +232,7 @@ pre-applied. You can now:
   3. Install to disk (with your custom configuration)
 ```
 
-## Comparison with ghostos-build.sh
+## Comparison with heckcheckos-build.sh
 
 ### Similarities
 - Both use debootstrap
@@ -241,7 +241,7 @@ pre-applied. You can now:
 
 ### Differences
 
-| Feature | ghostos-build.sh | GUI Builder |
+| Feature | heckcheckos-build.sh | GUI Builder |
 |---------|------------------|-------------|
 | Interface | Command-line | Graphical |
 | Theme Selection | Fixed versions | Interactive |
@@ -277,6 +277,6 @@ Potential improvements:
 
 ## Conclusion
 
-The new ISO builder transforms GhostOS from a post-boot configuration system to a **pre-installation configuration system**. All your choices are baked into the ISO before you even boot it!
+The new ISO builder transforms Heck-CheckOS from a post-boot configuration system to a **pre-installation configuration system**. All your choices are baked into the ISO before you even boot it!
 
 This means faster deployments, consistent configurations, and a better user experience overall.

@@ -2,18 +2,18 @@
 
 ## Overview
 
-This document addresses legal compliance, trademark usage, copyright attribution, and license requirements for the GhostOS project.
+This document addresses legal compliance, trademark usage, copyright attribution, and license requirements for the Heck-CheckOS project.
 
 ## Important Legal Disclaimers
 
 ### Trademark Notice
 
-**"GhostOS"** is the name of this project and is not affiliated with, endorsed by, or associated with:
+**"Heck-CheckOS"** is the name of this project and is not affiliated with, endorsed by, or associated with:
 - Ghost Foundation or Ghost® (the publishing platform)
 - Any other "Ghost" branded software or services
 - Debian Project
 
-The name "GhostOS" is used to describe this independent project and does not imply any trademark rights or official status.
+The name "Heck-CheckOS" is used to describe this independent project and does not imply any trademark rights or official status.
 
 ### Debian Attribution
 
@@ -59,7 +59,7 @@ This project incorporates or references the following third-party software:
 
 ## License Information
 
-### GhostOS Build Scripts and Configuration
+### Heck-CheckOS Build Scripts and Configuration
 
 The build scripts, configuration files, and documentation created specifically for this project are provided under the **MIT License** (see LICENSE file).
 
@@ -81,7 +81,7 @@ All packages and software from Debian and other upstream projects retain their o
 If you redistribute, modify, or create derivatives of this project, you must:
 
 1. **Maintain Attribution:**
-   - Clearly state that your work is based on GhostOS
+   - Clearly state that your work is based on Heck-CheckOS
    - Preserve all copyright notices and attributions
    - Include this LEGAL_COMPLIANCE.md file
 
@@ -89,7 +89,7 @@ If you redistribute, modify, or create derivatives of this project, you must:
    - Do NOT claim endorsement by Debian or other projects
    - Do NOT use Debian logos or trademarks without permission
    - Consider using a different project name to avoid confusion
-   - Do NOT use "GhostOS" in a way that implies official status
+   - Do NOT use "Heck-CheckOS" in a way that implies official status
 
 3. **Comply with Licenses:**
    - Honor all GPL, LGPL, and other open-source license requirements
@@ -114,8 +114,8 @@ Reference: https://www.debian.org/trademark
 
 ## Copyright Notices
 
-### GhostOS Project
-Copyright (c) 2026 GhostOS Contributors
+### Heck-CheckOS Project
+Copyright (c) 2026 Heck-CheckOS Contributors
 
 ### Debian GNU/Linux
 Copyright (c) Software in the Public Interest, Inc. and others

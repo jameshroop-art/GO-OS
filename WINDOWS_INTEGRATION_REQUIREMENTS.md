@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines requirements for integrating a Windows 10 compatibility layer into GhostOS while maintaining Debian 12 as the base system.
+This document outlines requirements for integrating a Windows 10 compatibility layer into Heck-CheckOS while maintaining Debian 12 as the base system.
 
 ## Core Requirements
 
@@ -216,7 +216,7 @@ Given the constraints (no Wine, no VM), the most practical approach is:
 ```xml
 <!-- libvirt network definition -->
 <network>
-  <name>ghostos-windows-isolated</name>
+  <name>heckcheckos-windows-isolated</name>
   <forward mode='nat'/>
   <bridge name='virbr-win' stp='on' delay='0'/>
   <ip address='192.168.100.1' netmask='255.255.255.0'>
@@ -378,7 +378,7 @@ New-NetFirewallRule -DisplayName "Block Windows Update" `
    
    # Install Windows from extracted ISO
    virt-install \
-     --name ghostos-windows10 \
+     --name heckcheckos-windows10 \
      --memory 8192 \
      --vcpus 4 \
      --disk path=windows10.qcow2,format=qcow2 \
@@ -402,18 +402,18 @@ New-NetFirewallRule -DisplayName "Block Windows Update" `
    # - Create snapshot of clean state
    ```
 
-5. **Include in GhostOS ISO**
+5. **Include in Heck-CheckOS ISO**
    ```bash
    # Compress Windows VM image
    qemu-img convert -O qcow2 -c windows10.qcow2 windows10-compressed.qcow2
    
-   # Include in GhostOS ISO build
+   # Include in Heck-CheckOS ISO build
    mkdir -p iso-build/opt/ghostos/windows/
    cp windows10-compressed.qcow2 iso-build/opt/ghostos/windows/
    cp vm-launcher.sh iso-build/usr/local/bin/
    
    # Add to ISO
-   mkisofs -o GhostOS-with-Windows.iso iso-build/
+   mkisofs -o Heck-CheckOS-with-Windows.iso iso-build/
    ```
 
 6. **Pre-configure Network Isolation**
@@ -424,7 +424,7 @@ New-NetFirewallRule -DisplayName "Block Windows Update" `
 
 7. **Pre-install Required Packages**
    ```bash
-   # Include in GhostOS ISO:
+   # Include in Heck-CheckOS ISO:
    apt-get install qemu-system-x86 libvirt-daemon-system \
                    libvirt-clients bridge-utils virtinst \
                    dnsmasq iptables-persistent
@@ -447,7 +447,7 @@ New-NetFirewallRule -DisplayName "Block Windows Update" `
 
 10. **Final ISO Composition**
     ```
-    GhostOS ISO:
+    Heck-CheckOS ISO:
     ├── Debian 12 base system
     ├── /opt/ghostos/windows/
     │   ├── windows10.qcow2 (pre-installed Windows)
@@ -466,7 +466,7 @@ New-NetFirewallRule -DisplayName "Block Windows Update" `
 
 ```json
 {
-  "vm_name": "GhostOS-Windows10",
+  "vm_name": "Heck-CheckOS-Windows10",
   "os_type": "win10",
   "memory": "8192",
   "cpus": 4,
@@ -684,8 +684,8 @@ Applications Menu:
 ## Related Files
 
 This requirement affects:
-- `gui/ghostos-iso-builder/` - Need Windows integration tab
-- `Go-OS/ghostos-build.sh` - Need Wine/VM packages
+- `gui/heckcheckos-iso-builder/` - Need Windows integration tab
+- `Go-OS/heckcheckos-build.sh` - Need Wine/VM packages
 - Firewall configuration scripts
 - Desktop launchers
 

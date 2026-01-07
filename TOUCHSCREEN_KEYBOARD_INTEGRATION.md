@@ -1,10 +1,10 @@
-# GhostOS - Touchscreen Keyboard Integration
+# Heck-CheckOS - Touchscreen Keyboard Integration
 
-This document describes the new touchscreen keyboard integration for the GhostOS ISO Builder.
+This document describes the new touchscreen keyboard integration for the Heck-CheckOS ISO Builder.
 
 ## What's New
 
-The GhostOS ISO Builder now includes a fully-featured touchscreen keyboard with:
+The Heck-CheckOS ISO Builder now includes a fully-featured touchscreen keyboard with:
 
 - ⌨️ **Resizable & Draggable**: Move and resize the keyboard as needed
 - 📌 **Edge Snapping**: Automatically snaps to screen edges for convenient placement
@@ -18,7 +18,7 @@ The GhostOS ISO Builder now includes a fully-featured touchscreen keyboard with:
 ### Starting the GUI
 
 ```bash
-cd gui/ghostos-iso-builder
+cd gui/heckcheckos-iso-builder
 ./start-gui.sh
 ```
 
@@ -46,19 +46,19 @@ The launcher script automatically:
 
 ### Core Keyboard Implementation
 
-- **`gui/ghostos-iso-builder/ui/touchscreen_keyboard.py`**
+- **`gui/heckcheckos-iso-builder/ui/touchscreen_keyboard.py`**
   - Main keyboard widget with QWERTY and numpad layouts
   - Resizable, draggable, and snappable to screen edges
   - Key press handling and input focus management
   - Calibration data storage and loading
 
-- **`gui/ghostos-iso-builder/ui/calibration_wizard.py`**
+- **`gui/heckcheckos-iso-builder/ui/calibration_wizard.py`**
   - Full-screen 5-point calibration wizard
   - Offset calculation from calibration points
   - Visual feedback with target markers
   - Persistent calibration storage
 
-- **`gui/ghostos-iso-builder/ui/keyboard_designer.py`**
+- **`gui/heckcheckos-iso-builder/ui/keyboard_designer.py`**
   - Visual keyboard layout designer
   - Drag-and-drop key arrangement
   - Key property customization (size, color, value)
@@ -66,13 +66,13 @@ The launcher script automatically:
 
 ### Integration & Utilities
 
-- **`gui/ghostos-iso-builder/start-gui.sh`**
+- **`gui/heckcheckos-iso-builder/start-gui.sh`**
   - Comprehensive GUI launcher script
   - Dependency checking and installation
   - Touchscreen detection
   - Display validation
 
-- **`gui/ghostos-iso-builder/test_integration.py`**
+- **`gui/heckcheckos-iso-builder/test_integration.py`**
   - Integration test suite
   - Module import validation
   - Keyboard creation tests
@@ -80,13 +80,13 @@ The launcher script automatically:
 
 ### Documentation
 
-- **`gui/ghostos-iso-builder/KEYBOARD_GUIDE.md`**
+- **`gui/heckcheckos-iso-builder/KEYBOARD_GUIDE.md`**
   - Comprehensive keyboard documentation
   - Usage instructions and examples
   - Calibration guide
   - API reference
 
-- **`gui/ghostos-iso-builder/QUICK_START.md`**
+- **`gui/heckcheckos-iso-builder/QUICK_START.md`**
   - Quick start guide for the GUI
   - Installation methods
   - Troubleshooting tips
@@ -99,18 +99,18 @@ The launcher script automatically:
 
 ### Modified Files
 
-- **`gui/ghostos-iso-builder/main.py`**
+- **`gui/heckcheckos-iso-builder/main.py`**
   - Added keyboard toggle button to toolbar
   - Integrated keyboard key press handling
   - Updated ISO build process to include keyboard
   - Added keyboard to self-installation package
 
-- **`gui/ghostos-iso-builder/install.sh`**
-  - Added standalone keyboard launcher (`ghostos-keyboard`)
+- **`gui/heckcheckos-iso-builder/install.sh`**
+  - Added standalone keyboard launcher (`heckcheckos-keyboard`)
   - Created keyboard desktop entry
   - Updated uninstaller to remove keyboard files
 
-- **`gui/ghostos-iso-builder/README.md`**
+- **`gui/heckcheckos-iso-builder/README.md`**
   - Added touchscreen keyboard feature section
   - Updated installation instructions
   - Added keyboard usage documentation
@@ -144,7 +144,7 @@ User Touch → Calibration Offset → Keyboard Widget → Key Press Signal → F
 ### File Storage
 
 ```
-~/.config/ghostos-builder/
+~/.config/heckcheckos-builder/
 ├── keyboard_calibration.json    # Touch offset data
 ├── keyboard_layouts/            # Custom layouts
 │   ├── gaming.json
@@ -167,9 +167,9 @@ The keyboard is fully integrated with the main GUI:
 
 When building ISOs with self-installation enabled, the keyboard is:
 
-1. Copied to `/opt/ghostos-builder/ui/` in the ISO
+1. Copied to `/opt/heckcheckos-builder/ui/` in the ISO
 2. Launcher scripts created:
-   - `/usr/local/bin/ghostos-keyboard`
+   - `/usr/local/bin/heckcheckos-keyboard`
    - Desktop entry for application menu
 3. Calibration data structure created
 4. Layout designer included
@@ -219,7 +219,7 @@ if designer.exec():
 
 ### Calibration File Format
 
-**File**: `~/.config/ghostos-builder/keyboard_calibration.json`
+**File**: `~/.config/heckcheckos-builder/keyboard_calibration.json`
 
 ```json
 {
@@ -230,7 +230,7 @@ if designer.exec():
 
 ### Layout File Format
 
-**File**: `~/.config/ghostos-builder/keyboard_layouts/custom.json`
+**File**: `~/.config/heckcheckos-builder/keyboard_layouts/custom.json`
 
 ```json
 {
@@ -256,7 +256,7 @@ if designer.exec():
 ### Running Integration Tests
 
 ```bash
-cd gui/ghostos-iso-builder
+cd gui/heckcheckos-iso-builder
 python3 test_integration.py
 ```
 
@@ -295,7 +295,7 @@ Tests include:
 - Try recalibrating with stylus
 
 **Calibration not saving**
-- Check permissions: `~/.config/ghostos-builder/`
+- Check permissions: `~/.config/heckcheckos-builder/`
 - Verify disk space: `df -h ~`
 - Check file: `keyboard_calibration.json` exists
 
@@ -326,7 +326,7 @@ Tests include:
 
 ### Permissions Required
 
-- Read/write: `~/.config/ghostos-builder/`
+- Read/write: `~/.config/heckcheckos-builder/`
 - Display access: X11 or Wayland
 - Input focus detection
 - No root/sudo required for operation
@@ -355,9 +355,9 @@ This touchscreen keyboard integration was built using:
 
 ## Documentation Links
 
-- **Main README**: [gui/ghostos-iso-builder/README.md](gui/ghostos-iso-builder/README.md)
-- **Keyboard Guide**: [gui/ghostos-iso-builder/KEYBOARD_GUIDE.md](gui/ghostos-iso-builder/KEYBOARD_GUIDE.md)
-- **Quick Start**: [gui/ghostos-iso-builder/QUICK_START.md](gui/ghostos-iso-builder/QUICK_START.md)
+- **Main README**: [gui/heckcheckos-iso-builder/README.md](gui/heckcheckos-iso-builder/README.md)
+- **Keyboard Guide**: [gui/heckcheckos-iso-builder/KEYBOARD_GUIDE.md](gui/heckcheckos-iso-builder/KEYBOARD_GUIDE.md)
+- **Quick Start**: [gui/heckcheckos-iso-builder/QUICK_START.md](gui/heckcheckos-iso-builder/QUICK_START.md)
 - **Main Project**: [README.md](README.md)
 
 ## Support
@@ -369,4 +369,4 @@ For issues or questions:
 
 ---
 
-**GhostOS ISO Builder** - Now with professional touchscreen keyboard support for all installations!
+**Heck-CheckOS ISO Builder** - Now with professional touchscreen keyboard support for all installations!

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Platform Utilities - Cross-platform compatibility helpers
-Ensures GhostOS ISO Builder works on Windows, Linux, and macOS
+Ensures Heck-CheckOS ISO Builder works on Windows, Linux, and macOS
 """
 
 import os
@@ -43,27 +43,27 @@ class PlatformHelper:
     def get_config_directory():
         """Get configuration directory (cross-platform)"""
         if PlatformHelper.is_windows():
-            return Path(os.environ.get('APPDATA', Path.home() / 'AppData' / 'Roaming')) / 'GhostOS-Builder'
+            return Path(os.environ.get('APPDATA', Path.home() / 'AppData' / 'Roaming')) / 'Heck-CheckOS-Builder'
         elif PlatformHelper.is_macos():
-            return Path.home() / 'Library' / 'Application Support' / 'GhostOS-Builder'
+            return Path.home() / 'Library' / 'Application Support' / 'Heck-CheckOS-Builder'
         else:  # Linux and others
-            return Path.home() / '.config' / 'ghostos-builder'
+            return Path.home() / '.config' / 'heckcheckos-builder'
     
     @staticmethod
     def get_data_directory():
         """Get data directory (cross-platform)"""
         if PlatformHelper.is_windows():
-            return Path(os.environ.get('LOCALAPPDATA', Path.home() / 'AppData' / 'Local')) / 'GhostOS-Builder'
+            return Path(os.environ.get('LOCALAPPDATA', Path.home() / 'AppData' / 'Local')) / 'Heck-CheckOS-Builder'
         elif PlatformHelper.is_macos():
-            return Path.home() / 'Library' / 'Application Support' / 'GhostOS-Builder'
+            return Path.home() / 'Library' / 'Application Support' / 'Heck-CheckOS-Builder'
         else:  # Linux
-            return Path.home() / '.local' / 'share' / 'ghostos-builder'
+            return Path.home() / '.local' / 'share' / 'heckcheckos-builder'
     
     @staticmethod
     def get_temp_directory():
         """Get temporary directory (cross-platform)"""
         import tempfile
-        return Path(tempfile.gettempdir()) / 'ghostos-builder'
+        return Path(tempfile.gettempdir()) / 'heckcheckos-builder'
     
     @staticmethod
     def get_wine_prefix_directory():
@@ -249,7 +249,7 @@ class PlatformHelper:
         else:  # Linux
             # Linux: Use mount command (requires sudo)
             if not mount_point:
-                mount_point = f"/mnt/ghostos-iso-{iso_path.stem}"
+                mount_point = f"/mnt/heckcheckos-iso-{iso_path.stem}"
             
             try:
                 # Create mount point
