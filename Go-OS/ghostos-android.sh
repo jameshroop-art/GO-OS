@@ -5,8 +5,8 @@
 # For Android 9+ (Termux/proot environment)
 # Non-root WiFi/Bluetooth driver patching
 # 
-# SECURITY EDITION - Parrot OS 7
-# - Includes Parrot Security OS (security-focused Linux)
+# SECURITY EDITION - Debian 12
+# - Includes Debian 12 (Bookworm) security-focused Linux
 # - Penetration testing tools available
 # - Forensics and privacy tools
 # - All without root access
@@ -23,7 +23,7 @@ set -e
 
 echo "========================================"
 echo "  👻 GhostOS for Android"
-echo "  🦜 Security Edition - Parrot OS 7"
+echo "  🐧 Security Edition - Debian 12"
 echo "  Version: 1.0-android-security"
 echo "  Target: Android 9+"
 echo "  Security: Knox-Safe | No Root"
@@ -193,25 +193,19 @@ pkg install -y \
     pulseaudio
 
 # ============================================
-# Install Parrot Security OS proot environment
+# Install Debian 12 (Bookworm) proot environment
 # ============================================
 echo ""
-echo "[*] Installing Parrot Security OS 7 proot environment..."
+echo "[*] Installing Debian 12 (Bookworm) proot environment..."
 echo "   (Security-focused Linux distribution with penetration testing tools)"
 echo ""
 
-# Check if parrot is available in proot-distro
-if proot-distro list 2>/dev/null | grep -q "parrot"; then
-    echo "   Installing Parrot OS from proot-distro..."
-    proot-distro install parrot
-else
-    echo "   Parrot OS not in proot-distro, installing Debian base..."
-    echo "   Will configure for Parrot Security tools post-install..."
-    proot-distro install debian
-    
-    # Mark for Parrot configuration
-    INSTALL_PARROT_TOOLS=true
-fi
+# Install Debian 12 from proot-distro
+echo "   Installing Debian 12 (Bookworm) from proot-distro..."
+proot-distro install debian
+
+# Mark for security tools configuration
+INSTALL_SECURITY_TOOLS=true
 
 # ============================================
 # Create GhostOS directory structure
@@ -875,8 +869,8 @@ echo ""
 echo "  ghostos-wifi              - WiFi management"
 echo "  ghostos-bluetooth         - Bluetooth management"
 echo "  ghostos-driver-optimizer  - Optimize drivers"
-echo "  ghostos-parrot            - Launch Parrot Security OS"
-echo "  ghostos-debian            - Launch Linux environment (alias)"
+echo "  ghostos-debian            - Launch Debian 12 (Bookworm) Linux"
+echo "  ghostos-linux             - Launch Linux environment (alias)"
 echo "  ghostos-system            - System information"
 echo ""
 echo "Type 'ghostos-help' for detailed help"
@@ -886,26 +880,22 @@ LAUNCHER_EOF
 chmod +x "$GHOSTOS_HOME/bin/ghostos"
 
 # ============================================
-# Create Parrot Security OS launcher script
+# Create Debian 12 launcher script
 # ============================================
-cat > "$GHOSTOS_HOME/bin/ghostos-parrot" << 'PARROT_EOF'
+cat > "$GHOSTOS_HOME/bin/ghostos-debian" << 'DEBIAN_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-# Launch Parrot Security OS proot environment
+# Launch Debian 12 (Bookworm) proot environment
 
 echo "========================================"
-echo "  🦜 GhostOS Parrot Security"
-echo "  Parrot OS 7 - Security Edition"
+echo "  🐧 GhostOS Debian Security"
+echo "  Debian 12 (Bookworm) - Security Edition"
 echo "========================================"
 echo ""
 
 # Check which distro is installed
-if proot-distro list 2>/dev/null | grep -q "parrot.*installed"; then
-    echo "[*] Launching Parrot Security OS environment..."
-    echo ""
-    proot-distro login parrot
-elif proot-distro list 2>/dev/null | grep -q "debian.*installed"; then
-    echo "[*] Launching Debian environment (Parrot tools available)..."
+if proot-distro list 2>/dev/null | grep -q "debian.*installed"; then
+    echo "[*] Launching Debian 12 (Bookworm) environment..."
     echo ""
     proot-distro login debian
 else
@@ -913,12 +903,12 @@ else
     echo "   Please reinstall GhostOS"
     exit 1
 fi
-PARROT_EOF
+DEBIAN_EOF
 
-chmod +x "$GHOSTOS_HOME/bin/ghostos-parrot"
+chmod +x "$GHOSTOS_HOME/bin/ghostos-debian"
 
 # Create alias for backward compatibility
-ln -sf "$GHOSTOS_HOME/bin/ghostos-parrot" "$GHOSTOS_HOME/bin/ghostos-debian"
+ln -sf "$GHOSTOS_HOME/bin/ghostos-debian" "$GHOSTOS_HOME/bin/ghostos-linux"
 
 # ============================================
 # Create system info script
@@ -949,7 +939,7 @@ echo "  Installation: $HOME/ghostos-android"
 echo "  WiFi Manager: Installed"
 echo "  Bluetooth Manager: Installed"
 echo "  Driver Optimizer: Installed"
-echo "  Linux Environment: Parrot Security OS 7 (or Debian)"
+echo "  Linux Environment: Debian 12 (Bookworm)"
 echo ""
 echo "Hardware:"
 echo "  CPU: $(getprop ro.product.cpu.abi)"
@@ -2556,7 +2546,7 @@ show_removal_instructions() {
     echo "   rm -rf ~/ghostos-android"
     echo ""
     echo "2. Remove Linux environment:"
-    echo "   proot-distro remove parrot  # or: proot-distro remove debian"
+    echo "   proot-distro remove debian"
     echo ""
     echo "3. Edit .bashrc (remove GhostOS lines):"
     echo "   nano ~/.bashrc"
@@ -2974,13 +2964,13 @@ dex_features() {
     echo "  • Termux runs in DeX mode"
     echo "  • Full keyboard/mouse support"
     echo "  • Multi-window with Linux apps"
-    echo "  • Parrot Security OS desktop via VNC"
+    echo "  • Debian 12 (Bookworm) desktop via VNC"
     echo "  • Increased productivity"
     echo ""
     echo "Setup:"
     echo "  1. Connect to DeX Station/Cable"
     echo "  2. Open Termux in DeX mode"
-    echo "  3. Launch ghostos-parrot (or ghostos-debian)"
+    echo "  3. Launch ghostos-debian (or ghostos-linux)"
     echo "  4. Install VNC server for GUI"
     echo "  5. Full Linux desktop on external display"
 }
@@ -3436,8 +3426,8 @@ echo "  • ghostos-device-mask - Device ID masking"
 echo "  • ghostos-verify-system - Verify OS integrity"
 echo "  • ghostos-samsung - Samsung device optimization"
 echo "  • ghostos-lg - LG device optimization"
-echo "  • ghostos-parrot - Launch Parrot Security OS 7"
-echo "  • ghostos-debian - Launch Linux environment (alias)"
+echo "  • ghostos-debian - Launch Debian 12 (Bookworm) Linux"
+echo "  • ghostos-linux - Launch Linux environment (alias)"
 echo "  • ghostos-system - System information"
 echo "  • ghostos-help - Detailed help"
 echo ""
@@ -3532,7 +3522,7 @@ echo "  ✅ Driver bridge system (auto-connects to native drivers)"
 echo "  ✅ Device-specific optimizations (Samsung/LG)"
 echo "  ✅ Security features (Knox-safe, no root)"
 echo "  ✅ 25+ hardware management tools"
-echo "  ✅ Parrot Security OS 7 Linux environment"
+echo "  ✅ Debian 12 (Bookworm) Linux environment"
 echo ""
 echo "Hardware support verified:"
 echo "  • WiFi management: ghostos-wifi"
@@ -3555,7 +3545,7 @@ echo "Next steps:"
 echo "  1. source ~/.bashrc"
 echo "  2. Run: ghostos"
 echo "  3. Try: ghostos-wifi scan"
-echo "  4. Launch Parrot OS: ghostos-parrot"
+echo "  4. Launch Debian: ghostos-debian"
 echo "  5. Get help: ghostos-help"
 echo ""
 echo "==================================="
