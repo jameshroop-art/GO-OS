@@ -115,7 +115,7 @@ Reference: https://www.parrothat.com/pfl.html
 ## Copyright Notices
 
 ### GhostOS Project
-Copyright (c) 2025-2026 GhostOS Contributors
+Copyright (c) 2026 GhostOS Contributors
 
 ### Parrot OS
 Copyright (c) Parrot Security and Contributors
