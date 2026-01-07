@@ -3,6 +3,13 @@
 GhostOS Security Edition - GUI Installer & USB Creator
 Creates bootable USB drives and manages disk partitioning for PC installation
 Supports Windows, Linux, and macOS host systems
+
+LICENSE: MIT (see LICENSE file in repository root)
+
+LEGAL NOTICE:
+This is part of GhostOS, a derivative work based on Parrot OS.
+NOT an official Parrot OS release. NOT endorsed by Parrot Security.
+See LEGAL_COMPLIANCE.md for full legal information.
 """
 
 import sys

@@ -2,6 +2,13 @@
 """
 GhostOS Advanced ISO Builder GUI
 Comprehensive ISO modification and theme customization tool
+
+LICENSE: MIT (see LICENSE file in repository root)
+
+LEGAL NOTICE:
+This is part of GhostOS, a derivative work based on Parrot OS.
+NOT an official Parrot OS release. NOT endorsed by Parrot Security.
+See LEGAL_COMPLIANCE.md for full legal information.
 """
 
 import sys

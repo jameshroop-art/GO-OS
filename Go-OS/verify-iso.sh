@@ -1,6 +1,14 @@
 #!/bin/bash
+# ============================================
 # GhostOS ISO Verification Script
 # Verifies Parrot Security OS ISO integrity before using
+# ============================================
+# LICENSE: MIT (see LICENSE file in repository root)
+# 
+# LEGAL NOTICE:
+# This script is part of GhostOS, a derivative work based on Parrot OS.
+# NOT an official Parrot OS release. See LEGAL_COMPLIANCE.md.
+# ============================================
 
 set -e
 
