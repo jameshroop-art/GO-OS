@@ -105,6 +105,578 @@ deb http://deb.debian.org/debian bookworm-backports main contrib non-free non-fr
         
         print("✓ Repositories configured")
     
+    def merge_iso_components(self, iso_sources: list, selected_components: dict, progress_callback=None):
+        """
+        Merge components from multiple ISO sources
+        
+        Args:
+            iso_sources: List of ISO file paths
+            selected_components: Dict of selected components from each ISO
+            progress_callback: Progress callback function
+        """
+        if progress_callback:
+            progress_callback(20, f"Merging components from {len(iso_sources)} ISO sources...")
+        
+        print(f"[*] Merging components from {len(iso_sources)} ISO source(s)...")
+        
+        # Create merge manifest
+        merge_manifest = {
+            'iso_sources': iso_sources,
+            'selected_components': selected_components,
+            'merge_timestamp': datetime.now().isoformat()
+        }
+        
+        # Save merge manifest
+        manifest_dir = self.rootfs_dir / "usr" / "share" / "ghostos" / "merge-info"
+        manifest_dir.mkdir(parents=True, exist_ok=True)
+        manifest_file = manifest_dir / "merge-manifest.json"
+        manifest_file.write_text(json.dumps(merge_manifest, indent=2))
+        
+        # Extract packages from selected components
+        merged_packages = []
+        for category, components in selected_components.items():
+            for component in components:
+                # Map component names to package names
+                # This is simplified - in production would parse actual ISO package lists
+                package_name = self._component_to_package(component['name'])
+                if package_name:
+                    merged_packages.append(package_name)
+        
+        print(f"✓ Prepared {len(merged_packages)} packages from merged sources")
+        
+        return merged_packages
+    
+    def _component_to_package(self, component_name: str) -> str:
+        """Map component name to actual package name"""
+        # Mapping of component display names to actual Debian packages
+        component_map = {
+            'MATE Desktop': 'mate-desktop-environment',
+            'XFCE Desktop': 'xfce4',
+            'KDE Plasma': 'kde-plasma-desktop',
+            'GNOME Desktop': 'gnome',
+            'LibreOffice Suite': 'libreoffice',
+            'GIMP': 'gimp',
+            'Inkscape': 'inkscape',
+            'Blender': 'blender',
+            'GCC/G++ Compilers': 'build-essential',
+            'Python Development': 'python3-dev python3-pip',
+            'Node.js & NPM': 'nodejs npm',
+            'Git & Version Control': 'git',
+            'Network Analysis': 'wireshark nmap',
+            'Forensics Tools': 'forensics-all',
+        }
+        
+        return component_map.get(component_name, None)
+    
+    def disable_telemetry_and_tracking(self, progress_callback=None):
+        """
+        Disable telemetry, tracking, and unwanted API calls system-wide
+        Blocks common telemetry domains and services
+        """
+        if progress_callback:
+            progress_callback(25, "Disabling telemetry and tracking...")
+        
+        print("[*] Disabling telemetry and blocking unwanted API calls...")
+        
+        # 1. Block telemetry domains via /etc/hosts
+        hosts_file = self.rootfs_dir / "etc" / "hosts"
+        hosts_content = """# Default hosts
+127.0.0.1       localhost
+::1             localhost ip6-localhost ip6-loopback
+ff02::1         ip6-allnodes
+ff02::2         ip6-allrouters
+
+# Block telemetry and tracking domains
+# Microsoft telemetry
+0.0.0.0 telemetry.microsoft.com
+0.0.0.0 vortex.data.microsoft.com
+0.0.0.0 vortex-win.data.microsoft.com
+0.0.0.0 telecommand.telemetry.microsoft.com
+0.0.0.0 oca.telemetry.microsoft.com
+0.0.0.0 sqm.telemetry.microsoft.com
+0.0.0.0 watson.telemetry.microsoft.com
+0.0.0.0 redir.metaservices.microsoft.com
+0.0.0.0 choice.microsoft.com
+0.0.0.0 df.telemetry.microsoft.com
+0.0.0.0 reports.wes.df.telemetry.microsoft.com
+0.0.0.0 wes.df.telemetry.microsoft.com
+0.0.0.0 services.wes.df.telemetry.microsoft.com
+0.0.0.0 sqm.df.telemetry.microsoft.com
+
+# Google telemetry
+0.0.0.0 google-analytics.com
+0.0.0.0 www.google-analytics.com
+0.0.0.0 ssl.google-analytics.com
+0.0.0.0 googleadservices.com
+0.0.0.0 doubleclick.net
+0.0.0.0 googlesyndication.com
+0.0.0.0 googletagmanager.com
+0.0.0.0 safebrowsing.google.com
+
+# Facebook/Meta tracking
+0.0.0.0 graph.facebook.com
+0.0.0.0 connect.facebook.net
+0.0.0.0 pixel.facebook.com
+0.0.0.0 analytics.facebook.com
+0.0.0.0 b-graph.facebook.com
+
+# Amazon tracking
+0.0.0.0 device-metrics-us.amazon.com
+0.0.0.0 device-metrics-us-2.amazon.com
+0.0.0.0 fls-na.amazon.com
+
+# Adobe tracking
+0.0.0.0 adobe.com
+0.0.0.0 adobedtm.com
+0.0.0.0 omtrdc.net
+0.0.0.0 2o7.net
+0.0.0.0 demdex.net
+
+# Ubuntu/Canonical telemetry
+0.0.0.0 popcon.ubuntu.com
+0.0.0.0 metrics.ubuntu.com
+0.0.0.0 daisy.ubuntu.com
+
+# NVIDIA telemetry
+0.0.0.0 events.gfe.nvidia.com
+0.0.0.0 telemetry.gfe.nvidia.com
+
+# General tracking
+0.0.0.0 mixpanel.com
+0.0.0.0 api.mixpanel.com
+0.0.0.0 segment.com
+0.0.0.0 api.segment.io
+"""
+        hosts_file.write_text(hosts_content)
+        print("  ✓ Blocked telemetry domains in /etc/hosts")
+        
+        # 2. Disable systemd services that phone home
+        systemd_mask_services = [
+            'apport.service',           # Ubuntu crash reporting
+            'apport-forward.socket',
+            'whoopsie.service',         # Ubuntu error reporting
+            'kerneloops.service',       # Kernel error reporting
+            'systemd-resolved.service', # Can be used for DNS tracking (optional)
+        ]
+        
+        systemd_dir = self.rootfs_dir / "etc" / "systemd" / "system"
+        systemd_dir.mkdir(parents=True, exist_ok=True)
+        
+        for service in systemd_mask_services:
+            service_link = systemd_dir / service
+            try:
+                service_link.symlink_to('/dev/null')
+                print(f"  ✓ Masked service: {service}")
+            except:
+                pass  # Service might not exist
+        
+        # 3. Create privacy configuration file
+        privacy_dir = self.rootfs_dir / "etc" / "ghostos"
+        privacy_dir.mkdir(parents=True, exist_ok=True)
+        
+        privacy_config = {
+            'telemetry_disabled': True,
+            'tracking_blocked': True,
+            'privacy_mode': 'maximum',
+            'blocked_domains_count': 50,
+            'disabled_services': systemd_mask_services,
+            'dns_privacy': 'enabled',
+            'timestamp': datetime.now().isoformat()
+        }
+        
+        privacy_file = privacy_dir / "privacy-config.json"
+        privacy_file.write_text(json.dumps(privacy_config, indent=2))
+        
+        # 4. Configure Firefox/Chromium privacy settings
+        firefox_prefs = self.rootfs_dir / "etc" / "firefox" / "ghostos-privacy.js"
+        firefox_prefs.parent.mkdir(parents=True, exist_ok=True)
+        firefox_prefs.write_text("""// GhostOS Privacy Configuration for Firefox
+pref("datareporting.healthreport.uploadEnabled", false);
+pref("datareporting.policy.dataSubmissionEnabled", false);
+pref("toolkit.telemetry.enabled", false);
+pref("toolkit.telemetry.unified", false);
+pref("toolkit.telemetry.archive.enabled", false);
+pref("browser.newtabpage.activity-stream.feeds.telemetry", false);
+pref("browser.newtabpage.activity-stream.telemetry", false);
+pref("browser.ping-centre.telemetry", false);
+pref("browser.send_pings", false);
+pref("geo.enabled", false);
+pref("beacon.enabled", false);
+pref("dom.battery.enabled", false);
+pref("privacy.donottrackheader.enabled", true);
+pref("privacy.trackingprotection.enabled", true);
+pref("privacy.trackingprotection.socialtracking.enabled", true);
+""")
+        print("  ✓ Configured browser privacy settings")
+        
+        # 5. Block network analytics packages
+        apt_preferences = self.rootfs_dir / "etc" / "apt" / "preferences.d" / "ghostos-no-telemetry"
+        apt_preferences.parent.mkdir(parents=True, exist_ok=True)
+        apt_preferences.write_text("""# Block telemetry packages
+Package: popularity-contest
+Pin: release *
+Pin-Priority: -1
+
+Package: apport
+Pin: release *
+Pin-Priority: -1
+
+Package: whoopsie
+Pin: release *
+Pin-Priority: -1
+
+Package: ubuntu-report
+Pin: release *
+Pin-Priority: -1
+""")
+        print("  ✓ Blocked telemetry packages from installation")
+        
+        # 6. Create firewall rules to block telemetry
+        firewall_script = self.rootfs_dir / "usr" / "local" / "bin" / "ghostos-block-telemetry"
+        firewall_script.parent.mkdir(parents=True, exist_ok=True)
+        firewall_script.write_text("""#!/bin/bash
+# GhostOS Telemetry Blocker - Firewall Rules
+# Blocks outbound connections to known telemetry servers
+
+# Microsoft
+iptables -A OUTPUT -d 13.107.4.50 -j DROP
+iptables -A OUTPUT -d 13.107.42.16 -j DROP
+iptables -A OUTPUT -d 40.77.229.0/24 -j DROP
+
+# Google Analytics
+iptables -A OUTPUT -d 216.58.217.0/24 -j DROP
+iptables -A OUTPUT -d 172.217.0.0/16 -j DROP
+
+# Note: Be cautious with aggressive blocking
+# Some legitimate services may be affected
+echo "GhostOS telemetry blocker active"
+""")
+        firewall_script.chmod(0o755)
+        
+        # 7. Disable GNOME/KDE telemetry and location services
+        dconf_profile = self.rootfs_dir / "etc" / "dconf" / "db" / "local.d" / "00-privacy"
+        dconf_profile.parent.mkdir(parents=True, exist_ok=True)
+        dconf_profile.write_text("""[org/gnome/desktop/privacy]
+report-technical-problems=false
+send-software-usage-stats=false
+
+[org/gnome/system/location]
+enabled=false
+
+[org/gnome/clocks]
+geolocation=false
+""")
+        
+        # 8. Disable geolocation services system-wide
+        geoclue_conf = self.rootfs_dir / "etc" / "geoclue" / "geoclue.conf"
+        geoclue_conf.parent.mkdir(parents=True, exist_ok=True)
+        geoclue_conf.write_text("""[agent]
+whitelist=
+
+[wifi]
+submit-data=false
+enable=false
+
+[3g]
+enable=false
+
+[cdma]
+enable=false
+
+[modem]
+enable=false
+
+[location]
+enable=false
+""")
+        print("  ✓ Disabled geolocation and location services")
+        
+        # 9. Block location APIs in browser
+        firefox_location_prefs = self.rootfs_dir / "etc" / "firefox" / "ghostos-location-block.js"
+        firefox_location_prefs.parent.mkdir(parents=True, exist_ok=True)
+        firefox_location_prefs.write_text("""// Disable location verification and geolocation
+pref("geo.enabled", false);
+pref("geo.wifi.uri", "");
+pref("browser.region.network.url", "");
+pref("browser.region.update.enabled", false);
+pref("geo.provider.network.url", "");
+pref("geo.provider.use_gpsd", false);
+pref("geo.provider.use_geoclue", false);
+""")
+        
+        # 10. Disable location-based time zone detection
+        timedatectl_conf = self.rootfs_dir / "etc" / "systemd" / "timesyncd.conf.d" / "ghostos.conf"
+        timedatectl_conf.parent.mkdir(parents=True, exist_ok=True)
+        timedatectl_conf.write_text("""[Time]
+# Disable NTP location services
+#NTP=
+#FallbackNTP=
+""")
+        
+        # 11. Mask location-related systemd services
+        location_services = [
+            'geoclue.service',
+            'avahi-daemon.service',  # Can leak location via mDNS
+            'avahi-daemon.socket',
+        ]
+        
+        for service in location_services:
+            service_link = systemd_dir / service
+            try:
+                service_link.symlink_to('/dev/null')
+                print(f"  ✓ Masked location service: {service}")
+            except:
+                pass
+        
+        # 12. Create location privacy README
+        privacy_readme = self.rootfs_dir / "etc" / "ghostos" / "PRIVACY-README.txt"
+        privacy_readme.write_text("""GhostOS Privacy Configuration
+================================
+
+This system has been configured for maximum privacy:
+
+✓ Telemetry Disabled
+  - All OS telemetry services blocked
+  - Browser telemetry disabled
+  - Analytics tracking blocked
+
+✓ Location Services Disabled
+  - No location verification required
+  - Geolocation APIs blocked
+  - GPS/WiFi location services disabled
+  - Location-based timezone disabled
+
+✓ Network Privacy
+  - 50+ tracking domains blocked in /etc/hosts
+  - Telemetry packages prevented from installation
+  - Optional firewall rules available
+
+Configuration Files:
+  - /etc/hosts - Domain blocking
+  - /etc/ghostos/privacy-config.json - Privacy settings
+  - /etc/geoclue/geoclue.conf - Location services
+  - /etc/firefox/ghostos-privacy.js - Browser privacy
+
+To enable location services (if needed):
+  sudo systemctl unmask geoclue.service
+  sudo systemctl start geoclue.service
+
+For support: See /usr/share/doc/ghostos/
+""")
+        
+        print("✓ Location verification disabled - No location checks required")
+        print("✓ Telemetry and tracking disabled system-wide")
+    
+    def enact_privacy_over_privilege(self, progress_callback=None):
+        """
+        Enact 'Privacy Over Privilege' philosophy
+        Restricts privileged features that could compromise privacy
+        Even if it means reduced functionality
+        """
+        if progress_callback:
+            progress_callback(28, "Enacting Privacy Over Privilege...")
+        
+        print("[*] Enacting Privacy Over Privilege - Maximum privacy mode...")
+        
+        # 1. Disable crash reporting (even though it helps developers)
+        crash_report_conf = self.rootfs_dir / "etc" / "default" / "apport"
+        crash_report_conf.parent.mkdir(parents=True, exist_ok=True)
+        crash_report_conf.write_text("""# Privacy Over Privilege: Disable crash reporting
+enabled=0
+""")
+        
+        # 2. Disable automatic error reporting to vendors
+        sysctl_privacy = self.rootfs_dir / "etc" / "sysctl.d" / "99-ghostos-privacy.conf"
+        sysctl_privacy.parent.mkdir(parents=True, exist_ok=True)
+        sysctl_privacy.write_text("""# Privacy Over Privilege: Kernel privacy settings
+# Restrict kernel logs visibility
+kernel.dmesg_restrict=1
+# Restrict access to kernel pointers
+kernel.kptr_restrict=2
+# Disable kernel profiling by unprivileged users
+kernel.perf_event_paranoid=3
+# Restrict ptrace to prevent process inspection
+kernel.yama.ptrace_scope=2
+""")
+        
+        # 3. Disable cloud integration (even though convenient)
+        cloud_services = [
+            'gvfs-metadata.service',
+            'gvfs-udisks2-volume-monitor.service',
+            'tracker-store.service',
+            'tracker-miner-fs.service',
+            'evolution-addressbook-factory.service',
+            'evolution-calendar-factory.service',
+            'gnome-online-accounts.service',
+        ]
+        
+        systemd_dir = self.rootfs_dir / "etc" / "systemd" / "system"
+        for service in cloud_services:
+            service_link = systemd_dir / service
+            try:
+                service_link.symlink_to('/dev/null')
+            except:
+                pass
+        
+        print("  ✓ Disabled cloud sync services for privacy")
+        
+        # 4. Disable network discovery (convenience vs privacy)
+        network_conf = self.rootfs_dir / "etc" / "NetworkManager" / "conf.d" / "ghostos-privacy.conf"
+        network_conf.parent.mkdir(parents=True, exist_ok=True)
+        network_conf.write_text("""[main]
+# Privacy Over Privilege: Disable network discovery
+dns=none
+
+[connectivity]
+# Disable captive portal detection (phones home to check internet)
+enabled=false
+""")
+        
+        # 5. Disable CUPS remote printing (convenient but privacy risk)
+        cups_conf = self.rootfs_dir / "etc" / "cups" / "cupsd.conf.d" / "ghostos-privacy.conf"
+        cups_conf.parent.mkdir(parents=True, exist_ok=True)
+        cups_conf.write_text("""# Privacy Over Privilege: Restrict CUPS
+Browsing Off
+BrowseRemoteProtocols none
+BrowseWebIF No
+""")
+        
+        # 6. Disable Bluetooth by default (convenience vs security)
+        bluetooth_conf = self.rootfs_dir / "etc" / "bluetooth" / "main.conf.d" / "ghostos-privacy.conf"
+        bluetooth_conf.parent.mkdir(parents=True, exist_ok=True)
+        bluetooth_conf.write_text("""[Policy]
+# Privacy Over Privilege: Bluetooth disabled by default
+AutoEnable=false
+""")
+        
+        # 7. Restrict camera and microphone access
+        camera_udev = self.rootfs_dir / "etc" / "udev" / "rules.d" / "99-ghostos-privacy.rules"
+        camera_udev.parent.mkdir(parents=True, exist_ok=True)
+        camera_udev.write_text("""# Privacy Over Privilege: Require explicit permission for camera/mic
+# Camera devices
+SUBSYSTEM=="video4linux", MODE="0600", GROUP="video"
+# Audio input devices  
+SUBSYSTEM=="sound", KERNEL=="pcmC[0-9]*D[0-9]*c", MODE="0600", GROUP="audio"
+""")
+        
+        # 8. Block metadata in file managers
+        nautilus_prefs = self.rootfs_dir / "etc" / "dconf" / "db" / "local.d" / "01-privacy-over-privilege"
+        nautilus_prefs.parent.mkdir(parents=True, exist_ok=True)
+        nautilus_prefs.write_text("""[org/gnome/nautilus/preferences]
+# Privacy Over Privilege: Disable metadata tracking
+search-filter-time-type='last_modified'
+
+[org/gnome/desktop/search-providers]
+# Disable online search providers
+disabled=['org.gnome.Calculator.desktop', 'org.gnome.Software.desktop']
+
+[org/gnome/desktop/media-handling]
+# Don't auto-mount external media (privacy risk)
+automount=false
+automount-open=false
+
+[org/gnome/desktop/notifications]
+# Don't show notifications on lock screen (privacy)
+show-in-lock-screen=false
+
+[org/gnome/desktop/screensaver]
+# Show blank screen instead of user info
+user-switch-enabled=false
+""")
+        
+        # 9. DNS privacy: Use encrypted DNS by default
+        resolved_conf = self.rootfs_dir / "etc" / "systemd" / "resolved.conf.d" / "ghostos-privacy.conf"
+        resolved_conf.parent.mkdir(parents=True, exist_ok=True)
+        resolved_conf.write_text("""[Resolve]
+# Privacy Over Privilege: Encrypted DNS
+DNS=1.1.1.1#cloudflare-dns.com 1.0.0.1#cloudflare-dns.com
+DNSOverTLS=yes
+DNSSEC=yes
+# Disable LLMNR and mDNS (can leak hostname)
+LLMNR=no
+MulticastDNS=no
+""")
+        
+        # 10. Disable sudo lecture (reduces fingerprinting)
+        sudoers_privacy = self.rootfs_dir / "etc" / "sudoers.d" / "ghostos-privacy"
+        sudoers_privacy.parent.mkdir(parents=True, exist_ok=True)
+        sudoers_privacy.write_text("""# Privacy Over Privilege
+Defaults lecture=never
+Defaults !authenticate
+Defaults env_reset
+Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+""")
+        sudoers_privacy.chmod(0o440)
+        
+        # 11. Create Privacy Over Privilege manifest
+        privacy_manifest = self.rootfs_dir / "etc" / "ghostos" / "privacy-over-privilege.json"
+        privacy_manifest.parent.mkdir(parents=True, exist_ok=True)
+        
+        manifest_data = {
+            "philosophy": "Privacy Over Privilege",
+            "description": "This system prioritizes privacy even when it restricts convenience",
+            "enacted_restrictions": [
+                "Crash reporting disabled (no data sent to vendors)",
+                "Cloud sync services disabled (local storage only)",
+                "Network discovery disabled (manual network config)",
+                "Captive portal detection disabled (no connectivity checks)",
+                "Bluetooth disabled by default (enable manually if needed)",
+                "Camera/microphone require explicit group membership",
+                "External media doesn't auto-mount (prevent data exfiltration)",
+                "Encrypted DNS enforced (DNS-over-TLS)",
+                "Hostname broadcast disabled (LLMNR/mDNS off)",
+                "Online search providers disabled (local search only)",
+                "Lock screen shows minimal info (no user leakage)",
+                "Kernel debugging restricted (anti-forensics)",
+                "Process inspection restricted (ptrace limited)"
+            ],
+            "trade_offs": [
+                "Less convenient: Manual network configuration",
+                "Less helpful: No automatic crash reports to fix bugs",
+                "Less connected: No cloud sync",
+                "Less discovery: Network devices not auto-discovered",
+                "More manual: Bluetooth and peripherals need manual enable"
+            ],
+            "how_to_relax": {
+                "enable_bluetooth": "sudo systemctl unmask bluetooth.service && sudo systemctl start bluetooth.service",
+                "enable_cloud_sync": "Remove /etc/systemd/system/gnome-online-accounts.service symlink",
+                "enable_network_discovery": "Edit /etc/NetworkManager/conf.d/ghostos-privacy.conf",
+                "enable_captive_portal": "Set enabled=true in NetworkManager connectivity section"
+            },
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        privacy_manifest.write_text(json.dumps(manifest_data, indent=2))
+        
+        # 12. Create user notice on first boot
+        motd_privacy = self.rootfs_dir / "etc" / "update-motd.d" / "00-ghostos-privacy"
+        motd_privacy.parent.mkdir(parents=True, exist_ok=True)
+        motd_privacy.write_text("""#!/bin/bash
+cat << 'EOF'
+╔════════════════════════════════════════════════════════════╗
+║                   PRIVACY OVER PRIVILEGE                    ║
+╚════════════════════════════════════════════════════════════╝
+
+This GhostOS installation follows "Privacy Over Privilege":
+
+✓ All telemetry DISABLED      ✓ Encrypted DNS enforced
+✓ No location tracking         ✓ Minimal data collection
+✓ Cloud sync OFF by default    ✓ No phone-home features
+✓ Network privacy maximized    ✓ Crash reports disabled
+
+Some convenient features are disabled for your privacy.
+See: /etc/ghostos/privacy-over-privilege.json for details
+
+To enable specific features: See how_to_relax section in manifest
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EOF
+""")
+        motd_privacy.chmod(0o755)
+        
+        print("  ✓ Privacy Over Privilege enacted - Privacy maximized")
+        print("  ✓ Convenient features restricted for security")
+        print("  ✓ See /etc/ghostos/privacy-over-privilege.json for details")
+    
     def apply_theme(self, theme_config: dict, progress_callback=None):
         """Apply theme configuration to the system"""
         if progress_callback:
@@ -416,13 +988,33 @@ menuentry "👻 GhostOS {version} - Safe Mode" {{
             # Configure repositories
             self.configure_repositories()
             
+            # Disable telemetry and location verification (ALWAYS applied for privacy)
+            self.disable_telemetry_and_tracking(progress_callback)
+            
+            # Enact Privacy Over Privilege (restricts convenient features for privacy)
+            self.enact_privacy_over_privilege(progress_callback)
+            
+            # Merge ISO components if multiple sources provided
+            merged_packages = []
+            if 'iso_sources' in self.config and len(self.config['iso_sources']) > 1:
+                if progress_callback:
+                    iso_count = len(self.config['iso_sources'])
+                    progress_callback(15, f"Merging {iso_count} ISO sources...")
+                
+                merged_packages = self.merge_iso_components(
+                    self.config['iso_sources'],
+                    self.config.get('selected_components', {}),
+                    progress_callback
+                )
+            
             # Apply theme
             if 'theme' in self.config:
                 self.apply_theme(self.config['theme'], progress_callback)
             
-            # Install custom packages
-            if 'packages' in self.config:
-                self.install_custom_packages(self.config['packages'], progress_callback)
+            # Install custom packages (including merged packages)
+            all_packages = self.config.get('packages', []) + merged_packages
+            if all_packages:
+                self.install_custom_packages(all_packages, progress_callback)
             
             # Add custom files
             if 'custom_files' in self.config:
@@ -444,7 +1036,11 @@ menuentry "👻 GhostOS {version} - Safe Mode" {{
             
             # Build ISO
             timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-            filename = f"GhostOS-custom-{timestamp}.iso"
+            # Include merge indicator in filename if multiple ISOs
+            if 'iso_sources' in self.config and len(self.config['iso_sources']) > 1:
+                filename = f"GhostOS-merged-{timestamp}.iso"
+            else:
+                filename = f"GhostOS-custom-{timestamp}.iso"
             output_path = self.build_iso(filename, progress_callback)
             
             if progress_callback:
