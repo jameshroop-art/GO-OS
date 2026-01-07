@@ -31,7 +31,7 @@ The GhostOS Build System allows you to build custom Linux distributions with adv
 - Kernel and drivers (AMD, NVIDIA)
 - Gaming support
 - AI/ML tools
-- Security tools (Parrot + GhostOS)
+- Security tools (Kali + GhostOS)
 
 #### v1.1 - Enhanced Edition
 All v1.0 features plus:
