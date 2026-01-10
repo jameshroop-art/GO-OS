@@ -53,7 +53,15 @@ class MicrosoftDriverSource:
             cache_dir: Directory for caching downloaded drivers
         """
         self.cache_dir = Path(cache_dir)
-        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        try:
+            self.cache_dir.mkdir(parents=True, exist_ok=True)
+        except (PermissionError, OSError) as e:
+            # Fall back to temp directory if we can't create in /var/cache
+            import tempfile
+            self.cache_dir = Path(tempfile.gettempdir()) / "heckcheckos_drivers"
+            self.cache_dir.mkdir(parents=True, exist_ok=True)
+            logger.warning(f"Using temporary cache directory: {self.cache_dir}")
+        
         self.driver_db_path = self.cache_dir / "driver_database.json"
         self.driver_database = self._load_driver_database()
     
@@ -87,7 +95,7 @@ class MicrosoftDriverSource:
         Get driver information for a specific device
         
         Args:
-            device_id: Device hardware ID (e.g., PCI\VEN_8086&DEV_1234)
+            device_id: Device hardware ID (e.g., PCI\\VEN_8086&DEV_1234)
             category: Driver category filter
             
         Returns:
