@@ -57,8 +57,8 @@ class MicrosoftDriverSource:
             self.cache_dir.mkdir(parents=True, exist_ok=True)
         except (PermissionError, OSError) as e:
             # Fall back to temp directory if we can't create in /var/cache
-            import tempfile
-            self.cache_dir = Path(tempfile.gettempdir()) / "heckcheckos_drivers"
+            import tempfile as tmp
+            self.cache_dir = Path(tmp.gettempdir()) / "heckcheckos_drivers"
             self.cache_dir.mkdir(parents=True, exist_ok=True)
             logger.warning(f"Using temporary cache directory: {self.cache_dir}")
         

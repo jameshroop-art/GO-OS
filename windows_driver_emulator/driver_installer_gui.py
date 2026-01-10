@@ -348,14 +348,14 @@ class SmallDriverGUI(QMainWindow):
                     install_btn = QPushButton("Install")
                     install_btn.setObjectName("installButton")
                     install_btn.clicked.connect(
-                        lambda checked, d=driver: self.install_driver(d)
+                        lambda checked, driver_info=driver: self.install_driver(driver_info)
                     )
                     action_layout.addWidget(install_btn)
                 else:
                     uninstall_btn = QPushButton("Remove")
                     uninstall_btn.setObjectName("uninstallButton")
                     uninstall_btn.clicked.connect(
-                        lambda checked, d=driver: self.uninstall_driver(d)
+                        lambda checked, driver_info=driver: self.uninstall_driver(driver_info)
                     )
                     action_layout.addWidget(uninstall_btn)
                 
