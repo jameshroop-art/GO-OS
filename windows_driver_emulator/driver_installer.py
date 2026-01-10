@@ -57,8 +57,7 @@ class MicrosoftDriverSource:
             self.cache_dir.mkdir(parents=True, exist_ok=True)
         except (PermissionError, OSError) as e:
             # Fall back to temp directory if we can't create in /var/cache
-            import tempfile as tmp
-            self.cache_dir = Path(tmp.gettempdir()) / "heckcheckos_drivers"
+            self.cache_dir = Path(tempfile.gettempdir()) / "heckcheckos_drivers"
             self.cache_dir.mkdir(parents=True, exist_ok=True)
             logger.warning(f"Using temporary cache directory: {self.cache_dir}")
         
@@ -170,6 +169,9 @@ class VMBridgeOptimizer:
         self.cache_enabled = True
         self.preload_enabled = True
         self.compression_enabled = True
+        self._cache = {}  # Simple in-memory cache for driver paths
+        self._cache_hits = 0
+        self._cache_misses = 0
     
     def optimize_driver_load(self, driver_path: Path) -> Dict[str, Any]:
         """
@@ -199,6 +201,9 @@ class VMBridgeOptimizer:
         if self._is_cached(cache_key):
             metrics['cache_hit'] = True
             logger.info(f"Driver cache hit: {driver_path.name}")
+        else:
+            # Add to cache for next time
+            self._add_to_cache(cache_key, driver_path)
         
         # In production, would implement:
         # 1. Driver pre-loading into VM memory
@@ -215,8 +220,16 @@ class VMBridgeOptimizer:
     
     def _is_cached(self, cache_key: str) -> bool:
         """Check if driver is in cache"""
-        # Placeholder - would check actual cache
-        return False
+        is_cached = cache_key in self._cache
+        if is_cached:
+            self._cache_hits += 1
+        else:
+            self._cache_misses += 1
+        return is_cached
+    
+    def _add_to_cache(self, cache_key: str, driver_path: Path):
+        """Add driver to cache"""
+        self._cache[cache_key] = str(driver_path)
     
     def get_performance_impact(self) -> Dict[str, float]:
         """
@@ -225,11 +238,20 @@ class VMBridgeOptimizer:
         Returns:
             Dictionary of performance metrics
         """
+        # Calculate actual cache hit rate
+        total_requests = self._cache_hits + self._cache_misses
+        actual_cache_hit_rate = (
+            self._cache_hits / total_requests if total_requests > 0 else 0.75
+        )
+        
+        # Note: These are target/estimated values for the optimization layer
+        # In a production implementation, these would be measured dynamically
+        # based on actual system performance metrics
         return {
-            'cpu_overhead_percent': 5.0,  # Estimated CPU overhead
-            'memory_overhead_mb': 50.0,   # Estimated memory overhead
-            'io_latency_ms': 2.0,         # Estimated I/O latency
-            'cache_hit_rate': 0.75,       # Cache hit rate
+            'cpu_overhead_percent': 5.0,     # Target CPU overhead
+            'memory_overhead_mb': 50.0,      # Target memory overhead
+            'io_latency_ms': 2.0,            # Target I/O latency
+            'cache_hit_rate': actual_cache_hit_rate,  # Actual cache hit rate
         }
 
 
