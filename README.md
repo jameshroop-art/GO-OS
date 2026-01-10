@@ -276,7 +276,6 @@ Contributions welcome! Please:
 
 **Heck-CheckOS build scripts and configuration** are licensed under the MIT License. See [LICENSE](LICENSE) file.
 
-<<<<<<< HEAD
 **Important Legal Information:**
 - 📋 **Full Legal Compliance**: See [LEGAL_COMPLIANCE.md](LEGAL_COMPLIANCE.md)
 - ⚖️ **Trademark Notice**: Not affiliated with Ghost Foundation

@@ -415,9 +415,50 @@ class KeyboardLayoutDesigner(QDialog):
         
     def update_single_key(self, row_idx: int, key_idx: int, key_data: dict):
         """Update a single key without recreating entire canvas"""
-        # For now, just re-render the canvas
-        # TODO: Implement efficient single-key update
-        self.render_canvas()
+        # Find the specific key widget and update it
+        if row_idx >= self.canvas_layout.count():
+            # Row doesn't exist, fall back to full render
+            self.render_canvas()
+            return
+        
+        # Get the row widget
+        row_item = self.canvas_layout.itemAt(row_idx)
+        if not row_item or not row_item.widget():
+            self.render_canvas()
+            return
+        
+        row_widget = row_item.widget()
+        row_layout = row_widget.layout()
+        
+        if not row_layout or key_idx >= row_layout.count():
+            self.render_canvas()
+            return
+        
+        # Get the key button
+        key_item = row_layout.itemAt(key_idx)
+        if not key_item or not key_item.widget():
+            self.render_canvas()
+            return
+        
+        key_btn = key_item.widget()
+        if not isinstance(key_btn, QPushButton):
+            self.render_canvas()
+            return
+        
+        # Update the button properties efficiently
+        key_btn.setText(key_data.get('label', ''))
+        width = int(50 * key_data.get('width', 1.0))
+        key_btn.setMinimumSize(width, 50)
+        key_btn.setMaximumSize(width, 50)
+        
+        # Apply custom styling if colors are specified
+        bg_color = key_data.get('bg_color', '#2d2d2d')
+        fg_color = key_data.get('fg_color', '#e0e0e0')
+        font_size = key_data.get('font_size', 11)
+        
+        # Import KeyboardKey for stylesheet utility
+        from ui.touchscreen_keyboard import KeyboardKey
+        key_btn.setStyleSheet(KeyboardKey.get_custom_stylesheet(bg_color, fg_color, font_size))
         
     def add_row(self):
         """Add new row to layout"""

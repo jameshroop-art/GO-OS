@@ -54,6 +54,28 @@ class KeyboardKey(QPushButton):
                 color: white;
             }
         """)
+    
+    @staticmethod
+    def get_custom_stylesheet(bg_color='#2d2d2d', fg_color='#e0e0e0', font_size=11):
+        """Generate custom stylesheet for keyboard keys"""
+        return f"""
+            QPushButton {{
+                background-color: {bg_color};
+                color: {fg_color};
+                font-size: {font_size}pt;
+                border: 1px solid #3d3d3d;
+                border-radius: 4px;
+                padding: 5px;
+            }}
+            QPushButton:hover {{
+                background-color: #3d3d3d;
+                border: 1px solid #0078d4;
+            }}
+            QPushButton:pressed {{
+                background-color: #0078d4;
+                color: white;
+            }}
+        """
 
 
 class TouchscreenKeyboard(QWidget):
@@ -554,5 +576,61 @@ class TouchscreenKeyboard(QWidget):
         if designer.exec():
             # Apply the custom layout
             layout_data = designer.get_layout()
-            # TODO: Implement custom layout rendering
+            self.render_custom_layout(layout_data)
             print(f"Custom layout created: {layout_data.get('name', 'Unnamed')}")
+    
+    def render_custom_layout(self, layout_data: dict):
+        """Render a custom keyboard layout from layout data"""
+        if not layout_data or 'keys' not in layout_data:
+            print("Invalid layout data")
+            return
+        
+        # Clear existing layout
+        while self.keyboard_layout.count():
+            child = self.keyboard_layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+        
+        # Group keys by row
+        rows_dict = {}
+        for key_data in layout_data['keys']:
+            row = key_data.get('row', 0)
+            if row not in rows_dict:
+                rows_dict[row] = []
+            rows_dict[row].append(key_data)
+        
+        # Sort rows and create layout
+        for row_num in sorted(rows_dict.keys()):
+            row_layout = QHBoxLayout()
+            row_layout.setSpacing(2)
+            
+            # Sort keys in row by column
+            row_keys = sorted(rows_dict[row_num], key=lambda k: k.get('col', 0))
+            
+            for key_data in row_keys:
+                label = key_data.get('label', '')
+                value = key_data.get('value', label)
+                width = key_data.get('width', 50) / 50.0  # Convert to multiplier
+                
+                # Create key button
+                btn = KeyboardKey(label, value, width)
+                
+                # Connect appropriate handler based on key type
+                key_type = key_data.get('type', 'normal')
+                if key_type == 'shift':
+                    btn.clicked.connect(self.toggle_shift)
+                elif key_type == 'caps':
+                    btn.clicked.connect(self.toggle_caps_lock)
+                elif label.isalpha() and len(label) == 1:
+                    # Single letter keys use letter handler
+                    btn.clicked.connect(lambda checked, k=label.lower(): self.on_letter_click(k))
+                else:
+                    # All other keys (including special chars like \n, \b, \t) use key_click handler
+                    btn.clicked.connect(lambda checked, v=value: self.on_key_click(v))
+                
+                row_layout.addWidget(btn)
+            
+            self.keyboard_layout.addLayout(row_layout)
+        
+        # Update current layout name
+        self.current_layout = layout_data.get('name', 'custom')
