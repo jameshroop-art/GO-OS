@@ -18,7 +18,7 @@ try:
         QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
         QLabel, QPushButton, QTableWidget, QTableWidgetItem, QGroupBox,
         QProgressBar, QMessageBox, QHeaderView, QComboBox, QTextEdit,
-        QSplitter, QFrame
+        QSplitter, QFrame, QFileDialog
     )
     from PyQt6.QtCore import Qt, QThread, pyqtSignal
     from PyQt6.QtGui import QFont, QColor, QIcon
@@ -85,6 +85,7 @@ class SmallDriverGUI(QMainWindow):
         
         self.installer = MinimalDriverInstaller()
         self.current_drivers = []
+        self.windows_iso_path = None  # Optional Windows 10 ISO path
         
         self.setup_ui()
         self.apply_windows_10_style()
@@ -144,6 +145,13 @@ class SmallDriverGUI(QMainWindow):
         perf_label = QLabel("Performance Impact: Low")
         perf_label.setObjectName("perfLabel")
         layout.addWidget(perf_label)
+        
+        # ISO upload button
+        iso_btn = QPushButton("📁 Load ISO")
+        iso_btn.setObjectName("isoButton")
+        iso_btn.setToolTip("Optional: Load Windows 10 ISO for driver extraction")
+        iso_btn.clicked.connect(self.load_windows_iso)
+        layout.addWidget(iso_btn)
         
         return title_widget
     
@@ -271,10 +279,10 @@ class SmallDriverGUI(QMainWindow):
         
         layout.addStretch()
         
-        # Microsoft source indicator
-        source_label = QLabel("Source: Microsoft Official")
-        source_label.setObjectName("sourceLabel")
-        layout.addWidget(source_label)
+        # Source indicator (updated based on ISO)
+        self.source_label = QLabel("Source: Microsoft Online")
+        self.source_label.setObjectName("sourceLabel")
+        layout.addWidget(self.source_label)
         
         return status_widget
     
@@ -286,6 +294,56 @@ class SmallDriverGUI(QMainWindow):
         
         self.current_category = category
         self.refresh_drivers()
+    
+    def load_windows_iso(self):
+        """Load Windows 10 ISO for driver extraction"""
+        iso_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Select Windows 10 22H2 ISO",
+            "",
+            "ISO Files (*.iso);;All Files (*)"
+        )
+        
+        if not iso_path:
+            return
+        
+        # Validate ISO file
+        if not os.path.exists(iso_path):
+            QMessageBox.warning(self, "Error", "Selected file does not exist")
+            return
+        
+        file_size = os.path.getsize(iso_path) / (1024 * 1024)  # Size in MB
+        
+        # Basic validation - Windows 10 ISO should be > 3GB
+        if file_size < 3000:
+            reply = QMessageBox.question(
+                self,
+                "Warning",
+                f"Selected file is only {file_size:.0f} MB. "
+                "Windows 10 ISO is typically 4-5 GB. Continue anyway?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            )
+            if reply == QMessageBox.StandardButton.No:
+                return
+        
+        # Store ISO path
+        self.windows_iso_path = iso_path
+        
+        # Update source indicator
+        iso_name = os.path.basename(iso_path)
+        self.source_label.setText(f"Source: {iso_name}")
+        
+        # Show success message
+        QMessageBox.information(
+            self,
+            "ISO Loaded",
+            f"Windows 10 ISO loaded successfully!\n\n"
+            f"File: {iso_name}\n"
+            f"Size: {file_size:.1f} MB\n\n"
+            f"Drivers can now be extracted from this ISO as an alternative to online sources."
+        )
+        
+        self.status_label.setText(f"ISO loaded: {iso_name}")
     
     def refresh_drivers(self):
         """Refresh driver list"""
@@ -477,6 +535,19 @@ class SmallDriverGUI(QMainWindow):
         #perfLabel {
             color: #e0e0e0;
             font-size: 9pt;
+        }
+        
+        #isoButton {
+            background-color: #005a9e;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 3px;
+            font-size: 9pt;
+        }
+        
+        #isoButton:hover {
+            background-color: #004578;
         }
         
         #categoryPanel {

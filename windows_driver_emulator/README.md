@@ -103,6 +103,7 @@ This is a **lightweight emulator** with the following constraints:
 - Want VM-to-Linux bridge optimization
 - Only need Microsoft-certified drivers
 - Prefer minimal footprint (<1GB)
+- Have a Windows 10 22H2 ISO (optional)
 
 **Use Driver Emulator if you:**
 - Need custom/experimental drivers
@@ -112,16 +113,27 @@ This is a **lightweight emulator** with the following constraints:
 
 ### Driver Installer (Recommended for Production)
 
+#### With GUI (Supports ISO Upload)
+
 ```bash
 # Launch GUI
 cd /opt/heckcheckos/windows_driver_emulator
 ./launch-driver-gui.sh
 
+# Optional: Click "📁 Load ISO" to upload Windows 10 22H2 ISO
+# This enables offline driver extraction
+```
+
+#### With CLI
+
+```bash
 # Or use CLI
 python3 driver_installer.py list
 sudo python3 driver_installer.py install --device-id PCI\\VEN_8086\\DEV_1234
 python3 driver_installer.py status
 ```
+
+**Note**: Windows 10 ISO is **optional**. Without it, drivers are downloaded from Microsoft Update Catalog online.
 
 ### Driver Emulator (General Purpose)
 

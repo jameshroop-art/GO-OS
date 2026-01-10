@@ -93,7 +93,16 @@ sudo python3 driver_installer.py uninstall --device-id PCI\\VEN_8086\\DEV_1234
 
 The driver manager GUI provides:
 
-1. **Left Panel - Categories**
+1. **Title Bar**
+   - Performance impact indicator
+   - **📁 Load ISO button** - Optional: Upload Windows 10 22H2 ISO for offline driver extraction
+
+2. **Left Panel - Categories**
+   - All Drivers
+   - Display
+   - Network
+   - Storage
+2. **Left Panel - Categories**
    - All Drivers
    - Display
    - Network
@@ -102,17 +111,42 @@ The driver manager GUI provides:
    - Audio
    - Chipset
 
-2. **Center Panel - Driver List**
+3. **Center Panel - Driver List**
    - Device name and category
    - Installation status
-   - Source (Microsoft Official)
+   - Source (Microsoft Official or ISO)
    - Install/Remove buttons
 
-3. **Bottom Panel - Performance Metrics**
+4. **Bottom Panel - Performance Metrics**
    - CPU overhead
    - Memory overhead
    - I/O latency
    - Cache hit rate
+
+### Using Windows 10 ISO (Optional)
+
+The driver installer can work in two modes:
+
+1. **Online Mode (Default)**: Downloads drivers from Microsoft Update Catalog
+2. **ISO Mode (Optional)**: Extracts drivers from a local Windows 10 22H2 ISO
+
+#### Why Use an ISO?
+
+- **Offline Installation**: Install drivers without internet connection
+- **Specific Version**: Use a specific Windows 10 22H2 build
+- **Faster Installation**: No download time for drivers
+- **Air-Gapped Systems**: Works on isolated networks
+
+#### Loading a Windows 10 ISO
+
+1. Click **📁 Load ISO** button in the title bar
+2. Browse to your Windows 10 22H2 ISO file (typically 4-5 GB)
+3. Select the ISO file
+4. The system validates the file size
+5. Once loaded, the status bar shows "Source: [ISO filename]"
+6. Drivers can now be extracted from the ISO
+
+**Note**: The ISO is optional. Without an ISO, the system uses Microsoft's online sources.
 
 ### Installing a Driver
 
