@@ -1,16 +1,29 @@
-# Windows Driver Emulator for Heck-CheckOS
+# Windows Driver System for Heck-CheckOS
 
 ## Overview
 
-A lightweight Windows driver compatibility layer for Heck-CheckOS/Debian 12, enabling Windows driver functionality on the Linux host without Wine or virtualization.
+A comprehensive Windows driver solution for Heck-CheckOS/Debian 12 with two complementary tools:
+
+1. **Driver Emulator** - General-purpose driver compatibility layer
+2. **Driver Installer** ⭐ NEW - Minimal Windows 10 22H2 style installer optimized for VM-to-Linux bridge
+
+Both enable Windows driver functionality on Linux without Wine or virtualization.
 
 ## Purpose
 
-This emulator provides a temporary compatibility layer that:
+### Driver Emulator
+General-purpose compatibility layer that:
 - Translates Windows driver calls to Linux kernel equivalents
 - Supports common Windows device drivers (USB, HID, Storage, Network)
 - Runs natively on the host OS without VM overhead
 - Maintains security by isolating driver operations
+
+### Driver Installer ⭐ NEW
+Focused installer for production use:
+- **Minimal footprint** - Windows 10 22H2 essential drivers only (<1GB)
+- **VM bridge optimized** - Low performance impact (<5% overhead)
+- **Microsoft sources** - Official drivers with signature verification
+- **Small GUI** - Windows 10 style minimal interface
 
 ## Architecture
 
@@ -81,18 +94,48 @@ This is a **lightweight emulator** with the following constraints:
 - Performance may vary depending on driver complexity
 - Not suitable for kernel-mode only drivers
 
-## Usage
+## Quick Start
 
-### Installation
+### Choose Your Tool
 
-The emulator is automatically installed with Heck-CheckOS. To manually install:
+**Use Driver Installer if you:**
+- Need production-ready drivers
+- Want VM-to-Linux bridge optimization
+- Only need Microsoft-certified drivers
+- Prefer minimal footprint (<1GB)
+- Have a Windows 10 22H2 ISO (optional)
+
+**Use Driver Emulator if you:**
+- Need custom/experimental drivers
+- Want maximum flexibility
+- Don't mind larger footprint
+- Need development/testing features
+
+### Driver Installer (Recommended for Production)
+
+#### With GUI (Supports ISO Upload)
 
 ```bash
+# Launch GUI
 cd /opt/heckcheckos/windows_driver_emulator
-sudo python3 install.py
+./launch-driver-gui.sh
+
+# Optional: Click "📁 Load ISO" to upload Windows 10 22H2 ISO
+# This enables offline driver extraction
 ```
 
-### Loading a Driver
+#### With CLI
+
+```bash
+# Or use CLI
+python3 driver_installer.py list
+sudo python3 driver_installer.py install --device-id PCI\\VEN_8086\\DEV_1234
+python3 driver_installer.py status
+```
+
+**Note**: Windows 10 ISO is **optional**. Without it, drivers are downloaded from Microsoft Update Catalog online.
+
+### Driver Emulator (General Purpose)
 
 ```bash
 # Load a Windows driver
@@ -148,6 +191,21 @@ To add support for a new device type:
 2. Implement required methods (init, read, write, ioctl)
 3. Register handler in `emulator.py`
 4. Add tests in `tests/test_new_device.py`
+
+## Documentation
+
+### Complete Guides
+
+- **[DRIVER_INSTALLER_GUIDE.md](DRIVER_INSTALLER_GUIDE.md)** - Complete guide for the minimal Windows 10 22H2 driver installer
+- **[USAGE_GUIDE.md](USAGE_GUIDE.md)** - Complete guide for the driver emulator
+- **[README.md](README.md)** - This file, overview of the system
+
+### Quick Links
+
+- Driver Installer: `./launch-driver-gui.sh` - Small GUI for Microsoft drivers
+- Driver Emulator: `heckcheckos-driver-*` commands - General-purpose CLI tools
+- Configuration: `/etc/heckcheckos/driver-emulator.conf`
+- Logs: `/var/log/heckcheckos/driver-emulator.log`
 
 ## License
 
