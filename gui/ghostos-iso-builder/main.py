@@ -680,8 +680,24 @@ class HeckCheckOSBuilderGUI(QMainWindow):
         )
         
         if file_path:
-            # TODO: Implement configuration saving
-            QMessageBox.information(self, "Saved", f"Configuration saved to:\n{file_path}")
+            import json
+            try:
+                # Gather configuration from all widgets
+                config = {
+                    'version': '1.0.0',
+                    'theme': self.theme_editor.get_current_theme() if hasattr(self.theme_editor, 'get_current_theme') else {},
+                    'iso_path': self.iso_loader.get_iso_path() if hasattr(self.iso_loader, 'get_iso_path') else None,
+                    'self_install': self.preview_pane.get_self_install_config() if hasattr(self.preview_pane, 'get_self_install_config') else {},
+                    'current_theme_name': self.current_theme if isinstance(self.current_theme, str) else 'default'
+                }
+                
+                # Write configuration to file
+                with open(file_path, 'w') as f:
+                    json.dump(config, f, indent=2)
+                
+                QMessageBox.information(self, "Saved", f"Configuration saved to:\n{file_path}")
+            except Exception as e:
+                QMessageBox.critical(self, "Error", f"Failed to save configuration:\n{str(e)}")
             
     def load_configuration(self):
         """Load configuration from file"""
@@ -693,8 +709,26 @@ class HeckCheckOSBuilderGUI(QMainWindow):
         )
         
         if file_path:
-            # TODO: Implement configuration loading
-            QMessageBox.information(self, "Loaded", f"Configuration loaded from:\n{file_path}")
+            import json
+            try:
+                # Read configuration from file
+                with open(file_path, 'r') as f:
+                    config = json.load(f)
+                
+                # Apply configuration to widgets
+                if 'theme' in config and hasattr(self.theme_editor, 'load_theme'):
+                    self.theme_editor.load_theme(config['theme'])
+                
+                if 'current_theme_name' in config:
+                    self.current_theme = config['current_theme_name']
+                
+                if 'self_install' in config and hasattr(self.preview_pane, 'load_self_install_config'):
+                    self.preview_pane.load_self_install_config(config['self_install'])
+                
+                QMessageBox.information(self, "Loaded", f"Configuration loaded from:\n{file_path}")
+                self.statusBar().showMessage(f"Configuration loaded: {Path(file_path).name}")
+            except Exception as e:
+                QMessageBox.critical(self, "Error", f"Failed to load configuration:\n{str(e)}")
             
     def show_about(self):
         """Show about dialog"""
