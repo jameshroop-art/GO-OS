@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """
 Small Driver Installer GUI - Windows 10 22H2 Minimal Style
-Lightweight GUI for managing drivers from Microsoft sources
+NOW: Linux-side GUI client that projects Windows VM driver manager
+Communicates with Windows VM via RPC for actual driver operations
+
+Architecture: Linux GUI (projection) ←RPC→ Windows VM (driver operations)
 
 LICENSE: MIT (see LICENSE file in repository root)
 """
@@ -26,70 +29,124 @@ except ImportError:
     print("Error: PyQt6 required. Install with: pip install PyQt6")
     sys.exit(1)
 
-from driver_installer import (
-    MinimalDriverInstaller,
-    MicrosoftDriverSource,
-    VMBridgeOptimizer
-)
+# Import RPC client and VM manager
+from rpc_layer import RPCClient
+from vm_manager import VMManager
 
 
-class DriverInstallThread(QThread):
-    """Background thread for driver operations"""
+class DriverRPCThread(QThread):
+    """Background thread for RPC driver operations with Windows VM"""
     progress = pyqtSignal(int, str)
     finished = pyqtSignal(bool, str)
     
-    def __init__(self, action, device_id=None, category=None):
+    def __init__(self, rpc_client, action, device_id=None, category=None):
         super().__init__()
+        self.rpc_client = rpc_client
         self.action = action
         self.device_id = device_id
         self.category = category
-        self.installer = MinimalDriverInstaller()
     
     def run(self):
-        """Execute driver operation"""
+        """Execute driver operation via RPC to Windows VM"""
         try:
             if self.action == 'list':
-                self.progress.emit(50, "Scanning devices...")
-                drivers = self.installer.list_required_drivers(self.category)
+                self.progress.emit(50, "Querying Windows VM...")
+                drivers = self.rpc_client.list_drivers(self.category)
                 self.progress.emit(100, "Scan complete")
-                self.finished.emit(True, f"Found {len(drivers)} drivers")
+                if drivers is not None:
+                    self.finished.emit(True, f"Found {len(drivers)} drivers")
+                else:
+                    self.finished.emit(False, "Failed to list drivers from VM")
             
             elif self.action == 'install':
-                self.progress.emit(25, "Downloading driver...")
-                self.progress.emit(50, "Verifying signature...")
-                self.progress.emit(75, "Installing driver...")
-                success, message = self.installer.install_driver(self.device_id)
+                self.progress.emit(25, "Sending install command to VM...")
+                self.progress.emit(50, "VM installing driver...")
+                self.progress.emit(75, "Verifying installation...")
+                success = self.rpc_client.install_driver(self.device_id)
                 self.progress.emit(100, "Complete")
-                self.finished.emit(success, message)
+                if success:
+                    self.finished.emit(True, f"Driver installed in Windows VM")
+                else:
+                    self.finished.emit(False, "VM installation failed")
             
             elif self.action == 'uninstall':
-                self.progress.emit(50, "Removing driver...")
-                success, message = self.installer.uninstall_driver(self.device_id)
+                self.progress.emit(50, "VM removing driver...")
+                success = self.rpc_client.uninstall_driver(self.device_id)
                 self.progress.emit(100, "Complete")
-                self.finished.emit(success, message)
+                if success:
+                    self.finished.emit(True, "Driver uninstalled from Windows VM")
+                else:
+                    self.finished.emit(False, "VM uninstallation failed")
         
         except Exception as e:
-            self.finished.emit(False, str(e))
+            self.finished.emit(False, f"RPC error: {str(e)}")
 
 
 class SmallDriverGUI(QMainWindow):
     """
-    Small, focused driver management GUI
-    Minimal Windows 10 22H2 style interface
+    Linux-side GUI client - Projects Windows VM driver manager
+    Architecture: GUI client ←RPC→ Windows VM (actual driver operations)
     """
     
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Driver Manager - Windows 10 22H2 Style")
+        self.setWindowTitle("Driver Manager - Windows VM Projection")
         self.setGeometry(200, 200, 900, 600)
         
-        self.installer = MinimalDriverInstaller()
+        # VM and RPC client
+        self.vm_manager = VMManager()
+        self.rpc_client = RPCClient()
+        self.vm_connected = False
+        
         self.current_drivers = []
         self.windows_iso_path = None  # Optional Windows 10 ISO path
         
         self.setup_ui()
         self.apply_windows_10_style()
-        self.refresh_drivers()
+        
+        # Try to connect to VM
+        self.connect_to_vm()
+    
+    def connect_to_vm(self):
+        """Connect to Windows VM via RPC"""
+        # Check if VM is running
+        if not self.vm_manager.is_running():
+            reply = QMessageBox.question(
+                self,
+                "VM Not Running",
+                "Windows Driver VM is not running. Start it now?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            )
+            
+            if reply == QMessageBox.StandardButton.Yes:
+                if not self.vm_manager.start_vm():
+                    QMessageBox.critical(self, "Error", "Failed to start Windows VM")
+                    return
+                
+                # Wait a moment for VM to boot
+                import time
+                time.sleep(5)
+        
+        # Connect RPC client
+        if self.rpc_client.connect():
+            self.vm_connected = True
+            self.status_label.setText("Connected to Windows VM")
+            self.refresh_drivers()
+        else:
+            self.vm_connected = False
+            QMessageBox.warning(
+                self,
+                "Connection Failed",
+                "Could not connect to Windows VM.\n"
+                "Make sure the VM is running and the driver service is started."
+            )
+            self.status_label.setText("Not connected to VM")
+    
+    def closeEvent(self, event):
+        """Handle window close"""
+        if self.vm_connected:
+            self.rpc_client.disconnect()
+        event.accept()
     
     def setup_ui(self):
         """Setup minimal user interface"""
@@ -346,19 +403,90 @@ class SmallDriverGUI(QMainWindow):
         self.status_label.setText(f"ISO loaded: {iso_name}")
     
     def refresh_drivers(self):
-        """Refresh driver list"""
-        self.status_label.setText("Scanning for drivers...")
+        """Refresh driver list from Windows VM"""
+        if not self.vm_connected:
+            self.status_label.setText("Not connected to VM")
+            return
+        
+        self.status_label.setText("Querying Windows VM...")
         self.progress_bar.setVisible(True)
         self.progress_bar.setValue(0)
         
         # Get current category filter
         category = getattr(self, 'current_category', None)
         
-        # Start background thread
-        self.scan_thread = DriverInstallThread('list', category=category)
+        # Start background thread to query VM
+        self.scan_thread = DriverRPCThread(self.rpc_client, 'list', category=category)
         self.scan_thread.progress.connect(self.on_progress)
         self.scan_thread.finished.connect(self.on_scan_complete)
         self.scan_thread.start()
+    
+    def on_scan_complete(self, success, message):
+        """Handle scan completion from Windows VM"""
+        self.progress_bar.setVisible(False)
+        
+        if success:
+            # Get drivers from VM via RPC
+            category = getattr(self, 'current_category', None)
+            drivers = self.rpc_client.list_drivers(category)
+            
+            if drivers:
+                self.current_drivers = drivers
+                
+                # Populate table
+                self.driver_table.setRowCount(len(drivers))
+                
+                for row, driver in enumerate(drivers):
+                    # Device name
+                    name_item = QTableWidgetItem(driver.get('device_name', 'Unknown'))
+                    self.driver_table.setItem(row, 0, name_item)
+                    
+                    # Category
+                    cat_item = QTableWidgetItem(driver.get('category', 'other').capitalize())
+                    self.driver_table.setItem(row, 1, cat_item)
+                    
+                    # Status
+                    status = driver.get('status', 'unknown')
+                    status_item = QTableWidgetItem(
+                        '✓ Installed' if status == 'installed' else '⚠ Needs Driver'
+                    )
+                    if status == 'installed':
+                        status_item.setForeground(QColor(0, 128, 0))
+                    else:
+                        status_item.setForeground(QColor(255, 140, 0))
+                    self.driver_table.setItem(row, 2, status_item)
+                    
+                    # Source
+                    source_item = QTableWidgetItem("Windows VM")
+                    self.driver_table.setItem(row, 3, source_item)
+                    
+                    # Action button
+                    action_widget = QWidget()
+                    action_layout = QHBoxLayout(action_widget)
+                    action_layout.setContentsMargins(5, 2, 5, 2)
+                    
+                    if status == 'needs_driver':
+                        install_btn = QPushButton("Install")
+                        install_btn.setObjectName("installButton")
+                        install_btn.clicked.connect(
+                            lambda checked, driver_info=driver: self.install_driver(driver_info)
+                        )
+                        action_layout.addWidget(install_btn)
+                    else:
+                        uninstall_btn = QPushButton("Remove")
+                        uninstall_btn.setObjectName("uninstallButton")
+                        uninstall_btn.clicked.connect(
+                            lambda checked, driver_info=driver: self.uninstall_driver(driver_info)
+                        )
+                        action_layout.addWidget(uninstall_btn)
+                    
+                    self.driver_table.setCellWidget(row, 4, action_widget)
+                
+                self.status_label.setText(f"Connected to Windows VM - {len(drivers)} drivers")
+            else:
+                self.status_label.setText("No drivers found in VM")
+        else:
+            self.status_label.setText(f"VM query failed: {message}")
     
     def on_scan_complete(self, success, message):
         """Handle scan completion"""
