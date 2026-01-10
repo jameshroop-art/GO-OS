@@ -54,6 +54,28 @@ class KeyboardKey(QPushButton):
                 color: white;
             }
         """)
+    
+    @staticmethod
+    def get_custom_stylesheet(bg_color='#2d2d2d', fg_color='#e0e0e0', font_size=11):
+        """Generate custom stylesheet for keyboard keys"""
+        return f"""
+            QPushButton {{
+                background-color: {bg_color};
+                color: {fg_color};
+                font-size: {font_size}pt;
+                border: 1px solid #3d3d3d;
+                border-radius: 4px;
+                padding: 5px;
+            }}
+            QPushButton:hover {{
+                background-color: #3d3d3d;
+                border: 1px solid #0078d4;
+            }}
+            QPushButton:pressed {{
+                background-color: #0078d4;
+                color: white;
+            }}
+        """
 
 
 class TouchscreenKeyboard(QWidget):
@@ -599,15 +621,11 @@ class TouchscreenKeyboard(QWidget):
                     btn.clicked.connect(self.toggle_shift)
                 elif key_type == 'caps':
                     btn.clicked.connect(self.toggle_caps_lock)
-                elif value == '\n':
-                    btn.clicked.connect(lambda checked, v=value: self.on_key_click(v))
-                elif value == '\b':
-                    btn.clicked.connect(lambda checked, v=value: self.on_key_click(v))
-                elif value == '\t':
-                    btn.clicked.connect(lambda checked, v=value: self.on_key_click(v))
                 elif label.isalpha() and len(label) == 1:
+                    # Single letter keys use letter handler
                     btn.clicked.connect(lambda checked, k=label.lower(): self.on_letter_click(k))
                 else:
+                    # All other keys (including special chars like \n, \b, \t) use key_click handler
                     btn.clicked.connect(lambda checked, v=value: self.on_key_click(v))
                 
                 row_layout.addWidget(btn)

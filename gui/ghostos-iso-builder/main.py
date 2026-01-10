@@ -13,6 +13,7 @@ See LEGAL_COMPLIANCE.md for full legal information.
 
 import sys
 import os
+import json
 from pathlib import Path
 
 try:
@@ -680,7 +681,6 @@ class HeckCheckOSBuilderGUI(QMainWindow):
         )
         
         if file_path:
-            import json
             try:
                 # Gather configuration from all widgets
                 config = {
@@ -709,7 +709,6 @@ class HeckCheckOSBuilderGUI(QMainWindow):
         )
         
         if file_path:
-            import json
             try:
                 # Read configuration from file
                 with open(file_path, 'r') as f:

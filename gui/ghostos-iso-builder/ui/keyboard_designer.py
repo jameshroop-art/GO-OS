@@ -456,24 +456,9 @@ class KeyboardLayoutDesigner(QDialog):
         fg_color = key_data.get('fg_color', '#e0e0e0')
         font_size = key_data.get('font_size', 11)
         
-        key_btn.setStyleSheet(f"""
-            QPushButton {{
-                background-color: {bg_color};
-                color: {fg_color};
-                font-size: {font_size}pt;
-                border: 1px solid #3d3d3d;
-                border-radius: 4px;
-                padding: 5px;
-            }}
-            QPushButton:hover {{
-                background-color: #3d3d3d;
-                border: 1px solid #0078d4;
-            }}
-            QPushButton:pressed {{
-                background-color: #0078d4;
-                color: white;
-            }}
-        """)
+        # Import KeyboardKey for stylesheet utility
+        from ui.touchscreen_keyboard import KeyboardKey
+        key_btn.setStyleSheet(KeyboardKey.get_custom_stylesheet(bg_color, fg_color, font_size))
         
     def add_row(self):
         """Add new row to layout"""
