@@ -913,7 +913,8 @@ See: windows_driver_emulator/VM_ARCHITECTURE.md for details
         """Recursively enable widget and children"""
         try:
             widget.configure(state=tk.NORMAL)
-        except:
+        except (tk.TclError, AttributeError):
+            # Widget doesn't support state or other Tk errors
             pass
         for child in widget.winfo_children():
             self._enable_widget(child)
@@ -922,7 +923,8 @@ See: windows_driver_emulator/VM_ARCHITECTURE.md for details
         """Recursively disable widget and children"""
         try:
             widget.configure(state=tk.DISABLED)
-        except:
+        except (tk.TclError, AttributeError):
+            # Widget doesn't support state or other Tk errors
             pass
         for child in widget.winfo_children():
             self._disable_widget(child)
@@ -941,9 +943,11 @@ See: windows_driver_emulator/VM_ARCHITECTURE.md for details
                 else:
                     messagebox.showinfo("VM Architecture",
                         f"VM architecture documentation:\n{vm_arch_path}")
-            except:
+            except (OSError, subprocess.SubprocessError) as e:
+                # Could not open file, show path instead
                 messagebox.showinfo("VM Architecture",
-                    f"VM architecture documentation location:\n{vm_arch_path}")
+                    f"VM architecture documentation location:\n{vm_arch_path}\n\n"
+                    f"(Could not open automatically: {e})")
         else:
             messagebox.showinfo("VM Architecture",
                 "VM architecture documentation:\n\n"

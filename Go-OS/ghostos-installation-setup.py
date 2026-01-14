@@ -208,7 +208,18 @@ class InstallationSetupGUI:
         
         # Show Android-specific options if Android is selected
         if device == "android":
-            self.android_options_frame.pack(fill=tk.X, pady=10, after=self.info_frame.master.winfo_children()[1])
+            # Insert after device_frame (which should be the second child)
+            main_frame = self.info_frame.master
+            device_frame = None
+            for child in main_frame.winfo_children():
+                if isinstance(child, ttk.LabelFrame) and "Device Type" in str(child.cget('text')):
+                    device_frame = child
+                    break
+            if device_frame:
+                self.android_options_frame.pack(fill=tk.X, pady=10, after=device_frame)
+            else:
+                # Fallback: just pack it
+                self.android_options_frame.pack(fill=tk.X, pady=10)
         
         # Update info display
         self.info_text.config(state=tk.NORMAL)
@@ -646,8 +657,12 @@ def main():
     try:
         style = ttk.Style()
         style.theme_use('clam')
-    except:
+    except tk.TclError:
+        # Theme not available, use default
         pass
+    except Exception as e:
+        # Other theme-related errors, use default
+        print(f"Warning: Could not set theme: {e}")
     
     # Create app
     app = InstallationSetupGUI(root)
