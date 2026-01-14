@@ -30,7 +30,23 @@ except ImportError:
 class HeckCheckOSInstallerGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("Heck-CheckOS Security Edition - Installer & USB Creator")
+        
+        # Check for installation mode from environment
+        self.grub_mode = os.environ.get('GHOSTOS_GRUB_MODE', '0') == '1'
+        self.laptop_mode = os.environ.get('GHOSTOS_LAPTOP_MODE', '0') == '1'
+        self.usb_mode = os.environ.get('GHOSTOS_USB_MODE', '0') == '1'
+        
+        # Set title based on mode
+        if self.grub_mode:
+            title_suffix = " - Grub2 Multi-boot Installation"
+        elif self.laptop_mode:
+            title_suffix = " - Laptop Installation"
+        elif self.usb_mode:
+            title_suffix = " - USB Creator"
+        else:
+            title_suffix = " - Installer & USB Creator"
+        
+        self.root.title("Heck-CheckOS Security Edition" + title_suffix)
         self.root.geometry("900x700")
         self.root.resizable(True, True)
         
@@ -40,6 +56,9 @@ class HeckCheckOSInstallerGUI:
         self.partition_format = tk.StringVar(value="ext4")
         self.install_mode = tk.StringVar(value="usb")
         self.drives_list = []
+        
+        # Driver VM integration
+        self.enable_driver_vm = tk.BooleanVar(value=False)
         
         # Check admin/root
         self.is_admin = self.check_admin_rights()
@@ -71,13 +90,35 @@ class HeckCheckOSInstallerGUI:
                         font=("Arial", 24, "bold"), fg="white", bg="#2c3e50")
         title.pack(pady=10)
         
-        subtitle = tk.Label(header, text="Bootable USB Creator & Disk Partitioner", 
+        # Dynamic subtitle based on mode
+        if self.grub_mode:
+            subtitle_text = "Grub2 Multi-boot Installation"
+        elif self.laptop_mode:
+            subtitle_text = "Laptop-Optimized Installation"
+        elif self.usb_mode:
+            subtitle_text = "Bootable USB Creator"
+        else:
+            subtitle_text = "Bootable USB Creator & Disk Partitioner"
+        
+        subtitle = tk.Label(header, text=subtitle_text, 
                            font=("Arial", 12), fg="#ecf0f1", bg="#2c3e50")
         subtitle.pack()
         
         # Main container
         main = ttk.Frame(self.root, padding="20")
         main.pack(fill=tk.BOTH, expand=True)
+        
+        # Mode indicator
+        if self.grub_mode or self.laptop_mode:
+            mode_text = "Mode: "
+            if self.grub_mode:
+                mode_text += "Multi-boot with Grub2"
+            if self.laptop_mode:
+                mode_text += "Laptop Optimization Enabled"
+            
+            mode_label = tk.Label(main, text=f"ℹ️  {mode_text}", 
+                                font=("Arial", 10, "bold"), fg="#2980b9")
+            mode_label.pack(pady=5)
         
         # Admin warning
         if not self.is_admin:
@@ -103,6 +144,12 @@ class HeckCheckOSInstallerGUI:
         advanced_tab = ttk.Frame(notebook)
         notebook.add(advanced_tab, text="⚙️ Advanced Options")
         self.setup_advanced_tab(advanced_tab)
+        
+        # Tab 4: Driver VM (if PC/Laptop mode)
+        if not self.usb_mode:
+            driver_vm_tab = ttk.Frame(notebook)
+            notebook.add(driver_vm_tab, text="🔧 Driver VM")
+            self.setup_driver_vm_tab(driver_vm_tab)
         
         # Status bar
         self.status_bar = tk.Label(self.root, text="Ready", bd=1, relief=tk.SUNKEN, anchor=tk.W)
@@ -741,6 +788,189 @@ class HeckCheckOSInstallerGUI:
         self.req_text.insert(tk.END, "• Legacy BIOS boot (MBR compatibility)\n")
         self.req_text.insert(tk.END, "• Secure Boot (if enabled in advanced)\n")
         self.req_text.insert(tk.END, "• 32-bit and 64-bit UEFI\n")
+    
+    def setup_driver_vm_tab(self, parent):
+        """Setup Driver VM configuration tab"""
+        # Introduction
+        intro_frame = ttk.LabelFrame(parent, text="Windows Driver VM Integration", padding="15")
+        intro_frame.pack(fill=tk.X, padx=10, pady=10)
+        
+        intro_text = tk.Label(intro_frame,
+            text="Enable lightweight Windows 10 VM for Windows driver compatibility.\n"
+                 "VM handles driver operations with minimal resource usage (512MB RAM, 1 CPU core).",
+            font=("Arial", 10), justify=tk.LEFT, wraplength=800)
+        intro_text.pack(anchor=tk.W)
+        
+        # Enable/Disable Driver VM
+        enable_frame = ttk.Frame(intro_frame)
+        enable_frame.pack(fill=tk.X, pady=10)
+        
+        ttk.Checkbutton(enable_frame, 
+                       text="Enable Driver Controller VM (Windows driver support)",
+                       variable=self.enable_driver_vm,
+                       command=self.toggle_driver_vm_options).pack(anchor=tk.W)
+        
+        # Driver VM Configuration (initially disabled)
+        self.driver_vm_config_frame = ttk.LabelFrame(parent, text="Driver VM Configuration", padding="15")
+        self.driver_vm_config_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        # VM Resource Settings
+        resources_frame = ttk.LabelFrame(self.driver_vm_config_frame, text="VM Resources", padding="10")
+        resources_frame.pack(fill=tk.X, pady=5)
+        
+        ttk.Label(resources_frame, text="RAM Allocation:").grid(row=0, column=0, sticky=tk.W, padx=5, pady=5)
+        self.vm_ram = tk.StringVar(value="512")
+        ram_combo = ttk.Combobox(resources_frame, textvariable=self.vm_ram, 
+                                values=["512", "1024", "2048"], state="readonly", width=10)
+        ram_combo.grid(row=0, column=1, padx=5)
+        ttk.Label(resources_frame, text="MB").grid(row=0, column=2, sticky=tk.W)
+        
+        ttk.Label(resources_frame, text="CPU Cores:").grid(row=1, column=0, sticky=tk.W, padx=5, pady=5)
+        self.vm_cpu = tk.StringVar(value="1")
+        cpu_combo = ttk.Combobox(resources_frame, textvariable=self.vm_cpu,
+                                values=["1", "2"], state="readonly", width=10)
+        cpu_combo.grid(row=1, column=1, padx=5)
+        ttk.Label(resources_frame, text="cores").grid(row=1, column=2, sticky=tk.W)
+        
+        # Process Isolation
+        isolation_frame = ttk.LabelFrame(self.driver_vm_config_frame, text="Process Isolation", padding="10")
+        isolation_frame.pack(fill=tk.X, pady=5)
+        
+        self.enable_isolation = tk.BooleanVar(value=True)
+        ttk.Checkbutton(isolation_frame,
+                       text="Enable process isolation (disable non-driver Windows services)",
+                       variable=self.enable_isolation).pack(anchor=tk.W)
+        
+        isolation_info = tk.Label(isolation_frame,
+            text="Process isolation disables 40+ unnecessary Windows services,\n"
+                 "keeping only driver-essential processes. Saves RAM and CPU.",
+            font=("Arial", 9), fg="#555", justify=tk.LEFT)
+        isolation_info.pack(anchor=tk.W, padx=20, pady=5)
+        
+        # VM Architecture Information
+        arch_frame = ttk.LabelFrame(self.driver_vm_config_frame, text="Architecture Overview", padding="10")
+        arch_frame.pack(fill=tk.BOTH, expand=True, pady=5)
+        
+        arch_text = scrolledtext.ScrolledText(arch_frame, height=12, wrap=tk.WORD, font=("Consolas", 9))
+        arch_text.pack(fill=tk.BOTH, expand=True)
+        
+        arch_info = """Driver VM Architecture:
+
+Linux Host (Debian 12)
+    ↓
+Driver Manager GUI (Client)
+    ↓ RPC Communication (Port 9999)
+    ↓
+Windows 10 VM (Minimal/Isolated)
+    ↓
+Windows Driver Service
+    ↓
+Native Windows Driver APIs
+
+Features:
+• Lightweight: 512MB RAM, 1 CPU core, 8GB disk
+• Process Isolation: ~15 processes vs ~100 in normal Windows
+• Native Driver Support: Full Windows API compatibility
+• RPC Communication: <5ms latency, minimal overhead
+• Essential Services Only:
+  - PlugPlay (Plug and Play)
+  - DeviceInstall (Device Installation)
+  - RpcSs (RPC communication)
+  - CryptSvc (Driver signatures)
+  
+Performance Impact:
+• Total CPU: <5% (VM + RPC + GUI)
+• Total Memory: <650MB (VM 512MB + GUI 100MB + RPC 10MB)
+• Boot Time: ~15 seconds (optimized)
+
+See: windows_driver_emulator/VM_ARCHITECTURE.md for details
+"""
+        arch_text.insert(tk.END, arch_info)
+        arch_text.config(state=tk.DISABLED)
+        
+        # Action Buttons
+        btn_frame = ttk.Frame(self.driver_vm_config_frame)
+        btn_frame.pack(fill=tk.X, pady=10)
+        
+        ttk.Button(btn_frame, text="📖 View VM Architecture",
+                  command=self.view_vm_architecture).pack(side=tk.LEFT, padx=5)
+        ttk.Button(btn_frame, text="🔧 Configure VM",
+                  command=self.configure_vm).pack(side=tk.LEFT, padx=5)
+        
+        # Initially disable config frame
+        self.toggle_driver_vm_options()
+    
+    def toggle_driver_vm_options(self):
+        """Enable/disable driver VM configuration options"""
+        if self.enable_driver_vm.get():
+            for child in self.driver_vm_config_frame.winfo_children():
+                self._enable_widget(child)
+        else:
+            for child in self.driver_vm_config_frame.winfo_children():
+                self._disable_widget(child)
+    
+    def _enable_widget(self, widget):
+        """Recursively enable widget and children"""
+        try:
+            widget.configure(state=tk.NORMAL)
+        except:
+            pass
+        for child in widget.winfo_children():
+            self._enable_widget(child)
+    
+    def _disable_widget(self, widget):
+        """Recursively disable widget and children"""
+        try:
+            widget.configure(state=tk.DISABLED)
+        except:
+            pass
+        for child in widget.winfo_children():
+            self._disable_widget(child)
+    
+    def view_vm_architecture(self):
+        """Open VM architecture documentation"""
+        vm_arch_path = Path(__file__).parent.parent / "windows_driver_emulator" / "VM_ARCHITECTURE.md"
+        
+        if vm_arch_path.exists():
+            try:
+                # Try to open in default text editor
+                if os.name == 'nt':
+                    os.startfile(vm_arch_path)
+                elif os.name == 'posix':
+                    subprocess.Popen(['xdg-open', str(vm_arch_path)])
+                else:
+                    messagebox.showinfo("VM Architecture",
+                        f"VM architecture documentation:\n{vm_arch_path}")
+            except:
+                messagebox.showinfo("VM Architecture",
+                    f"VM architecture documentation location:\n{vm_arch_path}")
+        else:
+            messagebox.showinfo("VM Architecture",
+                "VM architecture documentation:\n\n"
+                "The Driver VM uses a lightweight Windows 10 VM to handle\n"
+                "Windows driver operations with minimal resource usage.\n\n"
+                "See: windows_driver_emulator/VM_ARCHITECTURE.md")
+    
+    def configure_vm(self):
+        """Launch VM configuration"""
+        vm_script = Path(__file__).parent.parent / "windows_driver_emulator" / "vm_manager.py"
+        
+        if vm_script.exists():
+            messagebox.showinfo("VM Configuration",
+                "Driver VM configuration:\n\n"
+                "1. VM will be created during installation\n"
+                "2. Minimal Windows 10 will be installed\n"
+                "3. Process isolation will be configured\n"
+                "4. Driver service will be setup\n\n"
+                f"Manual setup: python3 {vm_script}")
+        else:
+            messagebox.showinfo("VM Configuration",
+                "Driver VM will be configured automatically during installation.\n\n"
+                "Configuration includes:\n"
+                "• VM disk creation (8GB)\n"
+                "• Windows 10 minimal installation\n"
+                "• Process isolation setup\n"
+                "• Driver service installation")
 
 def main():
     """Main entry point"""

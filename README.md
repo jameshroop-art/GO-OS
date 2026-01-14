@@ -84,6 +84,24 @@ Lightweight Linux environment for Android with non-root WiFi/Bluetooth managemen
 
 ## 📦 Quick Start
 
+### Installation Setup (Recommended)
+
+Use the interactive installation setup GUI to choose your device type:
+
+```bash
+cd Go-OS
+sudo bash ghostos-installation-setup.sh
+```
+
+This launches a GUI where you can select:
+- 🖥️ Standard PC (BIOS/UEFI)
+- 🖥️ PC with Grub2 (Multi-boot)
+- 💻 Laptop (Optimized)
+- 💾 Bootable USB (with SD card option)
+- 📱 Android (Termux - Android 9+)
+
+Each option guides you through the specific installation process for your device.
+
 ### Desktop/Server Installation
 
 ```bash
@@ -130,6 +148,10 @@ Installs:
 
 **👉 [Complete Documentation Index](Go-OS/DOCUMENTATION_INDEX.md)** - Full documentation listing
 
+### Installation
+- **[Installation Setup Guide](Go-OS/INSTALLATION_SETUP_GUIDE.md)** - Device type selection and setup
+- **[GUI Installer Guide](Go-OS/GUI_INSTALLER_GUIDE.md)** - Bootable USB and partitioning
+
 ### Desktop/Server
 - **[Build System README](Go-OS/GHOSTOS_BUILD_README.md)** - Complete build guide
 - **[Quick Reference](Go-OS/GHOSTOS_QUICK_REFERENCE.md)** - Fast command reference
@@ -142,6 +164,10 @@ Installs:
 - **[Quick Reference](Go-OS/ANDROID_QUICK_REFERENCE.md)** - Command cheat sheet
 - **[Technical Details](Go-OS/ANDROID_TECHNICAL_DETAILS.md)** - Architecture and compatibility
 - **[Install Script](Go-OS/heckcheckos-android.sh)** - Android installer
+
+### Driver VM
+- **[VM Architecture](windows_driver_emulator/VM_ARCHITECTURE.md)** - Driver VM design and usage
+- **[Driver Installer Guide](windows_driver_emulator/DRIVER_INSTALLER_GUIDE.md)** - Driver management
 
 ### General
 - **[FAQ](Go-OS/FAQ.md)** - Frequently Asked Questions
