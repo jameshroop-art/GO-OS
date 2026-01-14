@@ -902,6 +902,11 @@ See: windows_driver_emulator/VM_ARCHITECTURE.md for details
     
     def toggle_driver_vm_options(self):
         """Enable/disable driver VM configuration options"""
+        # Note: Recursive widget state changes are acceptable here since:
+        # 1. The widget hierarchy is shallow (max 3-4 levels)
+        # 2. This operation is infrequent (only on checkbox toggle)
+        # 3. The number of widgets is small (<20 widgets total)
+        # For larger/deeper hierarchies, consider widget state caching
         if self.enable_driver_vm.get():
             for child in self.driver_vm_config_frame.winfo_children():
                 self._enable_widget(child)

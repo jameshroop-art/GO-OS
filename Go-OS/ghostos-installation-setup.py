@@ -511,6 +511,9 @@ installation based on your phone's make, model, and Android version.
                 "   pkg update && pkg upgrade\n"
                 "   pkg install wget\n"
                 "   wget https://raw.githubusercontent.com/jameshroop-art/GO-OS/main/Go-OS/ghostos-android.sh\n"
+                "   # TODO: Add checksum verification for security:\n"
+                "   # wget https://raw.githubusercontent.com/jameshroop-art/GO-OS/main/Go-OS/ghostos-android.sh.sha256\n"
+                "   # sha256sum -c ghostos-android.sh.sha256\n"
                 "   chmod +x ghostos-android.sh\n"
                 f"   bash ghostos-android.sh --source={install_type}\n\n"
                 "Or visit the repository for installation instructions.")
@@ -539,6 +542,7 @@ Option 2 - Direct download on Android device:
    pkg update && pkg upgrade -y
    pkg install wget -y
    wget https://raw.githubusercontent.com/jameshroop-art/GO-OS/main/Go-OS/ghostos-android.sh
+   # Recommended: Verify checksum (TODO: add .sha256 file to repo)
    chmod +x ghostos-android.sh
    bash ghostos-android.sh --source={install_type}
 
