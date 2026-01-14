@@ -1,4 +1,4 @@
-# Heck-CheckOS - Multi-Platform Operating System
+# HeckOS - Multi-Platform Operating System
 
 Complete operating system distribution available for multiple platforms with advanced privacy features, driver support, and full customization.
 
@@ -14,22 +14,22 @@ Full-featured **Debian 12 (Bookworm)**-based distribution with multiple versions
 
 **Base Operating System:** Debian 12 (Bookworm) - Stable Linux distribution
 
-**Heck-CheckOS Features:**
+**HeckOS Features:**
 - ✅ BIOS/UEFI boot support
 - ✅ AMD AM5/ASUS platform optimizations
 - ✅ Gaming and AI/ML tools
 - ✅ Enhanced privacy controls
-- ✅ Security tools and hardening (Kali + Heck-CheckOS)
-- ✅ Custom Heck-CheckOS GUI and desktop environment
+- ✅ Security tools and hardening (Kali + HeckOS)
+- ✅ Custom HeckOS GUI and desktop environment
 
 **Documentation:** See [`GHOSTOS_BUILD_README.md`](Go-OS/GHOSTOS_BUILD_README.md) and [`GHOSTOS_QUICK_REFERENCE.md`](Go-OS/GHOSTOS_QUICK_REFERENCE.md)
 
 ## 📥 Getting the Debian 12 ISO (Optional)
 
-**Note:** The Heck-CheckOS build script uses `debootstrap` to download Debian 12 automatically from official repositories. **You do NOT need to download the ISO to build Heck-CheckOS.**
+**Note:** The HeckOS build script uses `debootstrap` to download Debian 12 automatically from official repositories. **You do NOT need to download the ISO to build HeckOS.**
 
 **However, you may want to download the Debian 12 ISO (~600MB for netinst, ~4GB for full DVD) if you:**
-- Want to test Debian 12 before building Heck-CheckOS
+- Want to test Debian 12 before building HeckOS
 - Need to manually install Debian 12 on a system
 - Want a reference copy of the official Debian distribution
 
@@ -113,10 +113,10 @@ sudo ./heckcheckos-build.sh
 
 Builds bootable ISO with:
 - Debian 12 (Bookworm) base
-- Heck-CheckOS custom GUI and desktop environment
+- HeckOS custom GUI and desktop environment
 - Complete Linux system with security tools
 - Hardware drivers (AMD, NVIDIA, Intel)
-- Privacy and security tools (Kali + Heck-CheckOS)
+- Privacy and security tools (Kali + HeckOS)
 - Gaming support
 - Development tools
 
@@ -175,7 +175,7 @@ Installs:
 
 ## 🎯 Features Comparison
 
-### Desktop/Server Heck-CheckOS
+### Desktop/Server HeckOS
 
 | Feature | v1.0 | v1.1 | v2.0 |
 |---------|------|------|------|
@@ -192,7 +192,7 @@ Installs:
 | Plugin System | ❌ | ❌ | ✅ |
 | ARM Support | ❌ | ❌ | ✅ |
 
-### Android Heck-CheckOS
+### Android HeckOS
 
 | Feature | Status | Notes |
 |---------|--------|-------|
@@ -284,10 +284,10 @@ sudo ./heckcheckos-build.sh
 # Select: 1 (v1.0), 2 (v1.1), 3 (v2.0), or 4 (all)
 
 # Create bootable USB
-sudo dd if=$HOME/heckcheckos-ultimate/Heck-CheckOS-v2.0.iso of=/dev/sdX bs=4M status=progress
+sudo dd if=$HOME/heckcheckos-ultimate/HeckOS-v2.0.iso of=/dev/sdX bs=4M status=progress
 
 # Test in VM
-qemu-system-x86_64 -enable-kvm -m 4096 -cdrom Heck-CheckOS-v2.0.iso
+qemu-system-x86_64 -enable-kvm -m 4096 -cdrom HeckOS-v2.0.iso
 ```
 
 ## 🤝 Contributing
@@ -300,7 +300,7 @@ Contributions welcome! Please:
 
 ## 📄 License & Legal
 
-**Heck-CheckOS build scripts and configuration** are licensed under the MIT License. See [LICENSE](LICENSE) file.
+**HeckOS build scripts and configuration** are licensed under the MIT License. See [LICENSE](LICENSE) file.
 
 **Important Legal Information:**
 - 📋 **Full Legal Compliance**: See [LEGAL_COMPLIANCE.md](LEGAL_COMPLIANCE.md)
@@ -365,7 +365,7 @@ See [ANDROID_INSTALLATION.md](Go-OS/ANDROID_INSTALLATION.md) troubleshooting sec
 ### Desktop
 - **v2.0** (2025): Debian 12 base, Wayland, AI assistant, ARM support, plugin system
 - **v1.1** (2025): Debian 12 base, Enhanced privacy, security tools, improved UI
-- **v1.0** (2025): Initial stable release, Debian 12 (Bookworm) base with Heck-CheckOS GUI
+- **v1.0** (2025): Initial stable release, Debian 12 (Bookworm) base with HeckOS GUI
 
 ### Android
 - **v1.0-android** (2026-01): Initial Android release
@@ -376,4 +376,4 @@ See [ANDROID_INSTALLATION.md](Go-OS/ANDROID_INSTALLATION.md) troubleshooting sec
 
 ---
 
-**Heck-CheckOS** - Security-focused, feature-rich operating system built on Debian 12 (Bookworm) with custom Heck-CheckOS GUI. For desktop and mobile platforms. Build it, customize it, own it. 👻🐧
+**HeckOS** - Security-focused, feature-rich operating system built on Debian 12 (Bookworm) with custom HeckOS GUI. For desktop and mobile platforms. Build it, customize it, own it. 👻🐧

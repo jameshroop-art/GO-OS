@@ -1,13 +1,13 @@
 #!/bin/bash
 # ============================================
-# Heck-CheckOS Installation Setup Launcher
+# HeckOS Installation Setup Launcher
 # First step in the installation process
 # Launches device type selection GUI
 # ============================================
 # LICENSE: MIT (see LICENSE file in repository root)
 # 
 # LEGAL NOTICE:
-# This script is part of Heck-CheckOS, a derivative work based on Debian 12 (Bookworm).
+# This script is part of HeckOS, a derivative work based on Debian 12 (Bookworm).
 # NOT an official Debian release. See LEGAL_COMPLIANCE.md.
 # ============================================
 
@@ -17,7 +17,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SETUP_SCRIPT="$SCRIPT_DIR/ghostos-installation-setup.py"
 
 echo "========================================"
-echo "  👻 Heck-CheckOS Installation Setup"
+echo "  👻 HeckOS Installation Setup"
 echo "  Device Type Selection"
 echo "========================================"
 echo ""

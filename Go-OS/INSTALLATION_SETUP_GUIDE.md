@@ -1,8 +1,8 @@
-# Heck-CheckOS Installation Setup Guide
+# HeckOS Installation Setup Guide
 
 ## Overview
 
-The Heck-CheckOS Installation Setup provides a streamlined, user-friendly way to install Heck-CheckOS on various device types. This guide covers the device type selection process and installation options.
+The HeckOS Installation Setup provides a streamlined, user-friendly way to install HeckOS on various device types. This guide covers the device type selection process and installation options.
 
 ## Quick Start
 
@@ -62,7 +62,7 @@ This launches the Installation Setup GUI where you can select your target device
 **Installation Process:**
 1. Detect existing operating systems
 2. Resize partitions or use free space
-3. Install Heck-CheckOS
+3. Install HeckOS
 4. Configure Grub2 with all OS options
 5. Set boot order and timeout
 6. Verify multi-boot functionality
@@ -106,7 +106,7 @@ This launches the Installation Setup GUI where you can select your target device
 - Target system: Any PC with USB boot support
 
 **Features:**
-- Portable Heck-CheckOS installation
+- Portable HeckOS installation
 - Boot from any compatible PC
 - Optional persistence (save changes)
 - SD card support for extended storage

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Heck-CheckOS Installation Setup - Device Type Selection GUI
+HeckOS Installation Setup - Device Type Selection GUI
 First step in installation process - choose what type of device to install on
 Then launches appropriate installer for the selected device type
 
 LICENSE: MIT (see LICENSE file in repository root)
 
 LEGAL NOTICE:
-This is part of Heck-CheckOS, a derivative work based on Debian 12 (Bookworm).
+This is part of HeckOS, a derivative work based on Debian 12 (Bookworm).
 NOT an official Debian release. NOT endorsed by the Debian Project.
 See LEGAL_COMPLIANCE.md for full legal information.
 """
@@ -30,7 +30,7 @@ class InstallationSetupGUI:
     
     def __init__(self, root):
         self.root = root
-        self.root.title("Heck-CheckOS - Installation Setup")
+        self.root.title("HeckOS - Installation Setup")
         self.root.geometry("850x750")
         self.root.resizable(False, False)
         
@@ -47,7 +47,7 @@ class InstallationSetupGUI:
         header = tk.Frame(self.root, bg="#2c3e50", height=100)
         header.pack(fill=tk.X, side=tk.TOP)
         
-        title = tk.Label(header, text="👻 Heck-CheckOS Installation Setup", 
+        title = tk.Label(header, text="👻 HeckOS Installation Setup", 
                         font=("Arial", 26, "bold"), fg="white", bg="#2c3e50")
         title.pack(pady=15)
         
@@ -60,11 +60,11 @@ class InstallationSetupGUI:
         main.pack(fill=tk.BOTH, expand=True)
         
         # Introduction
-        intro_frame = ttk.LabelFrame(main, text="Welcome to Heck-CheckOS Installation", padding="15")
+        intro_frame = ttk.LabelFrame(main, text="Welcome to HeckOS Installation", padding="15")
         intro_frame.pack(fill=tk.X, pady=(0, 20))
         
         intro_text = tk.Label(intro_frame, 
-            text="Please select the type of device you want to install Heck-CheckOS on.\n"
+            text="Please select the type of device you want to install HeckOS on.\n"
                  "This will determine the installation process and options available to you.",
             font=("Arial", 10), justify=tk.LEFT, wraplength=750)
         intro_text.pack()
@@ -281,7 +281,7 @@ Features:
 Installation Process:
 1. Detect existing operating systems
 2. Resize partitions or use free space
-3. Install Heck-CheckOS
+3. Install HeckOS
 4. Configure Grub2 with all OS options
 5. Set boot order and timeout
 6. Verify multi-boot functionality
@@ -331,7 +331,7 @@ Requirements:
 • Target system: Any PC with USB boot support
 
 Features:
-• Portable Heck-CheckOS installation
+• Portable HeckOS installation
 • Boot from any compatible PC
 • Optional persistence (save changes)
 • SD card support for extended storage
@@ -342,7 +342,7 @@ Installation Process:
 1. Select USB drive (will be formatted)
 2. Choose boot mode (live or persistent)
 3. Optional: Configure SD card for storage
-4. Write Heck-CheckOS to USB
+4. Write HeckOS to USB
 5. Configure bootloader for portability
 6. Verify bootable USB creation
 
@@ -377,7 +377,7 @@ Features:
 Installation Process:
 1. Install Termux and Termux:API from F-Droid
 2. Grant required permissions
-3. Download Heck-CheckOS Android installer
+3. Download HeckOS Android installer
 4. Select installation source (USB/SD card/Network)
 5. Configure device-specific settings
 6. Install Debian proot environment
@@ -590,7 +590,7 @@ The installer will:
         help_text = """
 HECK-CHECKOS INSTALLATION SETUP HELP
 
-This is the first step in installing Heck-CheckOS. Select the type of device
+This is the first step in installing HeckOS. Select the type of device
 you want to install on, and you'll be guided through the appropriate installation
 process.
 

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Heck-CheckOS Security Edition - GUI Installer & USB Creator
+HeckOS Security Edition - GUI Installer & USB Creator
 Creates bootable USB drives and manages disk partitioning for PC installation
 Supports Windows, Linux, and macOS host systems
 
 LICENSE: MIT (see LICENSE file in repository root)
 
 LEGAL NOTICE:
-This is part of Heck-CheckOS, a derivative work based on Debian 12 (Bookworm).
+This is part of HeckOS, a derivative work based on Debian 12 (Bookworm).
 NOT an official Debian release. NOT endorsed by the Debian Project.
 See LEGAL_COMPLIANCE.md for full legal information.
 """
@@ -46,7 +46,7 @@ class HeckCheckOSInstallerGUI:
         else:
             title_suffix = " - Installer & USB Creator"
         
-        self.root.title("Heck-CheckOS Security Edition" + title_suffix)
+        self.root.title("HeckOS Security Edition" + title_suffix)
         self.root.geometry("900x700")
         self.root.resizable(True, True)
         
@@ -86,7 +86,7 @@ class HeckCheckOSInstallerGUI:
         header = tk.Frame(self.root, bg="#2c3e50", height=80)
         header.pack(fill=tk.X, side=tk.TOP)
         
-        title = tk.Label(header, text="👻 Heck-CheckOS Security Edition", 
+        title = tk.Label(header, text="👻 HeckOS Security Edition", 
                         font=("Arial", 24, "bold"), fg="white", bg="#2c3e50")
         title.pack(pady=10)
         
@@ -158,7 +158,7 @@ class HeckCheckOSInstallerGUI:
     def setup_usb_tab(self, parent):
         """Setup USB Creator tab"""
         # ISO Selection
-        iso_frame = ttk.LabelFrame(parent, text="Step 1: Select Heck-CheckOS ISO", padding="10")
+        iso_frame = ttk.LabelFrame(parent, text="Step 1: Select HeckOS ISO", padding="10")
         iso_frame.pack(fill=tk.X, padx=10, pady=10)
         
         ttk.Label(iso_frame, text="ISO File:").grid(row=0, column=0, sticky=tk.W, pady=5)
@@ -332,7 +332,7 @@ class HeckCheckOSInstallerGUI:
     def browse_iso(self):
         """Browse for ISO file"""
         filename = filedialog.askopenfilename(
-            title="Select Heck-CheckOS ISO",
+            title="Select HeckOS ISO",
             filetypes=[("ISO files", "*.iso"), ("All files", "*.*")]
         )
         if filename:
@@ -603,7 +603,7 @@ class HeckCheckOSInstallerGUI:
             # Create UEFI boot entry (if efibootmgr available)
             if subprocess.run(['which', 'efibootmgr'], capture_output=True).returncode == 0:
                 subprocess.run(['efibootmgr', '--create', '--disk', device, '--part', '1',
-                              '--label', 'Heck-CheckOS', '--loader', '\\EFI\\BOOT\\BOOTX64.EFI'],
+                              '--label', 'HeckOS', '--loader', '\\EFI\\BOOT\\BOOTX64.EFI'],
                               stderr=subprocess.DEVNULL)
             
         finally:
@@ -776,7 +776,7 @@ class HeckCheckOSInstallerGUI:
             self.req_text.insert(tk.END, "⚠️  System booted in Legacy BIOS mode\n")
             self.req_text.insert(tk.END, "   USB will still support UEFI boot\n")
         
-        self.req_text.insert(tk.END, "\n=== Heck-CheckOS System Requirements ===\n")
+        self.req_text.insert(tk.END, "\n=== HeckOS System Requirements ===\n")
         self.req_text.insert(tk.END, "• 64-bit x86_64 processor\n")
         self.req_text.insert(tk.END, "• 8GB RAM minimum (16GB recommended)\n")
         self.req_text.insert(tk.END, "• 32GB storage minimum\n")
