@@ -13,6 +13,7 @@ from .widget_library import WidgetLibrary
 from .properties_panel import PropertiesPanel
 from .ai_assembly import AIAssembly
 from .full_preview import FullPreviewMode
+from .console_templates import ConsoleTemplates
 
 
 class CanvasElement:
@@ -268,8 +269,21 @@ class DesignCanvas(QWidget):
             )
             if 'text' in element_data:
                 element.properties['text'] = element_data['text']
+            if 'bg_color' in element_data:
+                element.properties['background_color'] = element_data['bg_color']
+            if 'color' in element_data:
+                element.properties['text_color'] = element_data['color']
+            if 'font_size' in element_data:
+                element.properties['font_size'] = element_data['font_size']
             self.elements.append(element)
             
+        self.elements_changed.emit()
+        self.update()
+    
+    def clear_canvas(self):
+        """Clear all elements from canvas"""
+        self.elements.clear()
+        self.selected_elements.clear()
         self.elements_changed.emit()
         self.update()
         
@@ -529,18 +543,22 @@ class UIDesigner(QWidget):
         # Main splitter (3 panels)
         main_splitter = QSplitter(Qt.Orientation.Horizontal)
         
-        # Left panel - Widget Library + AI Assembly
+        # Left panel - Widget Library + Console Templates + AI Assembly
         left_panel = QWidget()
         left_layout = QVBoxLayout(left_panel)
         left_layout.setContentsMargins(5, 5, 5, 5)
         
         self.widget_library = WidgetLibrary()
         self.widget_library.widget_selected.connect(self.on_widget_selected)
-        left_layout.addWidget(self.widget_library, 1)
+        left_layout.addWidget(self.widget_library, 2)
+        
+        self.console_templates = ConsoleTemplates()
+        self.console_templates.template_loaded.connect(self.on_template_loaded)
+        left_layout.addWidget(self.console_templates, 3)
         
         self.ai_assembly = AIAssembly()
         self.ai_assembly.layout_generated.connect(self.on_layout_generated)
-        left_layout.addWidget(self.ai_assembly, 1)
+        left_layout.addWidget(self.ai_assembly, 2)
         
         # Center panel - Canvas
         center_panel = QWidget()
@@ -685,6 +703,30 @@ class UIDesigner(QWidget):
         
         if reply == QMessageBox.StandardButton.Yes:
             self.canvas.load_layout(layout_data)
+    
+    def on_template_loaded(self, template_data):
+        """Handle console template loading"""
+        reply = QMessageBox.question(
+            self,
+            "Load Template",
+            f"Load '{template_data['name']}' template?\n\n"
+            f"Type: {template_data['type']}\n"
+            f"Elements: {len(template_data.get('elements', []))}\n\n"
+            f"This will replace the current canvas.",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
+        
+        if reply == QMessageBox.StandardButton.Yes:
+            self.canvas.clear_canvas()
+            self.canvas.load_layout(template_data)
+            
+            # Show success message
+            QMessageBox.information(
+                self,
+                "Template Loaded",
+                f"'{template_data['name']}' template loaded successfully!\n\n"
+                f"You can now customize all elements using the properties panel."
+            )
             
     def show_full_preview(self):
         """Show full-screen preview"""
