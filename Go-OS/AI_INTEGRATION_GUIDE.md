@@ -6,24 +6,31 @@ The HeckOS AI Integration installer includes intelligent error correction powere
 
 ## Key Features
 
-### 1. AI-Assisted Error Detection
+### 1. Smart Port Management (NEW!)
+- **Automatic port allocation** from range 51511-51611
+- Sequential port selection for conflict-free setup
+- Option to kill processes on target ports
+- Interactive port conflict resolution
+- Dynamic configuration for both Ollama and LM Studio
+
+### 2. AI-Assisted Error Detection
 - Automatically detects errors during installation
 - Captures error context and stack traces
 - Logs all issues for later review
 
-### 2. Intelligent Correction Suggestions
+### 3. Intelligent Correction Suggestions
 - Uses local Ollama models for analysis (when available)
 - Provides fallback rule-based suggestions
 - Offers multiple resolution options
 - Interactive correction flow
 
-### 3. Shared Model Access
+### 4. Shared Model Access
 - Both Ollama and LM Studio can access each other's models
 - Automatic model syncing between systems
 - Unified model directory structure
 - Cross-compatibility for corrections
 
-### 4. Continuous Monitoring
+### 5. Continuous Monitoring
 - Optional AI monitoring service
 - Automatic health checks
 - Proactive problem detection
@@ -41,9 +48,10 @@ sudo bash install-ai-integration.sh
 The script will:
 1. Install Ollama
 2. Install LM Studio  
-3. Configure shared model access
-4. Enable AI error correction
-5. Set up monitoring (optional)
+3. **Allocate unused ports (51511-51611 range)**
+4. Configure shared model access
+5. Enable AI error correction
+6. Set up monitoring (optional)
 
 ### What Happens During Installation
 
@@ -202,6 +210,130 @@ All errors and corrections are logged:
 [AI Suggestion] Check network, try mirror
 [User Action] Applied fix and retried
 [Result] Success on retry
+```
+
+## Port Management
+
+### Automatic Port Allocation
+
+The installer automatically manages ports to avoid conflicts:
+
+**Default Ports:**
+- Ollama: 11434 (preferred)
+- LM Studio: 1234 (preferred)
+
+**Fallback Range:**
+- Ports 51511-51611 (sequential allocation)
+
+### Port Allocation Process
+
+When a preferred port is in use:
+
+```
+[*] Allocating port for Ollama...
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[*] Checking preferred port 11434...
+[!] Preferred port 11434 is in use
+
+Options:
+  1) Kill process on port 11434 and use it
+  2) Find unused port in range 51511-51611
+  3) Enter custom port number
+
+Choose option [1-3]:
+```
+
+### Option 1: Kill Process on Port
+
+```bash
+[*] Checking for processes on port 11434...
+[!] Found process(es) using port 11434: 12345
+
+Kill these processes? (y/n): y
+[✓] Killed process 12345
+[✓] Using port: 11434
+```
+
+### Option 2: Sequential Port Search
+
+```bash
+[*] Searching for unused port in range 51511-51611...
+[✓] Found unused port: 51511
+[✓] Ollama will use port: 51511
+```
+
+The script searches sequentially (51511, 51512, 51513...) until finding an available port.
+
+### Option 3: Custom Port
+
+```bash
+Enter port number: 8080
+[*] Checking for processes on port 8080...
+[✓] Port 8080 is available
+[✓] Using custom port: 8080
+```
+
+### After Installation
+
+Check allocated ports:
+```bash
+# Ollama port
+grep OLLAMA_HOST /etc/systemd/system/ollama.service.d/environment.conf
+
+# LM Studio port
+grep serverPort ~/.cache/lm-studio/settings.json
+
+# Test connections
+curl http://localhost:<ollama-port>/api/tags
+curl http://localhost:<lmstudio-port>/v1/models
+```
+
+### Changing Ports Post-Installation
+
+**Change Ollama Port:**
+```bash
+# Edit configuration
+sudo nano /etc/systemd/system/ollama.service.d/environment.conf
+
+# Change line to:
+Environment="OLLAMA_HOST=127.0.0.1:<new-port>"
+
+# Restart service
+sudo systemctl daemon-reload
+sudo systemctl restart ollama
+```
+
+**Change LM Studio Port:**
+```bash
+# Edit configuration
+nano ~/.cache/lm-studio/settings.json
+
+# Change:
+"serverPort": <new-port>
+
+# Restart LM Studio
+```
+
+### Manual Port Management
+
+**Find process using a port:**
+```bash
+sudo lsof -ti:<port>
+# or
+sudo fuser <port>/tcp
+# or
+sudo netstat -tulpn | grep :<port>
+```
+
+**Kill process on port:**
+```bash
+sudo kill -9 $(sudo lsof -ti:<port>)
+```
+
+**Check if port is available:**
+```bash
+# Should return nothing if port is free
+netstat -tuln | grep :<port>
 ```
 
 ## Ongoing AI Monitoring

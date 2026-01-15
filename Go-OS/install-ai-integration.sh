@@ -28,6 +28,147 @@ AI_CORRECTION_ENABLED=true
 CORRECTION_LOG="/tmp/heckos-ai-corrections.log"
 touch "$CORRECTION_LOG"
 
+# Port configuration
+PORT_RANGE_START=51511
+PORT_RANGE_END=51611
+OLLAMA_PORT=""
+LMSTUDIO_PORT=""
+
+# Function to find an unused port in the range
+find_unused_port() {
+    local start=$1
+    local end=$2
+    
+    for port in $(seq $start $end); do
+        # Check if port is in use
+        if ! $SUDO netstat -tuln 2>/dev/null | grep -q ":$port " && \
+           ! $SUDO ss -tuln 2>/dev/null | grep -q ":$port "; then
+            echo "$port"
+            return 0
+        fi
+    done
+    
+    return 1
+}
+
+# Function to kill process using a specific port
+kill_process_on_port() {
+    local port=$1
+    local force=${2:-false}
+    
+    echo "[*] Checking for processes on port $port..."
+    
+    # Find PIDs using the port
+    local pids=$(lsof -ti:$port 2>/dev/null || $SUDO lsof -ti:$port 2>/dev/null || \
+                 $SUDO fuser $port/tcp 2>/dev/null)
+    
+    if [ -z "$pids" ]; then
+        echo "[✓] Port $port is available"
+        return 0
+    fi
+    
+    echo "[!] Found process(es) using port $port: $pids"
+    
+    if [ "$force" = "true" ]; then
+        echo "[*] Killing process(es) on port $port..."
+        for pid in $pids; do
+            $SUDO kill -9 $pid 2>/dev/null && echo "[✓] Killed process $pid"
+        done
+        sleep 1
+        return 0
+    else
+        echo ""
+        echo "Process(es) are using port $port"
+        read -p "Kill these processes? (y/n): " kill_choice
+        if [ "$kill_choice" = "y" ]; then
+            for pid in $pids; do
+                $SUDO kill -9 $pid 2>/dev/null && echo "[✓] Killed process $pid"
+            done
+            sleep 1
+            return 0
+        else
+            return 1
+        fi
+    fi
+}
+
+# Function to allocate port with options
+allocate_port() {
+    local service_name=$1
+    local preferred_port=$2
+    local use_range=${3:-true}
+    
+    echo ""
+    echo "[*] Allocating port for $service_name..."
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    
+    # First, try preferred port
+    if [ -n "$preferred_port" ]; then
+        echo "[*] Checking preferred port $preferred_port..."
+        if ! $SUDO netstat -tuln 2>/dev/null | grep -q ":$preferred_port " && \
+           ! $SUDO ss -tuln 2>/dev/null | grep -q ":$preferred_port "; then
+            echo "[✓] Using preferred port: $preferred_port"
+            echo "$preferred_port"
+            return 0
+        else
+            echo "[!] Preferred port $preferred_port is in use"
+            echo ""
+            echo "Options:"
+            echo "  1) Kill process on port $preferred_port and use it"
+            echo "  2) Find unused port in range $PORT_RANGE_START-$PORT_RANGE_END"
+            echo "  3) Enter custom port number"
+            echo ""
+            read -p "Choose option [1-3]: " port_choice
+            
+            case $port_choice in
+                1)
+                    if kill_process_on_port "$preferred_port"; then
+                        echo "[✓] Using port: $preferred_port"
+                        echo "$preferred_port"
+                        return 0
+                    else
+                        echo "[!] Could not free port $preferred_port"
+                        # Fall through to find another port
+                    fi
+                    ;;
+                2)
+                    # Use range - handled below
+                    ;;
+                3)
+                    read -p "Enter port number: " custom_port
+                    if [ -n "$custom_port" ] && [ "$custom_port" -ge 1024 ] && [ "$custom_port" -le 65535 ]; then
+                        if kill_process_on_port "$custom_port"; then
+                            echo "[✓] Using custom port: $custom_port"
+                            echo "$custom_port"
+                            return 0
+                        fi
+                    else
+                        echo "[!] Invalid port number"
+                    fi
+                    ;;
+            esac
+        fi
+    fi
+    
+    # Find unused port in range
+    if [ "$use_range" = "true" ]; then
+        echo "[*] Searching for unused port in range $PORT_RANGE_START-$PORT_RANGE_END..."
+        local found_port=$(find_unused_port $PORT_RANGE_START $PORT_RANGE_END)
+        
+        if [ -n "$found_port" ]; then
+            echo "[✓] Found unused port: $found_port"
+            echo "$found_port"
+            return 0
+        else
+            echo "[!] No unused ports found in range"
+            echo "[!] All ports $PORT_RANGE_START-$PORT_RANGE_END are in use"
+            return 1
+        fi
+    fi
+    
+    return 1
+}
+
 # Function to ask AI for correction
 ask_ai_for_correction() {
     local error_msg="$1"
@@ -114,8 +255,10 @@ show_fallback_suggestions() {
             echo "  • Check disk space: df -h"
             ;;
         "service_start")
-            echo "  • Check if port 11434 is available: netstat -tulpn | grep 11434"
+            echo "  • Port may be in use (script auto-allocates from $PORT_RANGE_START-$PORT_RANGE_END)"
+            echo "  • Check allocated port: cat /etc/systemd/system/ollama.service.d/environment.conf"
             echo "  • Review service logs: journalctl -u ollama -n 50"
+            echo "  • Kill process on port: sudo kill -9 \$(sudo lsof -ti:<port>)"
             echo "  • Try manual start: ollama serve"
             ;;
         "permissions")
@@ -212,11 +355,22 @@ done
 
 # Configure Ollama to use shared models directory
 echo "[*] Configuring Ollama for shared models..."
+
+# Allocate port for Ollama (prefer 11434, but can use range)
+OLLAMA_PORT=$(allocate_port "Ollama" "11434" true)
+if [ -z "$OLLAMA_PORT" ]; then
+    echo "[!] Could not allocate port for Ollama"
+    echo "[!] Installation will continue but Ollama may not start correctly"
+    OLLAMA_PORT="11434"  # Fallback
+fi
+
+echo "[✓] Ollama will use port: $OLLAMA_PORT"
+
 $SUDO mkdir -p /etc/systemd/system/ollama.service.d/
 $SUDO tee /etc/systemd/system/ollama.service.d/environment.conf > /dev/null << EOF
 [Service]
 Environment="OLLAMA_MODELS=$MODELS_DIR/ollama"
-Environment="OLLAMA_HOST=127.0.0.1:11434"
+Environment="OLLAMA_HOST=127.0.0.1:$OLLAMA_PORT"
 EOF
 
 # Create Ollama models directory
@@ -310,6 +464,16 @@ done
 echo "[*] Configuring LM Studio for shared models..."
 $SUDO mkdir -p "$MODELS_DIR/lmstudio"
 
+# Allocate port for LM Studio (prefer 1234, but can use range)
+LMSTUDIO_PORT=$(allocate_port "LM Studio" "1234" true)
+if [ -z "$LMSTUDIO_PORT" ]; then
+    echo "[!] Could not allocate port for LM Studio"
+    echo "[!] Installation will continue but LM Studio may not start correctly"
+    LMSTUDIO_PORT="1234"  # Fallback
+fi
+
+echo "[✓] LM Studio will use port: $LMSTUDIO_PORT"
+
 # Create LM Studio configuration
 LMSTUDIO_CONFIG_DIR="$HOME/.cache/lm-studio"
 mkdir -p "$LMSTUDIO_CONFIG_DIR"
@@ -317,10 +481,10 @@ mkdir -p "$LMSTUDIO_CONFIG_DIR"
 cat > "$LMSTUDIO_CONFIG_DIR/settings.json" << EOF
 {
   "modelsPath": "$MODELS_DIR/lmstudio",
-  "serverPort": 1234,
+  "serverPort": $LMSTUDIO_PORT,
   "ollamaCompatibility": true,
   "enableCors": true,
-  "allowedOrigins": ["http://localhost:11434"]
+  "allowedOrigins": ["http://localhost:$OLLAMA_PORT"]
 }
 EOF
 
@@ -484,24 +648,33 @@ echo "[✓] Desktop shortcuts created"
 # ============================================
 # Create Quick Start Guide
 # ============================================
-cat > "$MODELS_DIR/README.md" << 'README_EOF'
+cat > "$MODELS_DIR/README.md" << EOF
 # HeckOS AI Integration - Quick Start Guide
 
 ## Installed Components
 
 - **Ollama**: Local AI model runtime
-  - Service: `systemctl status ollama`
-  - CLI: `ollama` command
-  - API: http://localhost:11434
+  - Service: \`systemctl status ollama\`
+  - CLI: \`ollama\` command
+  - API: http://localhost:$OLLAMA_PORT
   
 - **LM Studio**: Visual AI model manager
-  - Location: `/opt/lmstudio/LMStudio.AppImage`
-  - API: http://localhost:1234
-  - Models: `/opt/heckos/ai-models/lmstudio`
+  - Location: \`/opt/lmstudio/LMStudio.AppImage\`
+  - API: http://localhost:$LMSTUDIO_PORT
+  - Models: \`/opt/heckos/ai-models/lmstudio\`
 
 - **AI Monitoring Service**: Automatic error detection and correction
-  - Service: `systemctl status ai-monitor`
-  - Logs: `/var/log/heckos-ai-monitor.log`
+  - Service: \`systemctl status ai-monitor\`
+  - Logs: \`/var/log/heckos-ai-monitor.log\`
+
+## Port Configuration
+
+- **Ollama Port**: $OLLAMA_PORT
+- **LM Studio Port**: $LMSTUDIO_PORT
+- **Port Range**: $PORT_RANGE_START-$PORT_RANGE_END (sequential allocation)
+
+The installation automatically finds unused ports in the range $PORT_RANGE_START-$PORT_RANGE_END
+and can kill conflicting processes if needed.
 
 ## AI-Assisted Error Correction
 
@@ -718,7 +891,47 @@ sudo rm -rf /opt/heckos/ai-models/
 For more information:
 - Ollama: https://ollama.com/
 - LM Studio: https://lmstudio.ai/
-README_EOF
+
+## Port Management
+
+If you need to change ports after installation:
+
+### Change Ollama Port
+
+Edit \`/etc/systemd/system/ollama.service.d/environment.conf\`:
+\`\`\`ini
+[Service]
+Environment="OLLAMA_HOST=127.0.0.1:<new-port>"
+\`\`\`
+
+Then restart:
+\`\`\`bash
+sudo systemctl daemon-reload
+sudo systemctl restart ollama
+\`\`\`
+
+### Change LM Studio Port
+
+Edit \`~/.cache/lm-studio/settings.json\`:
+\`\`\`json
+{
+  "serverPort": <new-port>
+}
+\`\`\`
+
+Then restart LM Studio.
+
+### Kill Process on Port
+
+If a port is in use:
+\`\`\`bash
+# Find process using port
+sudo lsof -ti:<port>
+
+# Kill process
+sudo kill -9 \$(sudo lsof -ti:<port>)
+\`\`\`
+EOF
 
 echo "[✓] Quick start guide created: $MODELS_DIR/README.md"
 
@@ -731,8 +944,13 @@ echo "  ✓ AI Integration Setup Complete!"
 echo "========================================"
 echo ""
 echo "Installed Components:"
-echo "  • Ollama - http://localhost:11434"
-echo "  • LM Studio - http://localhost:1234"
+echo "  • Ollama - http://localhost:$OLLAMA_PORT"
+echo "  • LM Studio - http://localhost:$LMSTUDIO_PORT"
+echo ""
+echo "Port Configuration:"
+echo "  • Ollama Port: $OLLAMA_PORT"
+echo "  • LM Studio Port: $LMSTUDIO_PORT"
+echo "  • Port Range Used: $PORT_RANGE_START-$PORT_RANGE_END"
 echo ""
 echo "Shared Models Directory:"
 echo "  • $MODELS_DIR"
@@ -753,11 +971,12 @@ echo ""
 
 # Test Ollama connection
 echo "Testing Ollama connection..."
-if curl -s http://localhost:11434/api/tags > /dev/null 2>&1; then
-    echo "[✓] Ollama is responding"
+if curl -s http://localhost:$OLLAMA_PORT/api/tags > /dev/null 2>&1; then
+    echo "[✓] Ollama is responding on port $OLLAMA_PORT"
 else
     echo "[⚠️] Ollama might still be starting up"
     echo "   Run: systemctl status ollama"
+    echo "   Test: curl http://localhost:$OLLAMA_PORT/api/tags"
 fi
 
 echo ""
