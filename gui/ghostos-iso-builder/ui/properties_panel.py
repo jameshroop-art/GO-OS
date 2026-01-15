@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Properties Panel - Inspector for selected UI elements
 """

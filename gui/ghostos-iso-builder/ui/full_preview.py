@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Full Preview Mode - F5 full-screen preview with auto-hide toolbar
 """

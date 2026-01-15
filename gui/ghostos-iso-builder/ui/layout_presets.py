@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Layout Presets Manager - Window ratio presets with draggable splitter
 """

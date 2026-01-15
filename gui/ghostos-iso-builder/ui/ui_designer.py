@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 UI Designer - Main drag-and-drop canvas with full UI design capabilities
 """
@@ -637,7 +636,7 @@ class UIDesigner(QWidget):
         grid_btn = QPushButton("Grid Snap")
         grid_btn.setCheckable(True)
         grid_btn.setChecked(True)
-        grid_btn.clicked.connect(lambda checked: setattr(self.canvas, 'grid_snap', checked))
+        grid_btn.clicked.connect(self.toggle_grid_snap)
         layout.addWidget(grid_btn)
         
         layout.addStretch()
@@ -699,3 +698,9 @@ class UIDesigner(QWidget):
     def on_preview_closed(self):
         """Handle preview window closed"""
         self.preview_mode = None
+    
+    def toggle_grid_snap(self, checked):
+        """Toggle grid snapping"""
+        self.canvas.grid_snap = checked
+        self.canvas.update()
+

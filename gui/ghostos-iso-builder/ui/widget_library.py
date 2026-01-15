@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Widget Library - Drag-and-drop widget library for UI Designer
 """
