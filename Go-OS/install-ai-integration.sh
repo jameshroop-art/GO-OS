@@ -33,6 +33,95 @@ PORT_RANGE_START=51511
 PORT_RANGE_END=51611
 OLLAMA_PORT=""
 LMSTUDIO_PORT=""
+PORT_REGISTRY="/var/run/heckos-ports.registry"
+PORT_CLEANUP_SCRIPT="/opt/heckos/ai-models/port-cleanup.sh"
+
+# Initialize port registry
+init_port_registry() {
+    $SUDO mkdir -p "$(dirname "$PORT_REGISTRY")"
+    if [ ! -f "$PORT_REGISTRY" ]; then
+        $SUDO touch "$PORT_REGISTRY"
+        $SUDO chmod 644 "$PORT_REGISTRY"
+    fi
+}
+
+# Register a port allocation
+register_port() {
+    local service=$1
+    local port=$2
+    local pid=${3:-$$}
+    local timestamp=$(date +%s)
+    
+    # Format: service|port|pid|timestamp|config_path
+    local entry="$service|$port|$pid|$timestamp|"
+    
+    # Add configuration path based on service
+    if [ "$service" = "ollama" ]; then
+        entry="${entry}/etc/systemd/system/ollama.service.d/environment.conf"
+    elif [ "$service" = "lmstudio" ]; then
+        entry="${entry}$HOME/.cache/lm-studio/settings.json"
+    fi
+    
+    $SUDO bash -c "echo '$entry' >> $PORT_REGISTRY"
+    echo "[✓] Registered port $port for $service"
+}
+
+# Unregister a port (called on cleanup)
+unregister_port() {
+    local service=$1
+    local port=$2
+    
+    if [ -f "$PORT_REGISTRY" ]; then
+        $SUDO sed -i "/^$service|$port|/d" "$PORT_REGISTRY"
+        echo "[✓] Unregistered port $port for $service"
+    fi
+}
+
+# Check if port is registered
+is_port_registered() {
+    local port=$1
+    if [ -f "$PORT_REGISTRY" ]; then
+        grep -q "|$port|" "$PORT_REGISTRY"
+        return $?
+    fi
+    return 1
+}
+
+# Get registered service for a port
+get_port_service() {
+    local port=$1
+    if [ -f "$PORT_REGISTRY" ]; then
+        grep "|$port|" "$PORT_REGISTRY" | cut -d'|' -f1 | head -1
+    fi
+}
+
+# Clean up stale port registrations (where process no longer exists)
+cleanup_stale_ports() {
+    if [ ! -f "$PORT_REGISTRY" ]; then
+        return
+    fi
+    
+    echo "[*] Cleaning up stale port registrations..."
+    local cleaned=0
+    
+    while IFS='|' read -r service port pid timestamp config_path; do
+        # Skip empty lines
+        [ -z "$service" ] && continue
+        
+        # Check if process still exists
+        if [ -n "$pid" ] && ! kill -0 "$pid" 2>/dev/null && ! systemctl is-active --quiet "$service" 2>/dev/null; then
+            echo "[*] Cleaning stale registration: $service on port $port (PID $pid no longer exists)"
+            unregister_port "$service" "$port"
+            cleaned=$((cleaned + 1))
+        fi
+    done < "$PORT_REGISTRY"
+    
+    if [ $cleaned -gt 0 ]; then
+        echo "[✓] Cleaned $cleaned stale port registrations"
+    else
+        echo "[✓] No stale ports found"
+    fi
+}
 
 # Function to find an unused port in the range
 find_unused_port() {
@@ -42,7 +131,8 @@ find_unused_port() {
     for port in $(seq $start $end); do
         # Check if port is in use
         if ! $SUDO netstat -tuln 2>/dev/null | grep -q ":$port " && \
-           ! $SUDO ss -tuln 2>/dev/null | grep -q ":$port "; then
+           ! $SUDO ss -tuln 2>/dev/null | grep -q ":$port " && \
+           ! is_port_registered "$port"; then
             echo "$port"
             return 0
         fi
@@ -318,6 +408,74 @@ echo "[*] Creating shared AI models directory: $MODELS_DIR"
 $SUDO mkdir -p "$MODELS_DIR"
 $SUDO chmod 755 "$MODELS_DIR"
 
+# Initialize port registry
+init_port_registry
+cleanup_stale_ports
+
+# Create port cleanup script
+echo "[*] Creating port lifecycle management script..."
+cat > /tmp/port-cleanup.sh << 'CLEANUP_SCRIPT_EOF'
+#!/bin/bash
+# Port Lifecycle Management and Cleanup Script
+# Automatically releases ports when services stop
+
+PORT_REGISTRY="/var/run/heckos-ports.registry"
+
+cleanup_port() {
+    local service=$1
+    local port=$2
+    
+    echo "[$(date)] Cleaning up port $port for $service"
+    
+    # Remove from registry
+    if [ -f "$PORT_REGISTRY" ]; then
+        sed -i "/^$service|$port|/d" "$PORT_REGISTRY"
+    fi
+    
+    # Log cleanup
+    logger -t heckos-port-cleanup "Released port $port for $service"
+}
+
+# Check service status and cleanup if stopped
+check_and_cleanup() {
+    if [ ! -f "$PORT_REGISTRY" ]; then
+        return
+    fi
+    
+    while IFS='|' read -r service port pid timestamp config_path; do
+        [ -z "$service" ] && continue
+        
+        # Check if service is running
+        if ! systemctl is-active --quiet "$service" 2>/dev/null; then
+            # Service stopped, cleanup port
+            cleanup_port "$service" "$port"
+        fi
+    done < "$PORT_REGISTRY"
+}
+
+# Main cleanup function
+case "${1:-check}" in
+    check)
+        check_and_cleanup
+        ;;
+    cleanup)
+        service=$2
+        port=$3
+        if [ -n "$service" ] && [ -n "$port" ]; then
+            cleanup_port "$service" "$port"
+        fi
+        ;;
+    *)
+        echo "Usage: $0 {check|cleanup service port}"
+        exit 1
+        ;;
+esac
+CLEANUP_SCRIPT_EOF
+
+$SUDO mv /tmp/port-cleanup.sh "$PORT_CLEANUP_SCRIPT"
+$SUDO chmod +x "$PORT_CLEANUP_SCRIPT"
+echo "[✓] Port cleanup script created"
+
 # ============================================
 # Install Ollama
 # ============================================
@@ -366,11 +524,15 @@ fi
 
 echo "[✓] Ollama will use port: $OLLAMA_PORT"
 
+# Register port allocation
+register_port "ollama" "$OLLAMA_PORT"
+
 $SUDO mkdir -p /etc/systemd/system/ollama.service.d/
 $SUDO tee /etc/systemd/system/ollama.service.d/environment.conf > /dev/null << EOF
 [Service]
 Environment="OLLAMA_MODELS=$MODELS_DIR/ollama"
 Environment="OLLAMA_HOST=127.0.0.1:$OLLAMA_PORT"
+ExecStopPost=$PORT_CLEANUP_SCRIPT cleanup ollama $OLLAMA_PORT
 EOF
 
 # Create Ollama models directory
@@ -388,6 +550,7 @@ start_ollama_service() {
     
     if systemctl is-active --quiet ollama; then
         echo "[✓] Ollama service is running"
+        echo "[✓] Port $OLLAMA_PORT is now active for Ollama (will auto-release on stop)"
         return 0
     else
         echo "⚠️  Ollama service not running"
@@ -474,6 +637,9 @@ fi
 
 echo "[✓] LM Studio will use port: $LMSTUDIO_PORT"
 
+# Register port allocation for LM Studio
+register_port "lmstudio" "$LMSTUDIO_PORT"
+
 # Create LM Studio configuration
 LMSTUDIO_CONFIG_DIR="$HOME/.cache/lm-studio"
 mkdir -p "$LMSTUDIO_CONFIG_DIR"
@@ -488,7 +654,36 @@ cat > "$LMSTUDIO_CONFIG_DIR/settings.json" << EOF
 }
 EOF
 
-echo "[✓] LM Studio configured"
+# Create LM Studio wrapper script with port lifecycle management
+cat > "$MODELS_DIR/lmstudio-wrapper.sh" << WRAPPER_EOF
+#!/bin/bash
+# LM Studio Wrapper with Port Lifecycle Management
+
+PORT_REGISTRY="/var/run/heckos-ports.registry"
+LMSTUDIO_PORT=$LMSTUDIO_PORT
+LMSTUDIO_APPIMAGE="$LM_STUDIO_APPIMAGE"
+CLEANUP_SCRIPT="$PORT_CLEANUP_SCRIPT"
+
+# Trap to cleanup on exit
+cleanup() {
+    echo "LM Studio stopped, releasing port \$LMSTUDIO_PORT"
+    bash "\$CLEANUP_SCRIPT" cleanup lmstudio \$LMSTUDIO_PORT
+}
+
+trap cleanup EXIT INT TERM
+
+echo "Starting LM Studio on port \$LMSTUDIO_PORT"
+echo "Port will be automatically released when LM Studio exits"
+
+# Run LM Studio
+"\$LMSTUDIO_APPIMAGE" "\$@"
+
+# Cleanup is handled by trap
+WRAPPER_EOF
+
+chmod +x "$MODELS_DIR/lmstudio-wrapper.sh"
+
+echo "[✓] LM Studio configured with auto port release"
 
 # ============================================
 # Create Model Sharing Bridge
@@ -621,15 +816,27 @@ EOF
 if [ -f "$LM_STUDIO_APPIMAGE" ]; then
     $SUDO tee /usr/share/applications/lmstudio.desktop > /dev/null << EOF
 [Desktop Entry]
-Name=LM Studio
-Comment=Discover, download, and run local LLMs
-Exec=$LM_STUDIO_APPIMAGE
+Name=LM Studio (Port $LMSTUDIO_PORT)
+Comment=Discover, download, and run local LLMs - Port auto-releases on exit
+Exec=$MODELS_DIR/lmstudio-wrapper.sh
 Icon=ai-lmstudio
 Type=Application
 Categories=Development;AI;
 Terminal=false
 EOF
 fi
+
+# Port Manager desktop file
+$SUDO tee /usr/share/applications/port-manager.desktop > /dev/null << EOF
+[Desktop Entry]
+Name=AI Port Manager
+Comment=View and manage AI service port allocations
+Exec=x-terminal-emulator -e "bash -c 'echo \"=== Active Port Allocations ===\"  && cat /var/run/heckos-ports.registry 2>/dev/null || echo \"No active ports\"; echo \"\"; echo \"Press Enter to exit\"; read'"
+Icon=network-server
+Type=Application
+Categories=System;AI;
+Terminal=true
+EOF
 
 # AI Models Manager desktop file
 $SUDO tee /usr/share/applications/ai-models-manager.desktop > /dev/null << EOF
@@ -643,7 +850,7 @@ Categories=System;AI;
 Terminal=true
 EOF
 
-echo "[✓] Desktop shortcuts created"
+echo "[✓] Desktop shortcuts created with port lifecycle management"
 
 # ============================================
 # Create Quick Start Guide
@@ -669,12 +876,46 @@ cat > "$MODELS_DIR/README.md" << EOF
 
 ## Port Configuration
 
-- **Ollama Port**: $OLLAMA_PORT
-- **LM Studio Port**: $LMSTUDIO_PORT
+- **Ollama Port**: $OLLAMA_PORT (Service-managed, auto-releases on stop)
+- **LM Studio Port**: $LMSTUDIO_PORT (Wrapper-managed, auto-releases on exit)
 - **Port Range**: $PORT_RANGE_START-$PORT_RANGE_END (sequential allocation)
+- **Port Registry**: \`/var/run/heckos-ports.registry\`
+
+### Port Lifecycle Management
+
+**Automatic Port Release:**
+- Ollama: Port automatically released when service stops (systemd ExecStopPost hook)
+- LM Studio: Port automatically released when application exits (wrapper script trap)
+
+**Port Registry:**
+All active port allocations are tracked in \`/var/run/heckos-ports.registry\`
+
+Format: \`service|port|pid|timestamp|config_path\`
+
+**View Active Ports:**
+\`\`\`bash
+cat /var/run/heckos-ports.registry
+# Or use GUI: Applications > System > AI Port Manager
+\`\`\`
+
+**Manual Port Cleanup:**
+\`\`\`bash
+# Cleanup specific service
+sudo $PORT_CLEANUP_SCRIPT cleanup ollama $OLLAMA_PORT
+
+# Cleanup all stale ports
+sudo $PORT_CLEANUP_SCRIPT check
+\`\`\`
+
+**How It Works:**
+1. Port allocated during installation/startup
+2. Port registered in registry with service info
+3. Configuration follows the port (environment vars, JSON config)
+4. Port automatically released when service stops/exits
+5. Registry cleaned up to make port available for reuse
 
 The installation automatically finds unused ports in the range $PORT_RANGE_START-$PORT_RANGE_END
-and can kill conflicting processes if needed.
+and can kill conflicting processes if needed. Ports are only active during service runtime.
 
 ## AI-Assisted Error Correction
 
@@ -947,16 +1188,24 @@ echo "Installed Components:"
 echo "  • Ollama - http://localhost:$OLLAMA_PORT"
 echo "  • LM Studio - http://localhost:$LMSTUDIO_PORT"
 echo ""
-echo "Port Configuration:"
-echo "  • Ollama Port: $OLLAMA_PORT"
-echo "  • LM Studio Port: $LMSTUDIO_PORT"
-echo "  • Port Range Used: $PORT_RANGE_START-$PORT_RANGE_END"
+echo "Port Lifecycle Management:"
+echo "  • Ollama Port: $OLLAMA_PORT (auto-releases on service stop)"
+echo "  • LM Studio Port: $LMSTUDIO_PORT (auto-releases on app exit)"
+echo "  • Port Range: $PORT_RANGE_START-$PORT_RANGE_END"
+echo "  • Port Registry: /var/run/heckos-ports.registry"
+echo "  • Cleanup Script: $PORT_CLEANUP_SCRIPT"
+echo ""
+echo "Port Management:"
+echo "  • View active ports: cat /var/run/heckos-ports.registry"
+echo "  • GUI Port Manager: Applications > System > AI Port Manager"
+echo "  • Cleanup stale ports: sudo $PORT_CLEANUP_SCRIPT check"
 echo ""
 echo "Shared Models Directory:"
 echo "  • $MODELS_DIR"
 echo ""
 echo "Quick Start:"
 echo "  • Ollama: ollama run llama2"
+echo "  • LM Studio: $MODELS_DIR/lmstudio-wrapper.sh (or use desktop shortcut)"
 echo "  • LM Studio: /opt/lmstudio/LMStudio.AppImage"
 echo "  • Sync Models: $MODELS_DIR/sync-models.sh"
 echo ""

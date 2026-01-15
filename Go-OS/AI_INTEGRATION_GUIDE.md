@@ -6,12 +6,15 @@ The HeckOS AI Integration installer includes intelligent error correction powere
 
 ## Key Features
 
-### 1. Smart Port Management (NEW!)
+### 1. Port Lifecycle Management (NEW!)
 - **Automatic port allocation** from range 51511-51611
+- **Temporary port assignments** - only active during service runtime
+- **Auto-release on stop** - ports freed when services/apps exit
+- **Port registry tracking** - all allocations logged and managed
 - Sequential port selection for conflict-free setup
 - Option to kill processes on target ports
 - Interactive port conflict resolution
-- Dynamic configuration for both Ollama and LM Studio
+- Dynamic configuration follows port assignments
 
 ### 2. AI-Assisted Error Detection
 - Automatically detects errors during installation
@@ -49,20 +52,24 @@ The script will:
 1. Install Ollama
 2. Install LM Studio  
 3. **Allocate unused ports (51511-51611 range)**
-4. Configure shared model access
-5. Enable AI error correction
-6. Set up monitoring (optional)
+4. **Register ports with lifecycle management**
+5. Configure shared model access
+6. Enable AI error correction
+7. Set up monitoring (optional)
 
 ### What Happens During Installation
 
 ```
 🤖 Installing Ollama...
   ✓ Downloaded and installed
-  ✓ Service started
+  ✓ Port allocated and registered
+  ✓ Service started with auto-release hook
   ✓ Configured for shared models
 
 🤖 Installing LM Studio...
   ✓ AppImage downloaded
+  ✓ Port allocated and registered
+  ✓ Wrapper created with auto-release trap
   ✓ Configured for model sharing
   ✓ API endpoints configured
 
@@ -75,6 +82,11 @@ The script will:
   ✓ Error handling active
   ✓ Correction log created
   ✓ Interactive mode enabled
+
+🔒 Port lifecycle management...
+  ✓ Port registry initialized
+  ✓ Cleanup script installed
+  ✓ Auto-release hooks configured
 ```
 
 ## Error Correction in Action
@@ -225,6 +237,12 @@ The installer automatically manages ports to avoid conflicts:
 **Fallback Range:**
 - Ports 51511-51611 (sequential allocation)
 
+**Port Lifecycle:**
+- Ports are **temporary** - only active during service runtime
+- **Auto-release** when service stops or app exits
+- Registry tracks all allocations
+- Configuration follows port assignments
+
 ### Port Allocation Process
 
 When a preferred port is in use:
@@ -252,6 +270,7 @@ Choose option [1-3]:
 Kill these processes? (y/n): y
 [✓] Killed process 12345
 [✓] Using port: 11434
+[✓] Port registered with auto-release hook
 ```
 
 ### Option 2: Sequential Port Search
@@ -260,6 +279,7 @@ Kill these processes? (y/n): y
 [*] Searching for unused port in range 51511-51611...
 [✓] Found unused port: 51511
 [✓] Ollama will use port: 51511
+[✓] Port registered with auto-release hook
 ```
 
 The script searches sequentially (51511, 51512, 51513...) until finding an available port.
@@ -287,6 +307,148 @@ grep serverPort ~/.cache/lm-studio/settings.json
 curl http://localhost:<ollama-port>/api/tags
 curl http://localhost:<lmstudio-port>/v1/models
 ```
+
+## Port Lifecycle Management
+
+### How It Works
+
+**Registration:**
+When a service starts, its port is registered:
+```bash
+# Format in /var/run/heckos-ports.registry:
+service|port|pid|timestamp|config_path
+
+# Example:
+ollama|51511|12345|1705310400|/etc/systemd/system/ollama.service.d/environment.conf
+lmstudio|51512|12346|1705310401|/home/user/.cache/lm-studio/settings.json
+```
+
+**Auto-Release Mechanisms:**
+
+1. **Ollama (systemd-managed):**
+   ```bash
+   # ExecStopPost in service config
+   ExecStopPost=/opt/heckos/ai-models/port-cleanup.sh cleanup ollama <port>
+   ```
+   - Port released automatically when service stops
+   - Registry entry removed
+   - Port becomes available immediately
+
+2. **LM Studio (wrapper-managed):**
+   ```bash
+   # Wrapper script with trap
+   trap cleanup EXIT INT TERM
+   cleanup() {
+       /opt/heckos/ai-models/port-cleanup.sh cleanup lmstudio $PORT
+   }
+   ```
+   - Port released when app exits (normal or forced)
+   - Works with Ctrl+C, kill signals, or clean exit
+   - Registry updated immediately
+
+### View Active Ports
+
+**Command line:**
+```bash
+# View registry
+cat /var/run/heckos-ports.registry
+
+# Example output:
+ollama|51511|12345|1705310400|/etc/systemd/system/ollama.service.d/environment.conf
+lmstudio|51512|0|1705310401|/home/user/.cache/lm-studio/settings.json
+
+# Check if specific port is registered
+grep "|51511|" /var/run/heckos-ports.registry
+```
+
+**GUI:**
+```bash
+# Launch Port Manager
+# Applications > System > AI Port Manager
+
+# Or manually:
+x-terminal-emulator -e "bash -c 'cat /var/run/heckos-ports.registry; read'"
+```
+
+### Cleanup Operations
+
+**Automatic cleanup on service stop:**
+```bash
+# Ollama stops
+sudo systemctl stop ollama
+# → Port automatically released
+# → Registry entry removed
+# → Port 51511 now available
+
+# LM Studio exits
+# User closes app or Ctrl+C
+# → Wrapper trap catches exit
+# → Port automatically released
+# → Registry entry removed
+```
+
+**Manual cleanup (if needed):**
+```bash
+# Cleanup specific service
+sudo /opt/heckos/ai-models/port-cleanup.sh cleanup ollama 51511
+
+# Cleanup all stale ports (where process no longer exists)
+sudo /opt/heckos/ai-models/port-cleanup.sh check
+
+# View cleanup script
+cat /opt/heckos/ai-models/port-cleanup.sh
+```
+
+### Port Reuse
+
+Ports are immediately available after release:
+
+```bash
+# Service A using port 51511
+ollama|51511|12345|...
+
+# Service A stops
+# Port 51511 released from registry
+
+# Service B can now use port 51511
+# No conflicts, no manual intervention
+```
+
+### Configuration Follows Port
+
+When a port is allocated, configuration is automatically updated:
+
+**Ollama:**
+```bash
+# Port allocated: 51511
+# Configuration updated:
+Environment="OLLAMA_HOST=127.0.0.1:51511"
+
+# Service can start immediately
+# API available at http://localhost:51511
+```
+
+**LM Studio:**
+```json
+// Port allocated: 51512
+// Configuration updated:
+{
+  "serverPort": 51512,
+  ...
+}
+
+// App uses correct port on startup
+// API available at http://localhost:51512
+```
+
+### Benefits
+
+- ✅ **Temporary allocation** - Ports only used when needed
+- ✅ **Automatic cleanup** - No manual intervention required
+- ✅ **No resource leaks** - Ports always released properly
+- ✅ **Immediate reuse** - Stopped service frees port instantly
+- ✅ **Crash-safe** - Cleanup works even with forced termination
+- ✅ **Configuration sync** - Settings always match allocated port
 
 ### Changing Ports Post-Installation
 
