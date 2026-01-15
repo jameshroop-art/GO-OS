@@ -19,7 +19,7 @@ from pathlib import Path
 try:
     from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
                                   QHBoxLayout, QTabWidget, QLabel, QPushButton,
-                                  QFileDialog, QMessageBox, QSplitter)
+                                  QFileDialog, QMessageBox, QSplitter, QFrame)
     from PyQt6.QtCore import Qt, QThread, pyqtSignal
     from PyQt6.QtGui import QIcon, QFont
 except ImportError:
@@ -35,6 +35,8 @@ from ui.credentials_dialog import CredentialsDialog
 from ui.touchscreen_keyboard import TouchscreenKeyboard
 from ui.keyboard_designer import KeyboardLayoutDesigner
 from ui.driver_manager import DriverManagerWidget
+from ui.ui_designer import UIDesigner
+from ui.layout_presets import LayoutPresetsManager
 
 # Import ISO builder backend
 from iso_builder_backend import ISOBuilder
@@ -103,6 +105,23 @@ class HeckCheckOSBuilderGUI(QMainWindow):
         
         # Main content area with splitter
         content_splitter = QSplitter(Qt.Orientation.Horizontal)
+        self.content_splitter = content_splitter  # Store reference for layout presets
+        
+        # Enable custom splitter handle
+        content_splitter.setHandleWidth(8)
+        content_splitter.setStyleSheet("""
+            QSplitter::handle {
+                background-color: #3d3d3d;
+                border-left: 1px solid #4d4d4d;
+                border-right: 1px solid #4d4d4d;
+            }
+            QSplitter::handle:hover {
+                background-color: #0078d4;
+            }
+        """)
+        
+        # Double-click splitter to reset
+        content_splitter.splitterMoved.connect(self.on_splitter_moved)
         
         # Left panel - ISO Loader and Theme Editor
         left_panel = QWidget()
@@ -132,6 +151,10 @@ class HeckCheckOSBuilderGUI(QMainWindow):
         self.driver_manager.driver_loaded.connect(self.on_driver_loaded)
         self.main_tabs.addTab(self.driver_manager, "🔧 Driver Manager")
         
+        # UI Designer tab
+        self.ui_designer = UIDesigner()
+        self.main_tabs.addTab(self.ui_designer, "🎨 UI Designer")
+        
         left_layout.addWidget(self.main_tabs)
         
         # Right panel - Preview Pane
@@ -143,7 +166,16 @@ class HeckCheckOSBuilderGUI(QMainWindow):
         content_splitter.setStretchFactor(0, 2)  # Left panel gets 2/3
         content_splitter.setStretchFactor(1, 1)  # Right panel gets 1/3
         
+        # Set initial sizes (60/40 ratio)
+        total_width = 1400  # Default window width
+        content_splitter.setSizes([int(total_width * 0.6), int(total_width * 0.4)])
+        
         main_layout.addWidget(content_splitter)
+        
+        # Layout presets bar
+        self.layout_presets = LayoutPresetsManager(content_splitter)
+        self.layout_presets.preset_changed.connect(self.on_layout_preset_changed)
+        main_layout.addWidget(self.layout_presets)
         
         # Build action bar
         build_bar = self.create_build_bar()
@@ -486,6 +518,12 @@ class HeckCheckOSBuilderGUI(QMainWindow):
         fullscreen_action.triggered.connect(self.toggle_fullscreen)
         fullscreen_action.setShortcut("F11")
         
+        view_menu.addSeparator()
+        
+        full_preview_action = view_menu.addAction("Full Preview (F5)")
+        full_preview_action.setShortcut("F5")
+        full_preview_action.triggered.connect(self.show_ui_full_preview)
+        
         # Help menu
         help_menu = menu_bar.addMenu("&Help")
         
@@ -627,6 +665,18 @@ class HeckCheckOSBuilderGUI(QMainWindow):
     def on_driver_loaded(self, driver_info):
         """Handle driver loaded event"""
         self.statusBar().showMessage(f"Driver loaded: {driver_info}")
+    
+    def on_splitter_moved(self, pos, index):
+        """Handle splitter moved"""
+        sizes = self.content_splitter.sizes()
+        total = sum(sizes)
+        if total > 0:
+            ratio = int((sizes[0] / total) * 100)
+            self.statusBar().showMessage(f"Layout: {ratio}/{100-ratio}")
+    
+    def on_layout_preset_changed(self, name, sizes):
+        """Handle layout preset change"""
+        self.statusBar().showMessage(f"Layout preset: {name}")
         
     def show_credentials_dialog(self):
         """Show credentials management dialog"""
@@ -670,6 +720,11 @@ class HeckCheckOSBuilderGUI(QMainWindow):
             self.showFullScreen()
         else:
             self.showNormal()
+    
+    def show_ui_full_preview(self):
+        """Show UI Designer full preview"""
+        if hasattr(self, 'ui_designer'):
+            self.ui_designer.show_full_preview()
             
     def save_configuration(self):
         """Save current configuration"""
