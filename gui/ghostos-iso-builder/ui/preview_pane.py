@@ -3,15 +3,17 @@
 Preview Pane Widget - Live preview with animations
 """
 
-from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QLabel, QGroupBox,
-                              QTextEdit, QFrame)
-from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtGui import QFont, QPixmap
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QGroupBox,
+                              QTextEdit, QFrame, QCheckBox, QPushButton, QComboBox)
+from PyQt6.QtCore import Qt, QTimer, pyqtSignal
+from PyQt6.QtGui import QFont, QPixmap, QPainter, QColor
 from pathlib import Path
 
 
 class PreviewPaneWidget(QWidget):
-    """Widget for live preview of theme and ISO modifications"""
+    """Widget for live preview of theme and ISO modifications with multiple modes"""
+    
+    preview_mode_changed = pyqtSignal(str)
     
     def __init__(self):
         super().__init__()
@@ -20,6 +22,10 @@ class PreviewPaneWidget(QWidget):
         self.animation_timer = QTimer()
         self.animation_timer.timeout.connect(self.update_animation)
         self.animation_frame = 0
+        self.preview_mode = "static"  # static, interactive, live
+        self.preview_elements = []
+        self.selected_preview_element = None
+        self.drag_start = None
         self.setup_ui()
         
     def setup_ui(self):
@@ -27,17 +33,41 @@ class PreviewPaneWidget(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)
         
-        # Header
-        header_label = QLabel("👁️ Live Preview")
+        # Header with mode selector
+        header_layout = QHBoxLayout()
+        
+        header_label = QLabel("👁️ Preview")
         header_font = QFont()
         header_font.setPointSize(14)
         header_font.setBold(True)
         header_label.setFont(header_font)
-        layout.addWidget(header_label)
+        header_layout.addWidget(header_label)
         
-        info_label = QLabel("Real-time preview of your customizations")
-        info_label.setStyleSheet("color: #888888; font-size: 10pt;")
-        layout.addWidget(info_label)
+        header_layout.addStretch()
+        
+        # Preview mode selector
+        mode_label = QLabel("Mode:")
+        header_layout.addWidget(mode_label)
+        
+        self.mode_selector = QComboBox()
+        self.mode_selector.addItems(["Static Preview", "Interactive Preview", "Live Preview"])
+        self.mode_selector.currentTextChanged.connect(self.change_preview_mode)
+        self.mode_selector.setStyleSheet("""
+            QComboBox {
+                background-color: #2d2d2d;
+                color: #e0e0e0;
+                border: 1px solid #3d3d3d;
+                border-radius: 3px;
+                padding: 4px 8px;
+            }
+        """)
+        header_layout.addWidget(self.mode_selector)
+        
+        layout.addLayout(header_layout)
+        
+        self.info_label = QLabel("Static Preview - Read-only view with auto-updates")
+        self.info_label.setStyleSheet("color: #888888; font-size: 10pt;")
+        layout.addWidget(self.info_label)
         
         layout.addSpacing(10)
         
@@ -252,6 +282,32 @@ class PreviewPaneWidget(QWidget):
                 
         self.summary_text.setPlainText(summary)
     
+    def change_preview_mode(self, mode_text):
+        """Change preview mode"""
+        mode_map = {
+            "Static Preview": "static",
+            "Interactive Preview": "interactive",
+            "Live Preview": "live"
+        }
+        self.preview_mode = mode_map.get(mode_text, "static")
+        
+        # Update info label
+        info_map = {
+            "static": "Static Preview - Read-only view with auto-updates",
+            "interactive": "Interactive Preview - Click and drag elements to reposition",
+            "live": "Live Preview - Runtime simulation with clickable controls"
+        }
+        self.info_label.setText(info_map.get(self.preview_mode, ""))
+        
+        # Enable mouse tracking for interactive/live modes
+        if self.preview_mode in ["interactive", "live"]:
+            self.preview_frame.setMouseTracking(True)
+        else:
+            self.preview_frame.setMouseTracking(False)
+            
+        self.preview_mode_changed.emit(self.preview_mode)
+        self.preview_frame.update()
+    
     def get_self_install_config(self):
         """Get self-installation configuration"""
         return {
@@ -259,3 +315,10 @@ class PreviewPaneWidget(QWidget):
             'desktop_entry': self.builder_desktop_entry.isChecked(),
             'cli_launcher': self.builder_cli_launcher.isChecked(),
         }
+    
+    def load_self_install_config(self, config):
+        """Load self-installation configuration"""
+        if hasattr(self, 'include_builder_check'):
+            self.include_builder_check.setChecked(config.get('enabled', False))
+            self.builder_desktop_entry.setChecked(config.get('desktop_entry', True))
+            self.builder_cli_launcher.setChecked(config.get('cli_launcher', True))
